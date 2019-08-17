@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="template::cmsHeader(人员管理)"></head>
+<style>
+.layui-laypage-skip button{
+	background-color:#009688;
+	color:#fff;
+}
+.layui-laypage-skip button:hover{
+	opacity: .8;
+}
+</style>
+<body>
+
+	<div class="layui-fluid">
+		<div class="layui-card">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<div class="layui-inline" th:if="${areas!=undefine}">
+						<label class="layui-form-label">区域：</label>
+						<div class="layui-input-inline">
+							<select name="area" lay-verify="required" id="area">
+								<option value="">请选择区域</option>
+								<option th:value="${area.id}" th:each="area,infoStat : ${areas}"
+									th:text="${area.areaName}"></option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-inline" th:if="${types!=undefine}">
+						<label class="layui-form-label">单位性质：</label>
+						<div class="layui-input-inline">
+							<select name="properties" lay-verify="required"
+								lay-filter="properties">
+								<option value="">请选择</option>
+								<option th:value="${type.id}" th:each="type,infoStat : ${types}"
+									th:text="${type.propName}"></option>
+								<!--  <option value="1">非组织机构</option>
+                <option value="2">社区</option>
+                <option value="3">事业单位</option>
+                <option value="4">国企</option> -->
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">党支部：</label>
+						<div class="layui-input-block">
+							<input type="text" name="HandoverCompany" id="HandoverCompany"
+								class="layui-input"
+								style="position: absolute; z-index: 2; width: 80%;"
+								lay-verify="required" placeholder="输入名称.." onkeyup="search()"
+								autocomplete="off"> <select name="enterprise"
+								type="text" id="hc_select" lay-filter="hc_select"
+								autocomplete="off" placeholder="移交单位全称" lay-verify="required"
+								class="layui-select" lay-search>
+								<!-- <option value="111">111</option>
+                        <option value="222">222</option>
+                        <option value="333">333</option>
+                        <option value="444">444</option>
+                        <option value="555">555</option> -->
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<button class="layui-btn layuiadmin-btn-list" lay-submit
+							lay-filter="LAY-app-contlist-search">
+							<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-card-body">
+				<table class="layui-table" id="test" lay-filter="test">
+
+				</table>
+				<script type="text/html" id="toolbarDemo">
+                    <div class="layui-btn-container">
+  					 <button class="layui-btn layui-btn-sm" lay-event="deleteAll">删除</button>
+    				 <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+  					</div>
+				</script>
+	
+				<script type="text/html" id="barDemo">
+  					<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  					<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+				</script>
+
+				
+			</div>
+		</div>
+		
+		<!-- 增加修改页面 -->
+		<div class="addOrUpdate" style="display:none;">
+				<div><i class="layui-icon layui-icon-return"></i>
+				</div>
+		</div>
+	</div>
+		
+	<!-- 模板js -->
+	<div th:replace="template::commonJs"></div>
+	<script>
+  layui.config({
+	    base: contextPath+"/layuiadmin/" 
+	}).extend({
+		index: 'lib/index' 
+	}).use(['index', 'contlist', 'table',"laypage"],function(){
+		var table = layui.table,
+	    form = layui.form,
+	    $ = layui.jquery,
+	    laypage = layui.laypage;
+		
+		 table.on('toolbar(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			  var data = obj.data; //获得当前行数据
+			  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+			  var tr = obj.tr; //获得当前行 tr 的DOM对象
+			  console.log(obj)
+			  if(layEvent === 'add'){ //查看
+			    //do somehing
+			    LoadPage(".addOrUpdate","/dzb/construction/add");
+			  } else if(layEvent === 'deleteAll'){ //删除
+			    layer.confirm('真的删除行么', function(index){
+			      obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+			      layer.close(index);
+			      //向服务端发送删除指令
+			    });
+			  } else if(layEvent === 'edit'){ //编辑
+			    //do something
+			    alert("update")
+			    //同步更新缓存对应的值
+			    obj.update({
+			      username: '123'
+			      ,title: 'xxx'
+			    });
+			  }
+		});
+		 table.on('bar(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			 console.log(obj)
+			 var data = obj.data; //获得当前行数据
+			  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+			  var tr = obj.tr; //获得当前行 tr 的DOM对象
+			  
+			  if(layEvent === 'edit'){ //查看
+				  
+			    //do somehing
+			  } else if(layEvent === 'del'){ //删除
+			    layer.confirm('真的删除行么', function(index){
+			      obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+			      layer.close(index);
+			      //向服务端发送删除指令
+			    });
+			  } else if(layEvent === 'del'){ //编辑
+			    //do something
+			    
+			    //同步更新缓存对应的值
+			    obj.update({
+			      username: '123'
+			      ,title: 'xxx'
+			    });
+			  }
+		});
+		
+		getTableData(1,1,"");
+		function getTableData(curr,pageSize,search){
+			table.render({
+			    elem: '#test'
+			    ,url:contextPath+'/construction/getEnterBranchList'
+			    ,toolbar: '#toolbarDemo'
+			    ,page:true
+			    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+			    ,where:{
+			    	page:curr,
+			    	limit:pageSize,
+			    	enterId:search
+			    }
+			    ,cols: [
+			    	[
+			      {field:'id', width:80,  title: 'ID', sort: true}
+			      ,{field:'partName',  title: '党支部名称'}
+			      ,{field:'pelCount',  title: '人员数量'}
+			      ,{field:'enterpriseId', title: '建设进度'}
+			      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+			    	]
+			    ],
+			    parseData:function(res){
+			    
+			    },
+			    //完成回调
+			     done:function(res,curr1){
+			    	page(res,curr1,pageSize);
+			    } 
+			  });
+		}
+		 function page(res,curr,ps){
+			 console.log(res)
+			 	 console.log(curr)
+			 	 	 console.log(ps)
+			 var search = "";
+			  laypage.render({
+				  elem: '#layui-table-page',
+				  layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+					  count: res.count, //数据总数，从服务端得到
+					  limit:ps,
+					  curr:2,
+					  jump: function(obj, first){
+					    //obj包含了当前分页的所有参数，比如：
+					    //首次不执行
+					    if(!first){
+					    	 console.log(curr); //得到当前页，以便向服务端请求对应页的数据。
+					    	 getTableData(curr,ps,search);
+					    }
+					  }
+			});
+		 }
+		 
+		
+		 
+		 
+		/*  getList(); // 获取列表
+
+		 function getList(enterId = 0,pageNumv = 1,pageSizev = 10){  // 获取列表信息
+			 	var id = $("select[name='enterprise']").val();
+		 		enterId = id==""?0:id;
+				$.ajax({
+					url:contextPath+"/construction/getEnterBranchList",
+					type:"post",
+					data:{
+						pageNum:pageNumv,
+						pageSize:pageSizev,
+						enterId:enterId
+					},
+					success:function(rt){
+						var data = rt.list;
+						var html ="";
+						for(var i=0,len = data.length;i<len;i++){
+							html +=`
+								<tr>
+							<td>${data[i].id}</td>
+							<td>${data[i].branchName}</td>
+							<td >${data[i].pelCount}</td>
+							<td >${data[i].process}</td>
+							 <td>
+								<img src="${data[i].img}" style="height: 50px;width:100px" onerror="javascript:this.src='http://doortest.z-chip.com/error.png';" alt="pic"/>
+							</td>
+							<td style="text-align:center">
+								<div class="" style="padding:10px 0;">
+									<button class="updatebtn layui-btn layui-btn-mini layui-btn-normal" data-type=1 data-title=${data[i].name} data-id=${data[i].id} lay-filter="demo1">编辑</button>
+									<button type="reset" data-type=1 data-title=${data[i].name} data-id=${data[i].id} data-src=${data[i].img} class="deletebtn layui-btn layui-btn-mini layui-btn-danger">删除</button>
+								</div>
+							</td> 
+						</tr>
+							`;
+						}
+						console.log(data);
+						$('#textbody').html(html);
+						laypage.render({
+								  elem: 'textpage'
+									  ,count: rt.total, //数据总数，从服务端得到
+									  limit:pageSizev,
+									  curr:pageNumv,
+									  jump: function(obj, first){
+									    //obj包含了当前分页的所有参数，比如：
+									    //首次不执行
+									    if(!first){
+									      //do something
+									    	 console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+									    	 getList(enterId,obj.curr,pageSizev);
+									    }
+									  }
+							});
+					}
+				})
+		}   */
+		
+		
+		
+		
+		
+		
+		
+		/*  $("#HandoverCompany").blur(function(){
+ 			$("#hc_select").next().find("dl").css({ "display": "none" });
+ 		}) */
+ 		 $('#hc_select').next().find(".layui-form-select").click(function(obj){
+         		if($(this).hasClass("layui-form-selected")){
+					 	 $(this).next().find("dl").css({ "display": "block" });
+	   				}else{
+	   					 $(this).next().find("dl").css({ "display": "none" });
+	   				}
+			})
+		//选择移交单位 赋值给input框
+		form.on('select(hc_select)', function (data) {
+            $("#HandoverCompany").val($("#hc_select option:selected").html());
+            $("#hc_select").next().find("dl").css({ "display": "none" });
+            form.render();
+        });
+        window.search = function () {
+            var value = $("#HandoverCompany").val();
+            $("#hc_select").val(value);
+            form.render();
+            $("#hc_select").next().find("dl").css({ "display": "block" });
+            $('#hc_select').next().find(".layui-form-select").addClass('layui-form-selected');
+            var dl = $("#hc_select").next().find("dl").children();
+            var j = -1;
+           	var bol = false;
+            for (var i = 0; i < dl.length; i++) {
+                if (dl[i].innerHTML.indexOf(value) <= -1) {
+                    dl[i].style.display = "none";
+                    j++;
+                }
+                if (j == dl.length-1) {
+                    $("#hc_select").next().find("dl").css({ "display": "none" });
+                }
+            }
+            //重新绑定
+            $(".layui-form-select").click(function(obj){
+            	if(value == ""){
+            		if($(".layui-form-select").hasClass("layui-form-selected")){
+   					 	 $("#hc_select").next().find("dl").css({ "display": "block" });
+	   				}else{
+	   					 $("#hc_select").next().find("dl").css({ "display": "none" });
+	   				}
+				}
+			})
+        }
+		
+    	//获取单位
+		form.on('select(properties)', function (data) {
+			var areaId = $("select[name='area']").val();
+            $.ajax({
+  	    	  url:contextPath+'/construction/getEnterPrises',
+  	    	  data:{"areaId":areaId,"typeId":data.value},
+  	    	  type:'POST',
+  	    	  complete:function(XHR,TS){
+  	    		  var returnObj = eval('(' + XHR.responseText + ')');
+  	    		  console.log(returnObj.data);
+  	    		  if(returnObj.code != 200){
+  					  layer.msg(returnObj.msg,{icon:5,anim:6,time:1500}); 
+  				  }else{
+  					  var options = '333';
+  					/* returnObj.data.forEach(function(v,k,item){
+   						options += `<option value="${v.id}">${v.name}</option>`;
+  					}) */
+  					  for(enterprise of returnObj.data){
+   						options += `<option value="${enterprise.id}">${enterprise.name}</option>`;
+  					  }
+  						$("#hc_select").html(options);
+  						form.render();
+  				  }
+  	    	  }
+  	      })
+        });
+        
+        
+	    //监听搜索
+	    form.on('submit(LAY-app-contlist-search)', function(data){
+	    	console.log(data.field);
+	      var field = data.field;
+	      $.ajax({
+	    	  url:contextPath+'/construction/getEnterBranchList',
+	    	  data:{
+	    		  "HandoverCompany":field.enterprise,
+	    		"pageNum":1,
+	    		"pageSize":10
+	    	  },
+	    	  type:'POST',
+	    	  complete:function(XHR,TS){
+	    		  var returnObj = eval('(' + XHR.responseText + ')');
+	    		  console.log(returnObj.data);
+	    		  if(returnObj.code != 200){
+					  layer.msg(returnObj.msg,{icon:5,anim:6,time:1500}); 
+				  }else{
+				/* 	window.location.href = contextPath+returnObj.returnUrl+"/init"; */
+				  }
+	    	  }
+	        });
+		    
+	      });
+	    
+		
+	    
+		
+	});  
+  </script>
+</body>
+</html>

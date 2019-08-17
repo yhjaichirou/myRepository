@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+	<type-mapping>
+		<sql-type jdbc-type="VARCHAR" hibernate-type="string"></sql-type>
+		<sql-type jdbc-type="VARCHAR" hibernate-type="string"></sql-type>
+		<sql-type jdbc-type="VARCHAR" hibernate-type="string"></sql-type>
+		<sql-type jdbc-type="VARCHAR" hibernate-type="string"></sql-type>
+		<sql-type jdbc-type="VARCHAR" hibernate-type="string"></sql-type>
+		<sql-type jdbc-type="VARCHAR" hibernate-type="string"></sql-type>
+	</type-mapping>
+
+	<table-filter match-schema="lt_dzb" match-name=".*" />
+	<table catalog="lt_dzb" name="base_user">
+		<column name="id"></column>
+		<column name="name"></column>
+		<column name="pwd"></column>
+		<column name="status"></column>
+		<column name="remark_name"></column>
+	</table>
+	<table catalog="lt_dzb" name="base_role">
+		<column name="id"></column>
+		<column name="role_name"></column>
+		<column name="primary"></column>
+	</table>
+	<table catalog="lt_dzb" name="base_primary">
+		<column name="id"></column>
+		<column name="level"></column>
+		<column name="remark"></column>
+	</table>
+	<table catalog="lt_dzb" name="user">
+		<column name="id"></column>
+		<column name="name"></column>
+		<column name="pwd"></column>
+		<column name="status"></column>
+		<column name="remark_name"></column>
+	</table>
+	<table catalog="lt_dzb" name="base_role_menu">
+		<column name="id"></column>
+		<column name="menu_id"></column>
+		<column name="role_id"></column>
+	</table>
+	<table catalog="lt_dzb" name="base_menu">
+		<column name="id"></column>
+		<column name="name"></column>
+		<column name="sort"></column>
+		<column name="pid"></column>
+		<column name="status"></column>
+		<column name="url"></column>
+		<column name="icon"></column>
+	</table>
+	<table catalog="lt_dzb" name="base_user_role">
+		<column name="id"></column>
+		<column name="user_id"></column>
+		<column name="role_id"></column>
+	</table>
+</hibernate-reverse-engineering>

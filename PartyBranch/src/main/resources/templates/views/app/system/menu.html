@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="template::cmsHeader(模块管理)"></head>
+<style>
+.tree_content{
+background-color:white;
+margin:20px;
+overflow: hidden;
+}
+#tree{
+width: 40%; height: auto; padding: 10px 20px 30px 20px;
+margin-left:20px;
+float:left;
+}
+#showTreeinfo{
+width: 60%;
+height: auto;
+float:left;
+}
+
+</style>
+<body>
+
+	<!-- <fieldset class="layui-elem-field layui-field-title"
+		style="margin-top: 30px;">
+		<legend>无连接线风格</legend>
+	</fieldset>
+	<div id="test13" class="demo-tree-more"></div> -->
+
+	<fieldset class="layui-elem-field layui-field-title"
+		style="margin-top: 30px;">
+		<legend>开启节点操作图标</legend>
+	</fieldset>
+
+	<div class="tree_content">
+		<div id="tree" class="demo-tree demo-tree-box"
+			style=""></div>
+		<div id="showTreeinfo" class="container" style=""></div>
+		<!-- 模板js -->
+		<div th:replace="template::commonJs"></div>
+	</div>
+	<script th:src="@{/layuiadmin/layui/layui.all.js}"></script>
+	<script th:inline="javascript" type="text/javascript">
+  navList = [[${#request.getAttribute('allMenus')}]];
+  layui.use(['tree','util',"layer","form"],function(){
+	  navList
+	  var tree = layui.tree
+	  ,layer = layui.layer
+	  ,util = layui.util
+	  ,form = layui.form
+	  
+	  ,data1 = navList;
+
+	 /*  $.ajax({
+		  url:contextPath+"/system/menu",
+		  type:"post",
+		  sucess:function(res){
+			  console.log(res);
+		  }
+	  }) */
+	  function getAllMenu(){
+		  $.ajax({
+			  url:contextPath+"/system/menu",
+			  type:"post",
+			  sucess:function(res){
+				 if(res.code==200){
+					 data1 = res.data
+				 }
+			  }
+			});
+	 }
+	  
+	  console.log(navList);
+	  
+	  
+	  
+	 /*  //无连接线风格
+	  tree.render({
+	    elem: '#test13'
+	    ,data: data1
+	    ,showLine: false  //是否开启连接线
+	  }); */
+	  function html(data){
+		  return `<form class="layui-form" style="padding:20px;" id="addForm"> 
+		  <input type="text" name="pid" value="${data.pid}" autocomplete="off" class="layui-input" style="display:none">
+		  <input type="text" name="id" value="${data.id}" autocomplete="off" class="layui-input" style="display:none">
+	  <div class="layui-form-item">
+	    <label class="layui-form-label">菜单名</label>
+	    <div class="layui-input-block">
+	      <input type="text" name="name" value="${data.name}" placeholder="请输入" autocomplete="off" class="layui-input">  
+	    </div>
+	  </div>
+
+	 <div class="layui-form-item">
+	    <label class="layui-form-label">url</label>
+	    <div class="layui-input-block">	
+	      <input type="text" name="url" value="${data.url}" placeholder="请输入" autocomplete="off" class="layui-input">  
+	    </div>
+	  </div>
+
+	 <div class="layui-form-item">
+	    <label class="layui-form-label">icon</label>
+	    <div class="layui-input-block">
+	      <input type="text" name="icon" value="${data.icon}" placeholder="请输入" autocomplete="off" class="layui-input">  
+	    </div>
+	  </div>
+	  
+	  <div class="layui-form-item">
+	    <label class="layui-form-label">排序</label>
+	    <div class="layui-input-block">
+	      <input type="text" name="sort" value="${data.sort}" placeholder="请输入" autocomplete="off" class="layui-input">  
+	    </div>
+	  </div>
+
+	  <div class="layui-form-item">
+	    <div class="layui-input-block" style="margin-left: 20px;height: 30px;line-height: 30px;">
+	      <button class="layui-btn submit" lay-submit lay-filter="submit">保存</button>
+	      <button type="reset" class="layui-btn layui-btn-primary reset"><i class="layui-icon layui-icon-refresh"></i></button>
+	    </div>
+	  </div>
+	</form>`;
+	  }
+	  
+	  function layerText(data){
+		//在这里面输入任何合法的js语句
+      	layer.open({
+      	  type: 1 //Page层类型
+      	  ,area: ['300px', '400px']
+      	  ,title: '编辑'
+      	  ,shade: 0.6 //遮罩透明度
+      	  ,maxmin: true //允许全屏最小化
+      	  ,anim: 0 //0-6的动画形式，-1不开启
+      	  ,success:function(){
+      		  form.render();
+      	  }
+      	  ,content: html(data)
+      	}); 
+      /* 	tree.reload('#tree', {
+      	  //新的参数
+      	}); */
+	  }
+	  //开启节点操作图标
+	  tree.render({
+	    elem: '#tree'
+	    ,data: data1
+	    ,edit: ['add', 'update', 'del'] //操作节点的图标
+	    ,click: function(obj){
+	    	 var data = obj.data; //得到当前节点的数据
+	    	 
+	    },
+	    operate: function(obj){
+	    	console.log(obj);
+	        var type = obj.type; //得到操作类型：add、edit、del
+	        var data = obj.data; //得到当前节点的数据
+	        var elem = obj.elem; //得到当前节点元素
+	    
+	        //Ajax 操作
+	        if(type === 'add'){ //增加节点
+	        	var parse ={
+	        		pid :data.id,
+	        		id : 0	,
+	        		sort:1,
+	        		name:0,
+	        		icon:"",
+	        		url:""
+	        	};
+	        	layerText(parse);
+	        
+	        } else if(type === 'update'){ //修改节点
+	          console.log(elem.find('.layui-tree-txt').html()); //得到修改后的内容
+		       layerText(data);
+	        } else if(type === 'del'){ //删除节点
+	          	layer.confirm('您是如何看待前端开发？', {
+	          	  btn: ['确定删除吗？'] //按钮
+	          	},function(){
+	          		/* $.ajax({
+	    				url:contextPath+"/system/menu/del",
+	    				type:"POST",
+	    				data:{id:data.id},
+	    				success:function(data){
+	    					if(data.code ==200){
+	    						layer.closeAll();
+	    					}
+	    				}
+	          		}); */
+	          	});
+	        };
+	        
+	        
+	        //监听提交
+    	    form.on('submit(submit)', submit);
+    	    function submit(data){
+    	    	console.log(data);
+    	    	 //防止重复提交
+    	    /* 	if($(".submit").hasClass("layui-btn-disabled")){
+    	    		return false;
+    	    	}
+    	    	$(".submit").addClass("layui-btn-disabled").html("提交中...");
+    	     */
+    	    	//var formData = new FormData($('#addForm')[0]);
+    			$.ajax({
+    				url:contextPath+"/system/menu/addorupdate",
+    				type:"POST",
+    				data:data.field,
+    				//dataType:"json",
+    			 	//contentType: false,  
+    		       // processData: false, 
+    				success:function(data){
+    					if(data.code ==200){
+    						layer.closeAll();
+    						tree.render();
+    					}
+    					else{
+    						layer.msg(data.msg, {
+    							  icon: 2,
+    							  time: 2000 //2秒关闭（如果不配置，默认是3秒）
+    							}, function(){
+    							  //do something
+    							}); 
+    							$(".submit").removeClass("layui-btn-disabled").html("立即提交");
+    					}
+    				},
+    				error:function(){
+    					$(".submit").removeClass("layui-btn-disabled").html("立即提交");
+    				}
+    			}); 
+    	        return false;
+    	    }// end submit
+    	    
+    	    
+	      }
+	  });
+	 
+	  
+	});
+  </script>
+</body>
+</html>

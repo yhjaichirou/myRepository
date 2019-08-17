@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="template::cmsHeader(区域管理)"></head>
+<style>
+.layui-laypage-skip button{
+	background-color:#009688;
+	color:#fff;
+}
+.layui-laypage-skip button:hover{
+	opacity: .8;
+}
+</style>
+<body>
+
+	<div class="layui-fluid">
+		<div class="layui-card">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto" th:if="${areas!=undefine}">
+				<div class="layui-form-item">
+					<div class="layui-inline" >
+						<label class="layui-form-label">城市：</label>
+						<div class="layui-input-inline">
+							<select name="area" lay-verify="required" id="area">
+								<option value="">请选择</option>
+								<option th:value="${city.id}" th:each="area,infoStat : ${areas}"
+									th:text="${city.areaName}"></option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<button class="layui-btn layuiadmin-btn-list" lay-submit
+							lay-filter="LAY-app-contlist-search">
+							<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-card-body">
+				<table class="layui-table" id="test" lay-filter="test">
+
+				</table>
+				<script type="text/html" id="toolbarDemo">
+                    <div class="layui-btn-container">
+  					 
+    				 <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+  					</div>
+				</script>
+	
+				<script type="text/html" id="barDemo">
+  					<a class="layui-btn layui-btn-xs updatebtn" lay-event="edit">编辑</a>
+  					<a class="layui-btn layui-btn-danger layui-btn-xs del" lay-event="del">删除</a>
+				</script>
+
+				<div class="layui-table-page"></div>
+			</div>
+		</div>
+		
+		<!-- 增加修改页面 -->
+		<div class="addOrUpdate" style="display:none;">
+				<div><i class="layui-icon layui-icon-return"></i>
+				</div>
+		</div>
+	</div>
+		
+	<!-- 模板js -->
+	<div th:replace="template::commonJs"></div>
+	<script>
+  layui.config({
+	    base: contextPath+"/layuiadmin/" 
+	}).extend({
+		index: 'lib/index' 
+	}).use(['index', 'contlist', 'table',"laypage"],function(){
+		var table = layui.table,
+	    form = layui.form,
+	    $ = layui.jquery,
+	    laypage = layui.laypage;
+		
+		
+		//监听头工具
+		 table.on('toolbar(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			  var data = obj.data; //获得当前行数据
+			  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+			  var tr = obj.tr; //获得当前行 tr 的DOM对象
+			  console.log(obj)
+			  if(layEvent === 'add'){ //查看
+			    //do somehing
+				  addOrUpdata(null);
+			  } else if(layEvent === 'deleteAll'){ //删除
+			    layer.confirm('真的删除行么', function(index){
+			      obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+			      layer.close(index);
+			      //向服务端发送删除指令
+			    });
+			  } 
+		});
+		//监听行工具事件
+		  table.on('tool(test)', function(obj){
+		    var data = obj.data;
+		    console.log(data)
+		    if(obj.event === 'del'){
+		      layer.confirm('确定删除么', function(index){
+		    	  addOrUpdata(data);
+		      	layer.close(index);
+		      });
+		    } else if(obj.event === 'edit'){
+		    	 addOrUpdata(data);
+		    }
+		  });
+		 
+		function addOrUphtml(data){
+			return `
+	    	<form class="layui-form addForm" id="addForm" action="" lay-filter="addForm" style="padding:20px">
+	    	  <div class="layui-form-item">
+	    	    <label class="layui-form-label">区域名称</label>
+	    	    <div class="layui-input-block">
+	    	      <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入产品名称" class="layui-input" maxlength="18">
+	    	    </div>
+	    	  </div>
+	    	  <div class="layui-form-item layui-form-text">
+			    <label class="layui-form-label">核心城市</label>
+			    <div class="layui-input-block">
+			      <input type="checkbox" name="isPrimary" lay-skin="switch">
+			    </div>
+			  </div>
+			   <input type="text" name="id" value="" hidden="hidden">
+	    	  <div class="layui-input-block">
+					<button  class="layui-btn submit" lay-submit="" lay-filter="submit">立即提交</button>
+					<button type="button" id="back" class="layui-btn layui-btn-primary">返回</button>
+			 </div>
+	    	  
+	    	  </form>
+	    	  `;
+		}
+	
+		 //新增或修改信息
+		 function addOrUpdata(object){//1:add  2:updata
+		    	var aoru = layer.open({
+		        	  type: 1 //Page层类型
+		        	  ,area: ['400px', '280px']
+		        	  ,title: object!=null?'编辑':'新增'
+		        	  ,shade: 0.6 //遮罩透明度
+		        	  ,maxmin: true //允许全屏最小化
+		        	  ,anim: 0 //0-6的动画形式，-1不开启
+		        	  ,success:function(){
+		        		  //form.render();
+		        			$("#back").click(function(){	
+								layer.close(aoru);
+							});
+							if(object!=null){
+								$("input[name='id']").val();
+		        		  		$("input[name='name']").val();
+		        		  		$("input[name='isPrimary']").checked=true;
+		        		  	}
+		        	  }
+		        	  ,content: addOrUphtml(object)
+		        	}); 
+		    	//layer.full(aoru);
+		  }
+		 
+		  //自定义验证规则
+		    form.verify({
+		        name: function(value){
+		            if(!value || value==null || value ==""){
+		                return '标题至少得5个字符啊';
+		            }
+		        }
+		        ,pcId:  function(value){
+		            if(value==0){
+		                return '请选择所属系统';
+		            }
+		        }
+		        ,content: function(value){
+		            return value==""?"内容不能为空":null;
+		        }
+		    });
+		    
+		    //监听提交
+		    form.on('submit(submit)', submit);
+		    
+		    function submit(data){
+		    	//防止重复提交
+		    	/* if($(".submit").hasClass("layui-btn-disabled")){
+		    		return false;
+		    	}
+		    	$(".submit").addClass("layui-btn-disabled").html("提交中..."); */
+		    
+		    	//var formData = new FormData($('#addForm')[0]);
+		    	$.ajax({
+    				url:contextPath+"/organization/area/addorupdate",
+    				type:"POST",
+    				data:data.field,
+    				success:function(data){
+    					if(data.code ==200){
+    						layer.closeAll();
+    						tree.render();
+    					}
+    					else{
+    						layer.msg(data.msg, {
+    							  icon: 2,
+    							  time: 2000 //2秒关闭（如果不配置，默认是3秒）
+    							}, function(){
+    							  //do something
+    							}); 
+    							//$(".submit").removeClass("layui-btn-disabled").html("立即提交");
+    					}
+    				},
+    				error:function(){
+    					//$(".submit").removeClass("layui-btn-disabled").html("立即提交");
+    				}
+    			}); 
+    	        return false;
+		    }
+		
+		
+
+        
+        
+	    //监听搜索
+	    //form.on('submit(LAY-app-contlist-search)', function(data){    
+	    //});
+	    
+		//表单渲染
+	    table.render({
+		    elem: '#test'
+		    ,url:contextPath+'/organization/getAreaList'
+		    ,toolbar: '#toolbarDemo'
+		    ,page:true
+		    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+		    ,where:{
+		    	cityId:1
+		    }
+		    ,cols: [
+		    	[
+		      {field:'id', width:80,  title: 'ID', sort: true}
+		      ,{field:'cityId',  title: '城市'}
+		      ,{field:'areaName',  title: '区域名称'}
+		      ,{field:'primaryall',  title: '是否区域中心 '      ,templet: function(d){
+		    	  var html='';
+		    	  if(d.primaryall==true){
+		    		  html= '<i class="layui-icon layui-icon-ok"></i>';
+		    	  }else{
+		    		  html= '<i class="layui-icon layui-icon-close"></i>';
+		    	  }
+		          return html;
+		      }}
+		      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+		    	]
+		    ],
+		    parseData:function(res){
+		    	console.log(res);
+		    },
+		    request: {
+		        pageName: 'page' //页码的参数名称，默认：page
+		        ,limitName: 'limit' //每页数据量的参数名，默认：limit
+		    },
+		    //完成回调
+		     done:function(res,_curr,total){
+		    	//设置table以外元素
+		    } 
+		  });
+		
+	});  
+  </script>
+</body>
+</html>

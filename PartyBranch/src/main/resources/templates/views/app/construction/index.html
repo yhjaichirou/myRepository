@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="template::cmsHeader(党支部建设)"></head>
+<style>
+.layui-laypage-skip button{
+	background-color:#009688;
+	color:#fff;
+}
+.layui-laypage-skip button:hover{
+	opacity: .8;
+}
+</style>
+<body>
+
+	<div class="layui-fluid">
+		<div class="layui-card">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<div class="layui-inline" th:if="${areas!=undefine}">
+						<label class="layui-form-label">区域：</label>
+						<div class="layui-input-inline">
+							<select name="area" lay-verify="required" id="area" lay-filter="area">
+								<option value="">请选择区域</option>
+								<option th:value="${area.id}" th:each="area,infoStat : ${areas}"
+									th:text="${area.areaName}"></option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-inline" th:if="${types!=undefine}">
+						<label class="layui-form-label">单位性质：</label>
+						<div class="layui-input-inline">
+							<select name="properties" lay-verify="required"
+								lay-filter="properties">
+								<option value="">请选择</option>
+								<option th:value="${type.id}" th:each="type,infoStat : ${types}"
+									th:text="${type.propName}"></option>
+								<!--  <option value="1">非组织机构</option>
+                <option value="2">社区</option>
+                <option value="3">事业单位</option>
+                <option value="4">国企</option> -->
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">单位名称：</label>
+						<div class="layui-input-block">
+							<input type="text" name="HandoverCompany" id="HandoverCompany"
+								class="layui-input"
+								style="position: absolute; z-index: 2; width: 80%;"
+								lay-verify="required" placeholder="输入名称.." onkeyup="search()"
+								autocomplete="off">
+							 <select name="enterprise"
+								type="text" id="hc_select" lay-filter="hc_select"
+								autocomplete="off" placeholder="移交单位全称" lay-verify="required"
+								class="layui-select" lay-search>
+							 <option value="">请选择</option>
+	                      <option th:value="${enter.id}" th:each="enter,infoStat : ${enters}"
+									th:text="${enter.name}"></option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<button class="layui-btn layuiadmin-btn-list" lay-submit
+							lay-filter="LAY-app-contlist-search">
+							<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-card-body">
+				<!-- <div style="padding-bottom: 10px;">
+					<button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button>
+					<button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
+				</div> -->
+				<!-- <table class="layui-table" lay-data="{url:'/dzb/construction/getEnterBranchList', id:'table1'}" lay-filter="">
+        	<thead>
+			    <tr>
+			      <th lay-data="{type:'checkbox'}">ID</th>
+			      <th lay-data="{field:'id', width:80, sort: true}">ID</th>
+			      <th lay-data="{field:'branchName', width:120, sort: true, edit: 'text'}">用户名</th>
+	
+			      <th lay-data="{field:'process', width:80, edit: 'text'}">过程</th>
+				  <th lay-data="{fixed: 'operation', width:178, align:'center', toolbar: '#bar_oper'}">操作</th>
+			    </tr>
+			  </thead>
+       			 <tbody id="table1body">
+								<tr>
+									<th>id</th>
+									<th>名称</th>
+									<td>汉族</td>
+									<td>1989-10-14</td>
+									<td>
+										<div class="layui-input-block">
+											<button class="layui-btn" lay-submit="" lay-filter="demo1">修改</button>
+											<button type="reset" class="layui-btn layui-btn-primary">删除</button>
+										</div>
+									</td>
+								</tr>
+				</tbody>
+        </table>  -->
+				<table class="layui-table" id="test" lay-filter="test">
+
+				</table>
+				<script type="text/html" id="toolbarDemo">
+                    <div class="layui-btn-container">
+  					 <button class="layui-btn layui-btn-sm" lay-event="deleteAll">删除</button>
+    				 <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+  					</div>
+				</script>
+	
+				<script type="text/html" id="barDemo">
+  					<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  					<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+				</script>
+
+				
+			</div>
+		</div>
+		
+		<!-- 增加修改页面 -->
+		<div class="addOrUpdate" style="display:none;">
+				<div><i class="layui-icon layui-icon-return"></i>
+				</div>
+		</div>
+	</div>
+		
+	<!-- 模板js -->
+	<div th:replace="template::commonJs"></div>
+	<script>
+  layui.config({
+	    base: contextPath+"/layuiadmin/" 
+	}).extend({
+		index: 'lib/index' 
+	}).use(['index', 'contlist', 'table',"laypage"],function(){
+		var table = layui.table,
+	    form = layui.form,
+	    $ = layui.jquery,
+	    laypage = layui.laypage;
+		
+		render();
+		 //监听搜索
+	    form.on('submit(LAY-app-contlist-search)', function(data){
+	    	console.log(data.field.enterprise);
+	        render(data.field.enterprise);
+	    });
+	    
+		 table.on('toolbar(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			  var data = obj.data; //获得当前行数据
+			  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+			  var tr = obj.tr; //获得当前行 tr 的DOM对象
+			  console.log(obj)
+			  if(layEvent === 'add'){ //查看
+			    //do somehing
+			    LoadPage(".addOrUpdate","/dzb/construction/add");
+			  } else if(layEvent === 'deleteAll'){ //删除
+			    layer.confirm('真的删除行么', function(index){
+			      obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+			      layer.close(index);
+			      //向服务端发送删除指令
+			    });
+			  } else if(layEvent === 'edit'){ //编辑
+			    //do something
+			    alert("update")
+			    //同步更新缓存对应的值
+			    obj.update({
+			      username: '123'
+			      ,title: 'xxx'
+			    });
+			  }
+		});
+		//监听行工具事件
+		  table.on('tool(test)', function(obj){
+		    var data = obj.data;
+		    console.log(data)
+		    if(obj.event === 'del'){
+		      layer.confirm('确定删除么', function(index){
+		    	  addOrUpdata(data);
+		      	layer.close(index);
+		      });
+		    } else if(obj.event === 'edit'){
+		    	 addOrUpdata(data);
+		    }
+		  });
+		
+		function render(search){
+			table.render({
+			    elem: '#test'
+			    ,url:contextPath+'/construction/getEnterBranchList'
+			    ,toolbar: '#toolbarDemo'
+			    ,page:true
+			    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+			    ,where:{
+			    	enterId:search
+			    }
+			    ,cols: [
+			    	[
+			      {field:'id', width:80,  title: 'ID', sort: true}
+			      ,{field:'partName',  title: '党支部名称'}
+			      ,{field:'pelCount',  title: '人员数量'}
+			      ,{field:'enterpriseId', title: '建设进度'}
+			      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+			    	]
+			    ],
+			    parseData:function(res){
+			    
+			    },
+			    request: {
+			        pageName: 'page' //页码的参数名称，默认：page
+			        ,limitName: 'limit' //每页数据量的参数名，默认：limit
+			    },
+			    //完成回调
+			     done:function(res,curr1){
+			    	//设置table以外元素
+			    } 
+			  });
+		}
+		
+		
+		/*  $("#HandoverCompany").blur(function(){
+ 			$("#hc_select").next().find("dl").css({ "display": "none" });
+ 		}) */
+ 		 $('#hc_select').next().find(".layui-form-select").click(function(obj){
+         		if($(this).hasClass("layui-form-selected")){
+					 	 $(this).next().find("dl").css({ "display": "block" });
+	   				}else{
+	   					 $(this).next().find("dl").css({ "display": "none" });
+	   				}
+			})
+		//选择移交单位 赋值给input框
+		form.on('select(hc_select)', function (data) {
+            $("#HandoverCompany").val($("#hc_select option:selected").html());
+            $("#hc_select").next().find("dl").css({ "display": "none" });
+            form.render();
+        });
+        window.search = function () {
+            var value = $("#HandoverCompany").val();
+            $("#hc_select").val(value);
+            form.render();
+            $("#hc_select").next().find("dl").css({ "display": "block" });
+            $('#hc_select').next().find(".layui-form-select").addClass('layui-form-selected');
+            var dl = $("#hc_select").next().find("dl").children();
+            var j = -1;
+           	var bol = false;
+            for (var i = 0; i < dl.length; i++) {
+                if (dl[i].innerHTML.indexOf(value) <= -1) {
+                    dl[i].style.display = "none";
+                    j++;
+                }
+                if (j == dl.length-1) {
+                    $("#hc_select").next().find("dl").css({ "display": "none" });
+                }
+            }
+            //重新绑定
+            $(".layui-form-select").click(function(obj){
+            	if(value == ""){
+            		if($(".layui-form-select").hasClass("layui-form-selected")){
+   					 	 $("#hc_select").next().find("dl").css({ "display": "block" });
+	   				}else{
+	   					 $("#hc_select").next().find("dl").css({ "display": "none" });
+	   				}
+				}
+			})
+        }
+        
+        
+      
+		form.on('select(properties)', function (data) {
+			var areaId = $("select[name='area']").val();
+			selectChange(areaId,data.value);
+        });
+        form.on('select(area)', function (data) {
+        	var proId = $("select[name='properties']").val();
+        	selectChange(data.value,proId);
+        });
+        function selectChange(v1,v2){
+        	
+        	 $.ajax({
+     	    	  url:contextPath+'/construction/getEnterPrises',
+     	    	  data:{"areaId":v1,"typeId":v2},
+     	    	  type:'POST',
+     	    	  complete:function(XHR,TS){
+     	    		  var returnObj = eval('(' + XHR.responseText + ')');
+     	    		  console.log(returnObj.data);
+     	    		  if(returnObj.code != 200){
+     					  layer.msg(returnObj.msg,{icon:5,anim:6,time:1500}); 
+     				  }else{
+     					 $("#hc_select").html('<option value="">请选择</option>');
+     					  var options = '';
+     					  for(enterprise of returnObj.data){
+      						options += `<option value="${enterprise.id}">${enterprise.name}</option>`;
+     					  }
+     						$("#hc_select").append(options);
+     						form.render();
+     				  }
+     	    	  }
+     	      })
+        }
+    	
+
+	});  
+  </script>
+</body>
+</html>

@@ -1,0 +1,556 @@
+html,
+body,
+div,
+span,
+p,
+table,
+tr,
+td,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+li,
+a,
+b {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-family: arial;
+}
+
+body {
+    min-width: 375px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.gotop {
+    width: 38px;
+    height: 40px;
+    color: #fff;
+    cursor: pointer;
+    opacity: .9;
+    z-index: 10;
+    right: 10px;
+    bottom: 190px;
+    position: fixed;
+    background: #7F7F80 url(img/top.png) no-repeat center center;
+    background-size: 38px 40px;
+    display: none;
+}
+
+.feedback {
+    width: 38px;
+    height: 40px;
+    background: #7F7F80 url(img/feedback.png) no-repeat center center;
+    background-size: 38px 40px;
+    color: #fff;
+    cursor: pointer;
+    opacity: .9;
+    position: fixed;
+    right: 10px;
+    bottom: 140px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 12px;
+    z-index: 10;
+    display: none;
+}
+
+
+}
+.index_view {
+    position: absolute;
+    background-color: #fff;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.headcontainer {
+    width: 100%;
+}
+.ui-new-toolbar {
+    background: url(img/baidu-logo.png) no-repeat center 6px;
+    background-size: 77px auto;
+    -webkit-background-size: 77px auto;
+    position: relative;
+    min-width: 320px;
+    height: 44px;
+    z-index: 2;
+    background-color: #3e98f0;
+    text-align: center;
+    font-weight: 400;
+    color: #fff;
+}
+.new-toolbar-left,
+.new-toolbar-right {
+    width: 78px;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+}
+.new-toolbar-left .baidu-btn {
+    width: 34px;
+    height: 44px;
+    display: inline-block;
+    float: left;
+    background: url(img/icon.png) no-repeat center 4px;
+    background-size: 40px 500px;
+}
+.new-toolbar-left .username-btn {
+    float: left;
+    width: 34px;
+    height: 44px;
+    display: inline-block;
+    margin-left: 10px;
+    background: url(img/icon.png) no-repeat center -463px;
+    background-size: 40px 500px;
+}
+.new-toolbar-right {
+    right: 0;
+    top: 0;
+}
+.new-toolbar-right .search-btn {
+    background: url(img/icon.png) no-repeat center -162px;
+    display: inline-block;
+    float: left;
+    width: 34px;
+    height: 44px;
+    background-size: 40px 500px;
+}
+.subscribe-btn {
+    background: url(img/icon.png) no-repeat center -107px;
+    display: inline-block;
+    float: left;
+    width: 34px;
+    height: 44px;
+    background-size: 40px 500px;
+}
+.index_view_navigator {
+    position: relative;
+    background-color: #3e98f0;
+    overflow: hidden;
+    z-index: 2;
+    color: #fff;
+    width: 100%;
+    margin-top: -1px;
+}
+.liner {
+    height: 1px;
+    margin: 0 10px;
+    background-color: #5dabf0;
+}
+.content {
+    padding-top: 3px;
+    padding-bottom: 5px;
+}
+.content table {
+    width: 100%;
+    table-layout: fixed;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.content table tr td {
+    height: 33px;
+    font-size: 16px;
+    line-height: 32px;
+    font-weight: 400;
+    text-align: center;
+}
+.content table tr td .list {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.content td b,
+.footer .btn-group b {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    height: 12px;
+    width: 1px;
+    display: block;
+    font-weight: 400;
+    overflow-y: hidden;
+    background-color: #5dabf0;
+}
+.content table td:first-child b {
+    left: -1px;
+}
+.content table td span {
+    padding-bottom: 3px;
+    border-bottom: 2px solid transparent;
+    color: #fff;
+    white-space: nowrap;
+    margin: 0 2px;
+}
+.content table .cur {
+    border-bottom: 1px solid #fff;
+    margin: 0 2px;
+}
+.down-triangle {
+    border-bottom: none;
+    right: 2px;
+    border-top: 4px solid #fff;
+    display: inline-block;
+    position: absolute;
+    top: 14px;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+.hidden {
+    display: none;
+}
+.footer {
+    position: relative;
+    height: 41px;
+    color: #fff;
+    border-bottom: 0 inset #bbc2ce;
+    background-color: #3e98f0;
+    font-size: 15px;
+    line-height: 32px;
+    text-align: center;
+    display: none;
+}
+.footer .btn-group {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 10px;
+}
+.footer .btn-group span {
+    float: left;
+    padding-right: 10px;
+    text-align: left;
+}
+.media {
+    position: relative;
+    margin-left: 10px;
+}
+.manage {
+    position: relative;
+    margin-left: 10px;
+    width: 96px;
+}
+.less {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    bottom: 6px;
+    width: 52px;
+    padding-right: 4px;
+    color: #fff;
+}
+.up-triangle {
+    display: inline-block;
+    border-bottom: 4px solid #fff;
+    border-left: 4px solid transparent;
+    border-top: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+.news-container {
+    position: relative;
+    z-index: 1;
+    top: -2px;
+    min-height: 800px;
+}
+.topic-gallery-container {
+    background: url(img/bg.png);
+    background-size: 100px 100px;
+    -webkit-background-size: 100px 100px;
+    display: inline-block;
+    margin: 10px 10px 0;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+.index-view-subpage {
+    position: relative;
+    margin-top: -1px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+}
+.imagebox {
+    overflow: hidden;
+    width: 355px;
+    height: 222px;
+    position: relative;
+}
+.images {
+    position: absolute;
+    height: 222px;
+    width: 1480px;
+    left: 0;
+}
+.images li {
+    float: left;
+    height: 222px;
+}
+.images img {
+    width: 355px;
+    height: inherit;
+    min-height: 187px;
+    vertical-align: middle;
+}
+.images .g-title {
+    width: 355px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 13px;
+    overflow: hidden;
+    margin-top: 3px;
+    position: absolute;
+    bottom: 0;
+    color: #fff;
+    background-color: rgba(0, 0, 0, .8);
+    text-align: left;
+}
+.images .g-title span {
+    padding-left: 10px;
+}
+.num {
+    height: 3px;
+    background-color: #B8BBC0;
+    z-index: 1;
+    display: -webkit-box;
+    margin-right: 10px;
+    margin-top: -5px;
+    margin-left: 10px;
+    position: relative;
+}
+.num li {
+    height: 3px;
+    -webkit-box-flex: 1;
+    display: block;
+    margin: 0;
+}
+.on {
+    background: #3e98f0;
+}
+.ui-hotword {
+    height: 28px;
+    background-color: #f8f9fa;
+    overflow: hidden;
+    margin: 10px 10px 0;
+}
+.hot-text {
+    width: 36px;
+    height: 28px;
+    background-color: #e02f2f;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    line-height: 28px;
+    display: inline-block;
+    float: left;
+}
+.hot-container {
+    position: relative;
+    height: 28px;
+    width: 85%;
+    color: #545454;
+    overflow: hidden;
+}
+.hot-container ul {
+    position: absolute;
+    height: 308px;
+}
+.hot-container ul li {
+    margin-left: 6px;
+    line-height: 28px;
+    font-size: 15px;
+    height: 28px;
+    list-style: none;
+}
+.hot-container ul li span {
+    float: left;
+}
+.arrow-right {
+    width: 13px;
+    height: 28px;
+    display: inline-block;
+    background: url(img/arrorw.png) no-repeat;
+    -webkit-background-size: 9px 12.5px;
+    background-size: 9px 12.5px;
+    background-position: 50% 50%;
+    margin-left: 2px;
+    float: left;
+}
+
+/*新闻板块*/
+.index-list {
+    width: 100%;
+    background-color: #fff;
+}
+.index-list-item {
+    position: relative;
+    border-bottom: 1px solid #f6f6f6;
+    overflow: hidden;
+    padding: 10px 0;
+    margin: 0 10px;
+    display: inline-block;
+}
+.index-list-img {
+    font-size: 0;
+    height: 68px;
+    vertical-align: middle;
+    width: 95px;
+    text-align: center;
+    overflow: hidden;
+    border: 1px solid #e8e8e8;
+    float: left;
+    margin-left: 0;
+    margin-right: 10px;
+    background-color: #F4F7F9;
+    position: relative;
+}
+.index-list-img img {
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+}
+.index-list-text {
+    height: 40px;
+    max-height: 40px;
+    overflow: hidden;
+}
+.index-list-text-title {
+    font-size: 16px;
+    line-height: 20px;
+    color: #262b31;
+    margin: -1px 0 4px 0;
+    display: block;
+}
+.index-list-text-abs {
+    font-size: 13px;
+    line-height: 20px;
+    color: #b8bac0;
+    font-weight: 400;
+}
+.index-list-bottom {
+    margin-top: 10px;
+}
+.index-list-time {
+    font-size: 12px;
+    line-height: 20px;
+    color: #b8bac0;
+    font-weight: 400;
+    text-align: left;
+}
+.topnews {
+    background-color: #e02f2f;
+    border: 1px solid transparent;
+    float: right;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    color: #fff;
+    padding: 1px 2px;
+    border-radius: 2px;
+    margin-top: 1px;
+    margin-left: 10px;
+    display: inline-block;
+    max-width: 100px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.index-list-album-container {
+    margin-top: 5px;
+    overflow: hidden;
+    width: 100%;
+}
+.index-list-album {
+    overflow: hidden;
+    width: 33.33%;
+    max-height: 111px;
+    float: left;
+    position: relative;
+}
+.one {
+    margin-right: 7px;
+}
+.index-list-album-wrapper {
+    background-color: #F4F7F9;
+    border: 1px solid #e8e8e8;
+}
+.index-list-album-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: 200px;
+}
+.onlynews {
+    float: right;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    color: #fff;
+    background-color: #0da5fc;
+    border: 1px solid transparent;
+}
+.onlynews1 {
+    float: right;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    color: #1a8afd;
+    border: 1px solid #d2d5de;
+}
+
+/*图片板块*/
+.index-list-mediaitem {
+    margin: 10px;
+}
+.index-img {
+    background-color: #f4f7f9;
+}
+.index-img img {
+    width: 100%;
+}
+.index-list-main-text {
+    border-bottom: 1px solid #efefef;
+}
+.index-list-main-title {
+    line-height: 22px;
+    overflow: hidden;
+    font-size: 15px;
+    color: #262b31;
+    padding: 5px 0;
+}
+.index-list-main-abs {
+    display: none;
+}
+
+/*点击加载更多*/
+.click-box {
+    height: 36px;
+    line-height: 36px;
+    background-color: #f8f9fa;
+    text-align: center;
+    border: 1px solid #ebedef;
+    border-radius: 1px;
+    color: #545454;
+    margin: 14px 40px;
+}

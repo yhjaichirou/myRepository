@@ -1,0 +1,97 @@
+body {
+	padding-top: 40px;
+	padding-bottom: 40px;
+	/*background-color: #eee;*/
+	background-image: url(../../img/timg.jpg);
+	z-index: -1;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+.form-signin {
+	max-width: 330px;
+	padding: 15px;
+	margin: 0 auto;
+	z-index: 5;
+}
+
+#lzx {
+	z-index: -200;
+	background: rgba(255, 255, 155, 0);
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+.form-signin .checkbox {
+	font-weight: normal;
+	margin: 10px 0px;
+}
+
+.form-signin .form-control {
+	position: relative;
+	height: auto;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 10px;
+	font-size: 16px;
+}
+
+.form-signin .form-control:focus {
+	z-index: 2;
+}
+
+.checkbox div {
+	float: right;
+}
+
+h2 {
+	text-align: left;
+	color: #286090;
+}
+
+.control-group {
+	padding: 10px 20px 0px 0px;
+	width: 420px
+}
+
+.control-group span {
+	font-size: 13px;
+	color: red;
+}
+
+.form-control {
+	display: inline-block;
+	width: 300px
+}
+
+.checkbox {
+	margin-top: 10px
+}
+#dLabel {
+	text-align: center;
+	font-size: 14px;
+	cursor: pointer;
+}
+.dropdown .caret{
+	float: right;
+	color: #666;
+	margin-top: 7px;
+}
+.dropdown ul{
+	width:300px;
+	text-align:center;	
+}
+.dropdown ul li a{
+	color:#444;
+}
+.rem_msg{
+	background: url("../../img/wenhao.png");
+    background-repeat: repeat;
+	background-repeat: no-repeat;
+	font-size: 1.4rem;
+	display: inherit;
+}
