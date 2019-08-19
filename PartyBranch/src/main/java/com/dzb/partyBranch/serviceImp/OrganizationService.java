@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.dzb.partyBranch.kit.JpaUtils;
 import com.dzb.partyBranch.kit.RetKit;
 import com.dzb.partyBranch.model.po.Area;
+import com.dzb.partyBranch.model.po.PartyBranch;
 import com.dzb.partyBranch.repository.IAreaRepository;
 import com.dzb.partyBranch.repository.IEnterPriseRepository;
 import com.dzb.partyBranch.repository.IPartyBranchRepository;
@@ -102,6 +103,11 @@ public class OrganizationService implements IOrganizationService {
 	public RetKit delEnter(Integer id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<PartyBranch> getBranchsByEnters(Integer enterId) {
+		return partyBranchRepository.findAllByEnterpriseId(enterId);
 	}
 
 

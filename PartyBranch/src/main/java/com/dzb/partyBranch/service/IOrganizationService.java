@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import com.dzb.partyBranch.kit.RetKit;
 import com.dzb.partyBranch.model.po.Area;
 import com.dzb.partyBranch.model.po.EnterPrise;
+import com.dzb.partyBranch.model.po.PartyBranch;
 import com.dzb.partyBranch.model.po.Type;
 
 /**
@@ -29,6 +30,8 @@ public interface IOrganizationService {
 	RetKit addOrUpdateEnters(Integer id,String isPrimary,String name);
 	
 	RetKit delEnter(Integer id);
+	
+	List<PartyBranch> getBranchsByEnters(Integer enterId);
 
 	
 

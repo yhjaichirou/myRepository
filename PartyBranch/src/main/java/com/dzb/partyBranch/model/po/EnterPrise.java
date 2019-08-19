@@ -25,8 +25,7 @@ public class EnterPrise implements java.io.Serializable {
 	private Integer typeId;
 	private Integer position;
 	private Integer areaId;
-	
-	private String areaName;
+	private boolean authentication;
 
 	public EnterPrise() {
 		
@@ -95,16 +94,14 @@ public class EnterPrise implements java.io.Serializable {
 	}
 
 
-	public String getAreaName() {
-		return areaName;
+	public boolean isAuthentication() {
+		return authentication;
 	}
 
 
-	public void setAreaName(String areaName) {
-		this.areaName = areaName;
+	public void setAuthentication(boolean authentication) {
+		this.authentication = authentication;
 	}
-
-	
 
 	
 

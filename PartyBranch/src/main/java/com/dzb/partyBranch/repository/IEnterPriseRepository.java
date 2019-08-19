@@ -29,10 +29,10 @@ public interface IEnterPriseRepository extends JpaRepository<EnterPrise, Integer
 	
 	
 	//分页管理
-	@Query(value="SELECT en.*,ty.prop_name,ar.area_name as areaName FROM part_enterprise en left join part_type ty on ty.id = en.type_id "
+	@Query(value="SELECT en.*,ty.prop_name,ar.area_name as areaName,ar.primaryall FROM part_enterprise en left join part_type ty on ty.id = en.type_id "
 			+ " left join part_area ar on ar.id = en.area_id  WHERE ty.id=:typeId AND ar.id=:areaId limit :start,:end  " ,nativeQuery=true)
 	List<Map<String, Object>> getPageData(@Param("typeId")Integer typeId,@Param("areaId")Integer areaId,@Param("start")Integer start,@Param("end")Integer end);
-	@Query(value="SELECT en.*,ty.prop_name,ar.area_name as areaName FROM part_enterprise en left join part_type ty on ty.id = en.type_id "
+	@Query(value="SELECT en.*,ty.prop_name,ar.area_name as areaName,ar.primaryall FROM part_enterprise en left join part_type ty on ty.id = en.type_id "
 			+ " left join part_area ar on ar.id = en.area_id  limit :start,:end  " ,nativeQuery=true)
 	List<Map<String, Object>> getPageData(@Param("start")Integer start,@Param("end")Integer end);
 	

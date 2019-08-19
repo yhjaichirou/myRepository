@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.dzb.partyBranch.kit.RetKit;
 import com.dzb.partyBranch.model.po.Area;
+import com.dzb.partyBranch.model.po.PartyBranch;
 import com.dzb.partyBranch.service.IConstructionService;
 import com.dzb.partyBranch.service.IOrganizationService;
 
@@ -57,6 +58,7 @@ public class OrganizationController {
 	}
 
 	/**
+	 * 
 	 * 单位管理入口
 	 * @return
 	 */
@@ -82,12 +84,14 @@ public class OrganizationController {
 	}
 
 	@RequestMapping("area/addorupdate")
+	@ResponseBody
 	public RetKit addOrUpdate(Integer id, HttpServletRequest request, HttpServletResponse response) {
 		String isPrimary = request.getParameter("isPrimary");
 		String name = request.getParameter("name");
 		return service.addOrUpdate(id, isPrimary, name);
 	}
 	@RequestMapping("area/del")
+	@ResponseBody
 	public RetKit delArea(Integer id, HttpServletRequest request, HttpServletResponse response) {
 		return service.delArea(id);
 	}
@@ -106,14 +110,22 @@ public class OrganizationController {
 	}
 
 	@RequestMapping("enterprise/addorupdate")
+	@ResponseBody
 	public RetKit addOrUpdateEnters(Integer id, HttpServletRequest request, HttpServletResponse response) {
 		String isPrimary = request.getParameter("isPrimary");
 		String name = request.getParameter("name");
 		return service.addOrUpdateEnters(id, isPrimary, name);
 	}
 	@RequestMapping("enterprise/del")
+	@ResponseBody
 	public RetKit delEnter(Integer id, HttpServletRequest request, HttpServletResponse response) {
 		return service.delEnter(id);
+	}
+	
+	@RequestMapping("enterprise/getBranchsByEnters")
+	@ResponseBody
+	public List<PartyBranch> getBranchsByEnters(Integer enterId) {
+		return service.getBranchsByEnters(enterId);
 	}
 	
 	

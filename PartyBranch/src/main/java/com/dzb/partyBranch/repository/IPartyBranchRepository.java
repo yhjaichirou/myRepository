@@ -24,7 +24,7 @@ public interface IPartyBranchRepository extends JpaRepository<PartyBranch, Integ
 	
 	List<PartyBranch> findAll();
 	
-	
+	List<PartyBranch> findAllByEnterpriseId(Integer enterId);
 	
 	@Query(value="SELECT id,part_name as partName, enterprise_id as enterpriseId  "
 			+ "FROM part_branch WHERE enterprise_id=:enterpriseId",
