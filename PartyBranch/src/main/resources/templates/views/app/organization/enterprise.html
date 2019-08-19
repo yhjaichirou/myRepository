@@ -10,6 +10,21 @@
 .layui-laypage-skip button:hover{
 	opacity: .8;
 }
+.layui-zj-cloumn{
+	margin: 5px;
+width: auto;
+border-radius: 10px;
+background-color: #89719d;
+color: white;
+display: inline-block;
+padding: 2px;
+}
+.hidden{
+	display:none;
+}
+.goAuthent:hover{
+	color:blue;
+}
 </style>
 <body>
 
@@ -65,6 +80,8 @@
 
 				<div class="layui-table-page"></div>
 			</div>
+			
+			
 		</div>
 		
 		<!-- 增加修改页面 -->
@@ -83,13 +100,13 @@
 	    $ = layui.jquery,
 	    laypage = layui.laypage;
 		
+		var currPageUrl = "/organization/";
 		
 		//监听头工具
 		 table.on('toolbar(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
 			  var data = obj.data; //获得当前行数据
 			  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
 			  var tr = obj.tr; //获得当前行 tr 的DOM对象
-			  console.log(obj)
 			  if(layEvent === 'add'){ //查看
 			    //do somehing
 				  addOrUpdata(null);
@@ -104,7 +121,6 @@
 		//监听行工具事件
 		  table.on('tool(test)', function(obj){
 		    var data = obj.data;
-		    console.log(data)
 		    if(obj.event === 'del'){
 		      layer.confirm('确定删除么', function(index){
 		    	  addOrUpdata(data);
@@ -112,6 +128,9 @@
 		      });
 		    } else if(obj.event === 'edit'){
 		    	 addOrUpdata(data);
+		    } else if(obj.event === 'goAuthent'){
+		    	//去认证单位
+		    	
 		    }
 		  });
 		 
@@ -130,6 +149,18 @@
 			      <input type="checkbox" name="isPrimary" lay-skin="switch">
 			    </div>
 			  </div>
+			  
+			  <div class="layui-form-item layui-form-text" >
+			    <label class="layui-form-label">支部数量</label>
+			    <div class="layui-input-block">
+			    	<div class="department_num" style="display:inline-block;line-height: 35px;margin:0px 5px"></div>
+			  		<a class="layui-btn layui-btn-xs dum_detail" style="padding:0px 4px;border-radius: 5px;">详情<i class="layui-icon layui-icon-down" style="margin-left: 5px;line-height: 20px;"></i></a>
+			    </div>
+			    <div class="layui-input-block detail_content hidden" >暂无内容</div>
+			   
+			  </div>
+			  
+			  
 			   <input type="text" name="id" value="" hidden="hidden">
 	    	  <div class="layui-input-block">
 					<button  class="layui-btn submit" lay-submit="" lay-filter="submit">立即提交</button>
@@ -144,24 +175,50 @@
 		 function addOrUpdata(object){//1:add  2:updata
 		    	var aoru = layer.open({
 		        	  type: 1 //Page层类型
-		        	  ,area: ['400px', '280px']
+		        	  ,area: ['80%', '100%']
 		        	  ,title: object!=null?'编辑':'新增'
 		        	  ,shade: 0.6 //遮罩透明度
 		        	  ,maxmin: true //允许全屏最小化
 		        	  ,anim: 0 //0-6的动画形式，-1不开启
 		        	  ,success:function(){
-		        		  //form.render();
 		        			$("#back").click(function(){	
 								layer.close(aoru);
 							});
 							if(object!=null){
-								$("input[name='id']").val();
-		        		  		$("input[name='name']").val();
-		        		  		$("input[name='isPrimary']").checked=true;
+								$("input[name='id']").val(object.id);
+		        		  		$("input[name='name']").val(object.name);
+		        		  		$(".department_num").html(object.department_num);
+		        		  		$("input[name='isPrimary']").attr("checked",object.primaryall);
 		        		  	}
+							$(".dum_detail").click(function(){
+								var enterId = $("input[name='id']").val();
+								$.ajax({
+									url:"/dzb/organization/enterprise/getBranchsByEnters",
+									data:{"enterId":enterId},
+									type:"post",
+									success:function(res){
+										var html =``; 
+										$.each(res,function(k,v){
+											html += `<div class="layui-zj-cloumn" v_id="${v.id}">${v.partName}</div>`;
+										})
+										$(".detail_content").html(html);
+									}
+								})
+								if($(".detail_content").hasClass("hidden")){
+									$(this).find("i").removeClass("layui-icon-down");
+									$(this).find("i").addClass("layui-icon-up");
+									$(".detail_content").removeClass("hidden");
+								}else{
+									$(this).find("i").removeClass("layui-icon-up");
+									$(this).find("i").addClass("layui-icon-down");
+									$(".detail_content").addClass("hidden");
+								}
+							});
+						 	form.render();
 		        	  }
 		        	  ,content: addOrUphtml(object)
 		        	}); 
+		 		
 		    	//layer.full(aoru);
 		  }
 		 
@@ -169,17 +226,17 @@
 		    form.verify({
 		        name: function(value){
 		            if(!value || value==null || value ==""){
-		                return '标题至少得5个字符啊';
+		                return '名称不能为空';
 		            }
 		        }
-		        ,pcId:  function(value){
+		       /*  ,pcId:  function(value){
 		            if(value==0){
 		                return '请选择所属系统';
 		            }
 		        }
 		        ,content: function(value){
 		            return value==""?"内容不能为空":null;
-		        }
+		        } */
 		    });
 		    
 		    //监听提交
@@ -200,7 +257,7 @@
     				success:function(data){
     					if(data.code ==200){
     						layer.closeAll();
-    						tree.render();
+    						table.reload("test", {}); //表格重载
     					}
     					else{
     						layer.msg(data.msg, {
@@ -247,6 +304,9 @@
 			      ,{field:'prop_name', title: '性质'}
 			      ,{field:'position', title: '地点'}
 			      ,{field:'areaName', title: '所属区域'}
+			      ,{field:'authentication', title: '是否认证',templet:function(res){
+			    	  return res.authentication?'已认证':'<a class="goAuthent" href="#" v_id="'+res.id+'" lay-event="goAuthent">未认证</a>';
+			      }}
 			      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
 			    	]
 			    ],

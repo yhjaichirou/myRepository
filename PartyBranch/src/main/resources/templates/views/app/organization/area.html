@@ -83,7 +83,6 @@
 			  var data = obj.data; //获得当前行数据
 			  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
 			  var tr = obj.tr; //获得当前行 tr 的DOM对象
-			  console.log(obj)
 			  if(layEvent === 'add'){ //查看
 			    //do somehing
 				  addOrUpdata(null);
@@ -98,7 +97,6 @@
 		//监听行工具事件
 		  table.on('tool(test)', function(obj){
 		    var data = obj.data;
-		    console.log(data)
 		    if(obj.event === 'del'){
 		      layer.confirm('确定删除么', function(index){
 		    	  addOrUpdata(data);
@@ -145,14 +143,15 @@
 		        	  ,anim: 0 //0-6的动画形式，-1不开启
 		        	  ,success:function(){
 		        		  //form.render();
-		        			$("#back").click(function(){	
+		        			$("#back").click(function(){
 								layer.close(aoru);
 							});
 							if(object!=null){
-								$("input[name='id']").val();
-		        		  		$("input[name='name']").val();
-		        		  		$("input[name='isPrimary']").checked=true;
+								$("input[name='id']").val(object.id);
+		        		  		$("input[name='name']").val(object.areaName);
+		        		  		$("input[name='isPrimary']").attr("checked",object.primaryall);
 		        		  	}
+							form.render();
 		        	  }
 		        	  ,content: addOrUphtml(object)
 		        	}); 
@@ -163,17 +162,17 @@
 		    form.verify({
 		        name: function(value){
 		            if(!value || value==null || value ==""){
-		                return '标题至少得5个字符啊';
+		                return '标题不能为空';
 		            }
 		        }
-		        ,pcId:  function(value){
+		       /*  ,pcId:  function(value){
 		            if(value==0){
 		                return '请选择所属系统';
 		            }
 		        }
 		        ,content: function(value){
 		            return value==""?"内容不能为空":null;
-		        }
+		        } */
 		    });
 		    
 		    //监听提交
@@ -194,7 +193,7 @@
     				success:function(data){
     					if(data.code ==200){
     						layer.closeAll();
-    						tree.render();
+    						table.reload("test", {}); //表格重载
     					}
     					else{
     						layer.msg(data.msg, {
@@ -236,20 +235,13 @@
 		      {field:'id', width:80,  title: 'ID', sort: true}
 		      ,{field:'cityId',  title: '城市'}
 		      ,{field:'areaName',  title: '区域名称'}
-		      ,{field:'primaryall',  title: '是否区域中心 '      ,templet: function(d){
-		    	  var html='';
-		    	  if(d.primaryall==true){
-		    		  html= '<i class="layui-icon layui-icon-ok"></i>';
-		    	  }else{
-		    		  html= '<i class="layui-icon layui-icon-close"></i>';
-		    	  }
-		          return html;
+		      ,{field:'primaryall',  title: '是否区域中心 ' ,templet: function(d){
+		          return d.primaryall?'<i class="layui-icon layui-icon-ok"></i>':'<i class="layui-icon layui-icon-close"></i>';
 		      }}
 		      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
 		    	]
 		    ],
 		    parseData:function(res){
-		    	console.log(res);
 		    },
 		    request: {
 		        pageName: 'page' //页码的参数名称，默认：page
