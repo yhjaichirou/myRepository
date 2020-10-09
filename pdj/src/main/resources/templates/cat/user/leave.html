@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="template::cmsHeader(后台用户管理)"></head>
+<style>
+.layui-rate {
+	padding: 0px;
+}
+.layui-form-selected dl{
+	max-height:180px;
+}
+</style>
+<body>
+
+	<div class="layui-fluid">
+		<div class="layui-card">
+			
+			<div class="layui-card-body">
+				<table class="layui-table" id="LAY-user-back-role"
+					lay-filter="LAY-user-back-role">
+				</table>
+
+				<script type="text/html" id="toolbarDemo">
+                    <div class="layui-btn-container">
+ 						<button class="layui-btn layui-btn-sm" lay-event="dedeleteAllls" id="deleteAll">删除</button>
+  					</div>
+				</script>
+
+<!-- 	 <button class="layui-btn layui-btn-sm" lay-event="batchdel" id="batchdel">删除</button> -->
+				<script type="text/html" id="barDemo">
+  					<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="back"><i class="layui-icon layui-icon-edit"></i>回复</a>
+					<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+				</script>
+				
+				
+			</div>
+		</div>
+	</div>
+
+	<!-- 模板js -->
+	<div th:replace="template::commonJs"></div>
+	<script th:inline="javascript" type="text/javascript">
+	
+	//var loginUserId = [[${session.loginUser.id}]];
+  layui.use(['table',"form","rate"], function(){
+    var $ = layui.$
+    ,form = layui.form
+    ,table = layui.table,
+    rate = layui.rate;
+	var currPageUrl = "/user/";
+
+    render();
+    function render(){
+		table.render({
+		    elem: '#LAY-user-back-role'
+		    ,url:contextPath+currPageUrl+'leave/getLeaveList'
+		    ,toolbar: '#toolbarDemo'
+		    ,page:true
+		    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+		/*     ,where:{
+		    	enterId:enterId
+		    } */
+		    ,cols: [
+		    	[
+		    		{type:"checkbox"}
+		      ,{title: '序号',templet: '#xuhao',width:"7%"}
+		      ,{field:'name',title: '昵称'}
+		      ,{field:'account',title: '用户名'}
+		      ,{field:'leContent',title: '联系方式'}
+		      ,{field:'leBackMsg',title: '留言内容'}
+		      ,{field:'leImg',title: '留言图片',templet:function(r){
+		    	  return r.leImg==""?"":`<img src="${r.leImg}" style="width:40px" onerror="onerror=null;src='${contextPath}/image/error.png'"/>`;
+		      }}
+		      ,{field:'leBackMsg',title: '回复内容'}
+		      ,{field:'createTime',title: '创建时间',templet:function(r){
+		    	  return dateFormatyMdhms(new Date(r.createTime));
+		      }}
+		      ,{fixed: 'right', title:'操作', toolbar: '#barDemo' ,width:"15%"}
+		    	]
+		    ],
+		    parseData:function(res){
+		    	 
+		    },
+		    request: {
+		        pageName: 'page' //页码的参数名称，默认：page
+		        ,limitName: 'limit' //每页数据量的参数名，默认：limit
+		    },
+		    //完成回调
+		     done:function(res,curr1,count){
+		    	 console.log(res)
+		    	/*  //限制显示
+		    	 var that = this.elem.next();
+		             res.data.forEach(function (item, index) {
+			                if (item.roleId==1 && loginRoleId !=1) {
+			                    var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color", "#eee");
+			                    that.find(".layui-table-box tbody tr[data-index='" + index + "']").find("td:first-child>div").html("");
+			                    that.find(".layui-table-box tbody tr[data-index='" + index + "']").find("td:last-child>div").html("");
+			                } 
+			                if (loginUserId == item.id) {
+			                    var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color", "#eee");
+			                    that.find(".layui-table-box tbody tr[data-index='" + index + "']").find("td:first-child>div").html("");
+			                    that.find(".layui-table-box tbody tr[data-index='" + index + "']").find("td:last-child>div>.layui-btn:last").hide();
+			                } 
+			         }); */
+		    } 
+		  });
+	}
+    
+  //执行toolbar事件
+	 table.on('toolbar(LAY-user-back-role)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		  var checkStatus = table.checkStatus(obj.config.id);//checkbox 选中的状态
+		  //active[layEvent].call(this);
+		  if(layEvent === 'add'){ //查看
+			  addOrUpdate(null);//新增系统管理员
+		  }else if(layEvent === 'dels'){
+			  if(checkStatus.data.length==0){
+					//layer.msg('请选择数据');//layer.tips('选项为空', '#deleteAll');
+					layer.tips('选项为空', '#deleteAll');
+				}else{
+					 var arr = [];
+				      for(column of checkStatus.data ){
+				    	  arr.push(column.id);
+				      }
+					del(arr);
+				}
+		  }
+	});
+	//监听行工具事件
+	  table.on('tool(LAY-user-back-role)', function(obj){
+	    var data = obj.data;
+	    if(obj.event === 'back'){
+	    	 back(data.id);
+	    }else if(layEvent === 'del'){
+			 del(data.id);
+		  }
+	  });
+	  function back(id){
+		  layer.open({
+				title: '',
+				content: `<textarea name="backMsg" placeholder="请输入内容" class="layui-textarea"></textarea>`,
+				yes:function(){
+					$.post(contextPath+currPageUrl+"leave/back",{"id":id,"backMsg":$("textarea[name='backMsg']").val()},function(rt){
+			    		  if(rt.code==200){
+			    	          table.reload('LAY-user-back-role',{});
+			    	          layer.msg(rt.msg);
+			    		  }else{
+							  layer_msg(4,rt.msg);
+						  }
+			    	});
+				}
+		  });  
+	 }
+
+	  function del(ids){
+			 layer.confirm('确定删除么', function(index){
+			      layer.close(index);
+			      //向服务端发送删除指令
+			     $.post(contextPath+currPageUrl+"leave/del",{"ids":JSON.stringify(ids)},function(rt){
+	      		  if(rt.code==200){
+	      	          table.reload('LAY-user-back-role',{});
+	      	          layer.msg('已删除');
+	      		  }else{
+						layer_msg(4,rt.msg);
+					}
+	      	    });
+			 }); 
+		}
+
+  });
+  </script>
+</body>
+</html>

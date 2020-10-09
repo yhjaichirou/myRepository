@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="template::cmsHeader(用户管理)"></head>
+<style>
+.search {
+	padding: 20px 10px 10px;
+}
+
+.layui-input-inline input {
+	width: 186px;
+}
+
+.search-li {
+	margin-bottom: 10px;
+}
+
+#goSearch {
+	margin-left: 10px;
+}
+</style>
+<body>
+
+	<div class="layui-fluid">
+		<div class="layui-card">
+
+			<div class="search layui-form layui-row">
+				<div class="search-li layui-col-xs6 layui-col-sm6 layui-col-md4">
+					<label class="layui-form-label">用户名</label>
+					<div class="layui-input-inline">
+						<input type="text" name="account" placeholder="请输入用户名"
+							autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="search-li layui-col-xs6 layui-col-sm6 layui-col-md4">
+					<label class="layui-form-label">推荐人</label>
+					<div class="layui-input-inline">
+						<input type="text" name="recommend" placeholder="请输入推荐人手机号"
+							autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="search-li layui-col-xs6 layui-col-sm6 layui-col-md4">
+					<label class="layui-form-label">级别</label>
+					<div class="layui-input-inline">
+						<select name="level" lay-verify="required">
+							<option value=""></option>
+							<option value="0">普通</option>
+							<option value="1">vip</option>
+							<option value="2">至尊</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="search-li layui-col-xs6 layui-col-sm6 layui-col-md4">
+					<label class="layui-form-label">认证状态</label>
+					<div class="layui-input-inline">
+						<select name="auth" lay-verify="required">
+							<option value=""></option>
+							<option value="0">未认证</option>
+							<option value="1">已认证</option>
+							<option value="2">待认证</option>
+							<option value="3">认证失败</option>
+						</select>
+					</div>
+				</div>
+				<div class="search-li layui-col-xs6 layui-col-sm6 layui-col-md4">
+					<label class="layui-form-label">激活状态</label>
+					<div class="layui-input-inline">
+						<select name="enable" lay-verify="required">
+							<option value=""></option>
+							<option value="0">未激活</option>
+							<option value="1">激活</option>
+						</select>
+					</div>
+				</div>
+				<div class="search-li layui-col-xs6 layui-col-sm6 layui-col-md4">
+					<label class="layui-form-label">锁定状态</label>
+					<div class="layui-input-inline">
+						<select name="lock" lay-verify="required">
+							<option value=""></option>
+							<option value="0">未锁定</option>
+							<option value="1">锁定</option>
+						</select>
+					</div>
+				</div>
+				<div class="search-li layui-col-xs6 layui-col-sm6 layui-col-md4">
+					<button type="button" class="layui-btn layui-btn-normal"
+						id="goSearch">搜索</button>
+				</div>
+			</div>
+
+
+			<div class="layui-card-body">
+				<table class="layui-table" id="LAY-user-back-role"
+					lay-filter="LAY-user-back-role">
+				</table>
+
+				<script type="text/html" id="toolbarDemo">
+                    <div class="layui-btn-container">
+ 						<button class="layui-btn layui-btn-sm" lay-event="deleteAll" id="deleteAll">删除</button>
+  					</div>
+				</script>
+				<!-- <button class="layui-btn layui-btn-sm" lay-event="dels" id="batchdel">删除</button>
+					 	<button class="layui-btn layui-btn-sm" lay-event="add" >新增商品</button>
+					 	 -->
+				<!-- 	 <button class="layui-btn layui-btn-sm" lay-event="batchdel" id="batchdel">删除</button> -->
+				<script type="text/html" id="barDemo">
+  					<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+				</script>
+
+
+			</div>
+		</div>
+	</div>
+
+	<!-- 模板js -->
+	<div th:replace="template::commonJs"></div>
+	<script th:inline="javascript" type="text/javascript">
+	
+	//var loginUserId = [[${session.loginUser.id}]];
+  layui.use(['table',"form","rate"], function(){
+    var $ = layui.$
+    ,form = layui.form
+    ,table = layui.table,
+    rate = layui.rate;
+	var currPageUrl = "/user/";
+
+	$("#goSearch").click(function(){
+		var account = $("input[name='account']").val(),
+		recommendUser=$("input[name='recommend']").val(),
+		isAuth=$("select[name='auth']").val(),
+		isEnabled=$("select[name='enable']").val(),
+		isLock=$("select[name='lock']").val(),
+		level=$("select[name='level']").val();
+		console.log(account)
+		console.log(recommendUser)
+		console.log(isAuth)
+		console.log(isEnabled)
+		render(account,recommendUser,isAuth,isEnabled,isLock,level);
+	});
+	
+	function Auth(id,status){
+		 $.post(contextPath+currPageUrl+'list/isAuth',{'id':id,'status':status},function(result){
+			  if(result.code==200){
+				  layer.closeAll();
+				  table.reload("LAY-user-back-role");
+				  layer.msg(result.msg);
+			  }else{
+				  layer_msg(4,result.msg);
+			  }
+		  });
+	}
+	
+    render();
+    function render(account,recommendUser,isAuth,isEnabled,isLock,level){
+    	console.log(account)
+		console.log(recommendUser)
+		console.log(isAuth)
+		console.log(isEnabled)
+		table.render({
+		    elem: '#LAY-user-back-role'
+		    ,url:contextPath+currPageUrl+'list/getUserList'
+		    ,toolbar: '#toolbarDemo'
+		    ,page:true
+		    ,cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+		    ,where:{
+		    	'account':account,
+		    	'recommendUser':recommendUser,
+		    	'isAuth':isAuth,
+		    	'isEnabled':isEnabled,
+		    	'isLock':isLock,
+		    	'level':level
+		    }
+		    ,cols: [
+		    	[
+		    		{type:"checkbox"}
+		      ,{title: '序号',templet: '#xuhao', width:80}
+		      ,{field:'account',title: '用户名'}
+		      ,{field:'rename',title: '昵称'}
+		      ,{field:'recommendCode',title: '推荐码'}
+		      ,{field:'recommendUser',title: '推荐人'}
+		      ,{field:'level',title: '用户等级',templet:function(r){
+		    	  return r.level==0?"普通":r.level==1?"VIP":"至尊";
+		      }}
+		      ,{field:'integral',title: '购物币'}
+		      ,{field:'shopbi',title: '购物积分'}
+		      
+		      ,{field:'food',title: '猫粮'}
+		      ,{field:'commission',title: '佣金'}
+		      ,{field:'contract',title: '合约收益'}
+		      ,{field:'name',title: '真是姓名'}
+		      ,{field:'idcard',title: '身份证号'}
+		      ,{field:'createTime',title: '创建时间',templet:function(r){
+		    	  return dateFormatyMdhms(new Date(r.createTime));
+		      }}
+		      ,{field:'isAuth',fixed: 'right',title: '认证状态',templet:function(r){
+		    	  var html = ``;
+		    	  if(r.isAuth ==2){
+		    		  html = `<button type="button" class="layui-btn layui-btn-xs isAuth"  _id="${r.id}" >认证</button>`;
+		    	  }else if(r.isAuth ==0){
+		    		  html=`<span>未认证</span>`;
+		    	  }else if(r.isAuth ==1){
+		    		  html=`<span>已认证</span>`;
+		    	  }else if(r.isAuth ==3){
+		    		  html=`<span>已拒绝</span>`;
+		    	  }
+		    	  return html;
+		      }}
+		      /* ,{field:'isAuth',title: '是否有效'} */
+		      ,{field:'isNew',fixed: 'right',title: '新用户',hide:true, templet:function(r){
+		    	  return r.isNew==1?`<span>是</span>`:`<span>否</span>`;
+		      }}
+		      ,{field:'isEnabled',fixed: 'right',title: '激活状态',templet:function(r){
+		    	  var checked = r.isEnabled==1?"checked=''":"";
+		    	  var html = `
+		    		  <input type="checkbox" ${checked} data-id="${r.id}" lay-skin="switch" lay-text="激活|未激活" lay-filter="isEnabled" value="1">
+		    	  `;
+		    	  
+		    	  return html;
+		      }}
+		      ,{field:'isLock',fixed: 'right',title: '是否锁定',templet:function(r){
+		    	  var checked = r.isLock==1?"checked=''":"";
+		    	  var html = `
+		    		  <input type="checkbox" ${checked} name="isLock" data-id="${r.id}" lay-skin="switch" lay-text="锁定|解锁" lay-filter="isLock" value="1">
+		    	  `;
+		    	  return html;
+		      }}
+		     
+		      ,{fixed: 'right', title:'操作', toolbar: '#barDemo' ,width:"160"}
+		    	]
+		    ],
+		    parseData:function(res){
+		    	 
+		    },
+		    request: {
+		        pageName: 'page' //页码的参数名称，默认：page
+		        ,limitName: 'limit' //每页数据量的参数名，默认：limit
+		    },
+		    //完成回调
+		     done:function(res,curr1,count){
+		    	 form.render();
+		    	 
+		    	 $(".isAuth").click(function(){
+		    		 var id = $(this).attr("_id");
+		    		 layer.open({
+	    				  title: '认证',
+	    				  btn:["通过","拒绝"],
+	    				  content: '是否通过该人员的认证？',
+	    				  btn1:function(){
+	    					  Auth(id,1);
+	    				  },
+	    				  btn2:function(){
+	    					  Auth(id,3);
+	    				  }
+	    			 }); 
+		    		
+		    	 });
+		    	form.on('switch(isEnabled)', function(data){
+		    		 $.post(contextPath+currPageUrl+'list/isEnabled',{id:$(data.elem).attr("data-id"),status:data.elem.checked?1:0},function(result){
+		    			 table.reload("LAY-user-back-role");
+		    			  layer.msg(result.msg);
+		    		  });
+		    	}); 
+		    	form.on('switch(isLock)', function(data){
+		    		 $.post(contextPath+currPageUrl+'list/isLock',{id:$(data.elem).attr("data-id"),status:data.elem.checked?1:0},function(result){
+		    			 table.reload("LAY-user-back-role");
+		    			  layer.msg(result.msg);
+		    		  });
+		    	});  
+		    	 
+		    	/*  //限制显示
+		    	 var that = this.elem.next();
+		             res.data.forEach(function (item, index) {
+			                if (item.roleId==1 && loginRoleId !=1) {
+			                    var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color", "#eee");
+			                    that.find(".layui-table-box tbody tr[data-index='" + index + "']").find("td:first-child>div").html("");
+			                    that.find(".layui-table-box tbody tr[data-index='" + index + "']").find("td:last-child>div").html("");
+			                } 
+			                if (loginUserId == item.id) {
+			                    var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color", "#eee");
+			                    that.find(".layui-table-box tbody tr[data-index='" + index + "']").find("td:first-child>div").html("");
+			                    that.find(".layui-table-box tbody tr[data-index='" + index + "']").find("td:last-child>div>.layui-btn:last").hide();
+			                } 
+			         }); */
+		    } 
+		  });
+	}
+	
+ 
+    //执行toolbar事件
+	 table.on('toolbar(LAY-user-back-role)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		  var checkStatus = table.checkStatus(obj.config.id);//checkbox 选中的状态
+		  //active[layEvent].call(this);
+		  if(layEvent === 'add'){ //查看
+			  addOrUpdate(null);//新增系统管理员
+		  }else if(layEvent === 'deleteAll'){ //删除
+				if(checkStatus.data.length==0){
+					//layer.msg('请选择数据');//layer.tips('选项为空', '#deleteAll');
+					layer.tips('选项为空', '#deleteAll');
+				}else{
+					 var arr = [];
+				      for(column of checkStatus.data ){
+				    	  arr.push(column.id);
+				      }
+					del(arr);
+				}
+		   } 
+	});
+	//监听行工具事件
+	  table.on('tool(LAY-user-back-role)', function(obj){
+	    var data = obj.data;
+	    if(obj.event === 'del'){
+	    	 del([data.id]);
+	    } else if(obj.event === 'edit'){
+	    	var type = 1;
+	    	if(data.enterpriseId==0){//系统管理员或者超管
+	    		type = 2;
+	    	}
+	    	addOrUpdate(data);
+	    	 //active.add(data);
+	    }
+	  });
+	  function del(ids){
+			 layer.confirm('确定删除么', function(index){
+			      layer.close(index);
+			      //向服务端发送删除指令
+			     $.post(contextPath+currPageUrl+"list/del",{"ids":JSON.stringify(ids)},function(rt){
+	      		  if(rt.code==200){
+	      	          table.reload('LAY-user-back-role',{});
+	      	          layer.msg('已删除');
+	      		  }else{
+						layer_msg(4,rt.msg);
+					}
+	      	    });
+			 }); 
+		}
+
+    form.verify({
+    	  //数组的两个值分别代表：[正则匹配、匹配不符时的提示文字]
+    	  userName: [
+    		  /(?!^\d+$)(?!^[a-zA-Z]+$)[0-9a-zA-Z]{4,23}/	
+    	    ,'请输入数字和字母组合'
+    	  ] ,
+    	 /*  remarkName: [
+    		  /(?!^\d+$)(?!^[a-zA-Z]+$)[0-9a-zA-Z]{4,23}/
+     	    ,'请输入数字和字母组合'
+     	  ] , */
+     	  pwd: [
+     		 /(?!^\d+$)(?!^[a-zA-Z]+$)[0-9a-zA-Z]{4,23}/
+    	    ,'请输入数字和字母组合'
+    	  ] ,
+    }); 
+    
+  
+
+
+  });
+  </script>
+</body>
+</html>

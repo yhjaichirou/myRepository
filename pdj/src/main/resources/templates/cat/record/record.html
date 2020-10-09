@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="template::cmsHeader(记录)"></head>
+<style>
+.layui-rate {
+	padding: 0px;
+}
+.layui-form-selected dl{
+	max-height:180px;
+}
+</style>
+<body>
+
+	<div class="layui-fluid">
+		<div class="layui-card">
+			
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">活动日期：</label>
+						<div class="layui-input-inline">
+							<input type="text" name="startTime" id="startTime"
+								class="layui-input" placeholder="之后">
+						</div>
+						<div class="layui-form-mid layui-word-aux">~</div>
+						<div class="layui-input-inline">
+							<input type="text" name="endTime" id="endTime"
+								class="layui-input" placeholder="之前">
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">类型：</label>
+						<div class="layui-input-inline">
+							<select name="type" lay-filter="type">
+								<option value="">请选择</option>
+								<option value="1">类型1</option>
+								<option value="2">类型2</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">状态：</label>
+						<div class="layui-input-inline">
+							<select name="status" lay-filter="status">
+								<option value="">请选择</option>
+								<option value="0">未完成</option>
+								<option value="1">已完成</option>
+								<option value="2">已过期</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<button class="layui-btn layui-btn-fluid search">搜索</button>
+					</div>
+				</div>
+			</div>
+			
+			<div class="layui-card-body">
+				<table class="layui-table" id="LAY-user-back-role"
+					lay-filter="LAY-user-back-role">
+				</table>
+
+				<script type="text/html" id="toolbarDemo">
+                    <div class="layui-btn-container">
+ 						
+  					</div>
+				</script>
+
+<!-- 	 <button class="layui-btn layui-btn-sm" lay-event="batchdel" id="batchdel">删除</button> -->
+				<script type="text/html" id="barDemo">
+
+				</script>
+				
+				
+			</div>
+		</div>
+	</div>
+
+	<!-- 模板js -->
+	<div th:replace="template::commonJs"></div>
+	<script th:inline="javascript" type="text/javascript">
+	
+	//var loginUserId = [[${session.loginUser.id}]];
+  layui.use(["laypage","laydate","table","form","rate"], function(){
+    var $ = layui.$
+    ,form = layui.form
+    ,table = layui.table,
+    laydate = layui.laydate,
+    laypage = layui.laypage;
+    rate = layui.rate;
+	var currPageUrl = "/record/";
+	
+	
+	 laydate.render({
+		elem: '#startTime' //指定元素
+	});
+	laydate.render({
+		elem: '#endTime' //指定元素
+	}); 
+	
+	$(".search").click(function(){
+		var values = {
+				startTime:$("input[name='startTime']").val(),
+				endTime:$("input[name='endTime']").val(),
+				status:$("select[name='status']").val(),
+				type:$("select[name='type']").val()
+			}
+		console.log(values)
+		render(values);
+	});
+	
+	
+    render();
+    function render(value){
+		table.render({
+		    elem: '#LAY-user-back-role'
+		    ,url:contextPath+currPageUrl+'record/getRecordList'
+		    ,toolbar: '#toolbarDemo'
+		    ,page:true
+		    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+			,where:value
+		    ,cols: [
+		    	[
+		      {title: '序号',templet: '#xuhao' ,width:60}
+		      ,{field:'recordCode',title: '记录编号'}
+		      ,{field:'type',title: '记录类型',templet:function(r){
+		    	  var statusStr = "";
+		    	  switch(r.type){
+		    	  case 1:
+		    		  statusStr="购物收益";
+		    		  break;
+		       	  case 2:
+		       		  statusStr="一级收益"
+		    		  break; 
+		    	  }
+		    	  return statusStr;
+		      }}
+		      ,{field:'status',title: '状态',templet:function(r){
+		    	  var statusStr = "";
+		    	  switch(r.status){
+		    	  case 0:
+		    		  statusStr="未完成";
+		    		  break;
+		    	  case 1:
+		    		  statusStr="完成";
+		    		  break;
+		       	  case 2:
+		       		  statusStr="支出"
+		    		  break; 
+		    	  }
+		    	  return statusStr;
+		      }}
+		      ,{field:'remark',title: '备注'}
+		      ,{field:'createTimeStr',title: '上报时间'}
+		      ,{fixed: 'right', title:'操作', width:150, templet:function(r){
+			    	 var toolBar = "";
+			    	 toolBar+= `<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>`;
+			    	 if(r.status==0){
+			    		 toolBar+= `<a class="layui-btn layui-btn-xs" lay-event="upload">上报</a>`;
+			    	 }
+			    	 return toolBar;  
+			      }}
+		    	]
+		    ],
+		    parseData:function(res){
+		    	 
+		    },
+		    request: {
+		        pageName: 'page' //页码的参数名称，默认：page
+		        ,limitName: 'limit' //每页数据量的参数名，默认：limit
+		    },
+		 
+		  });
+	}
+	
+    
+    
+    //执行toolbar事件
+/* 	 table.on('toolbar(LAY-user-back-role)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		  //active[layEvent].call(this);
+		  if(layEvent === 'add'){ //查看
+			  addOrUpdate(null);//新增系统管理员
+		  }else if(layEvent === 'del'){
+			  del(null);
+		  }
+	}); */
+	
+	//监听行工具事件
+	  table.on('tool(LAY-user-back-role)', function(obj){
+	    var data = obj.data;
+	    if(obj.event === 'upload'){
+	    	upload(data.id);
+	    }else if(obj.event === 'del'){
+	    	console.log("del!")
+	    }
+	  });
+	function upload(id){
+		$.post(contextPath+currPageUrl+"record/upload",{"id":id},function(rt){
+    		  if(rt.code==200){
+    	          table.reload('LAY-user-back-role',{});
+    	          layer.msg(rt.msg);
+    		  }else{
+				  layer_msg(4,rt.msg);
+			  }
+    	});
+		
+	}
+
+  });
+  </script>
+</body>
+</html>
