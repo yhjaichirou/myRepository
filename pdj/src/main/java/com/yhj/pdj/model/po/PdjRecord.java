@@ -36,6 +36,11 @@ public class PdjRecord {
 	private String account;
 	private String createTimeStr;
 	
+	private String pf;
+	private String apprate;//评价级别
+	private String mouldAp;//评价选项
+	private String apprateDetail;//评价详情
+	
 	public Integer getId() {
 		return id;
 	}
@@ -173,6 +178,30 @@ public class PdjRecord {
 	}
 	public void setProManager(String proManager) {
 		this.proManager = proManager;
+	}
+	public String getPf() {
+		return pf;
+	}
+	public void setPf(String pf) {
+		this.pf = pf;
+	}
+	public String getApprate() {
+		return apprate;
+	}
+	public void setApprate(String apprate) {
+		this.apprate = apprate;
+	}
+	public String getApprateDetail() {
+		return apprateDetail;
+	}
+	public void setApprateDetail(String apprateDetail) {
+		this.apprateDetail = apprateDetail;
+	}
+	public String getMouldAp() {
+		return mouldAp;
+	}
+	public void setMouldAp(String mouldAp) {
+		this.mouldAp = mouldAp;
 	}
 	
 	
