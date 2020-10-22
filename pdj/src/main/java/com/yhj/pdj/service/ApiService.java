@@ -55,6 +55,47 @@ public class ApiService {
 		}
 		
 	}
+	
+	public String reporting2(PdjRecord pr) {
+		try {
+			//上报好差评系统
+			Map<String, Object> map = new HashMap<>();//BeanKit.objectToMap(pr);
+			map.put("areaId", OtherConstant.areaId);
+			map.put("areaName", OtherConstant.areaName);
+			map.put("taskId", pr.getTaskId());
+			map.put("taskName", pr.getTaskName());
+			map.put("subMatter", pr.getSubMatter());
+
+			map.put("proStatus", pr.getProStatus());
+			map.put("proDepartId", pr.getProDepartId());
+			map.put("proDepart", pr.getProDepart());
+			map.put("proManager", pr.getProManager()); //一窗受理张萌
+			map.put("deptCode", pr.getDeptCode());
+			map.put("userName", pr.getUserName());
+			map.put("userCert", pr.getUserCert());
+			map.put("phonumber", pr.getPhonumber());
+			map.put("taskType", pr.getTaskType());
+			map.put("certType", pr.getCertType());//身份证：111
+			map.put("appId", OtherConstant.appId);
+			
+//			map.put("projectId", "");
+//			map.put("pf", pr.getPf());
+//			map.put("proManagerNo", "");
+//			map.put("useLevel", pr.getUserCert());
+//			map.put("taskHandleItem", "");
+//			map.put("apprate", pr.getApprate());// 评价级别   满意非常满意
+//			map.put("mouldAp", pr.getMouldAp());
+//			map.put("apprateDetail", pr.getApprateDetail());
+			
+			String result = HttpUtil.get(OtherConstant.ReportingUrl, map);
+			log.info(result);
+			return result;
+		} catch (Exception e) {
+			log.error("上报失败！"+e.getMessage());
+			return "";
+		}
+	}
+	
 
 	public RetKit reporting(PdjRecord pr) {
 		try {
@@ -62,25 +103,30 @@ public class ApiService {
 			Map<String, Object> map = new HashMap<>();//BeanKit.objectToMap(pr);
 			map.put("areaId", OtherConstant.areaId);
 			map.put("areaName", OtherConstant.areaName);
-//			map.put("taskId", value);
-//			map.put("taskName", value);
-//			map.put("subMatter", value);
-//			map.put("projectId", value);
-//			map.put("proStatus", value);
-//			map.put("proDepartId", value);
-//			map.put("proDepart", value);
-//			map.put("proManager", value);
-//			map.put("pf", value);
-//			map.put("proManagerNo", value);
-//			map.put("deptCode", value);
+			map.put("taskId", pr.getTaskId());
+			map.put("taskName", pr.getTaskName());
+			map.put("subMatter", pr.getSubMatter());
+
+			map.put("proStatus", pr.getProStatus());
+			map.put("proDepartId", pr.getProDepartId());
+			map.put("proDepart", pr.getProDepart());
+			map.put("proManager", pr.getProManager()); //一窗受理张萌
+			map.put("deptCode", pr.getDeptCode());
+			map.put("userName", pr.getUserName());
+			map.put("userCert", pr.getUserCert());
+			map.put("phonumber", pr.getPhonumber());
+			map.put("taskType", pr.getTaskType());
+			map.put("certType", pr.getCertType());//身份证：111
+			map.put("appId", OtherConstant.appId);
 			
-			
-			
-			
-			
-			
-			
-			
+//			map.put("projectId", "");
+//			map.put("pf", pr.getPf());
+//			map.put("proManagerNo", "");
+//			map.put("useLevel", pr.getUserCert());
+//			map.put("taskHandleItem", "");
+//			map.put("apprate", pr.getApprate());// 评价级别   满意非常满意
+//			map.put("mouldAp", pr.getMouldAp());
+//			map.put("apprateDetail", pr.getApprateDetail());
 			
 			String result = HttpUtil.get(OtherConstant.ReportingUrl, map);
 			String errorMsg = "";
@@ -116,7 +162,7 @@ public class ApiService {
 		Runnable run = () -> {
 			try {
 				
-
+				
 			} catch (Exception e) {
 				log.error("网络异常，删除用户信息失败！");
 			}
