@@ -1,5 +1,7 @@
 package com.yhj.pdj;
 
+import java.util.Date;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -17,9 +19,10 @@ public class PdjApplication {
 		String a  = EncryptDesUtils.encrypt("杨海军",null);
 		String cert  = EncryptDesUtils.encrypt("152601199110154153",null);
 		String phonumber  = EncryptDesUtils.encrypt("18647410031",null);
-	
-		
+		String ss = Long.toString(System.currentTimeMillis(), 100);
+		System.out.println(ss);
 		try {
+			
 			String a2 = EncryptDesUtils.decrypt(a);
 			String cert2  = EncryptDesUtils.decrypt(cert);
 			String phonumber2  = EncryptDesUtils.decrypt(phonumber);

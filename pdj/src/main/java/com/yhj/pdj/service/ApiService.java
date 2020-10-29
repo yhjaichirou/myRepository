@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yhj.pdj.constant.OtherConstant;
 import com.yhj.pdj.controller.api.ApiController;
 import com.yhj.pdj.kit.BeanKit;
+import com.yhj.pdj.kit.MDateUtil;
 import com.yhj.pdj.kit.RetKit;
 import com.yhj.pdj.kit.StrKit;
 import com.yhj.pdj.model.po.PdjRecord;
@@ -172,27 +174,37 @@ public class ApiService {
 
 	public RetKit appoint(String openid, String userName, String idcard, String phone, String taskId, String taskName,
 			String createTime, Integer status, String appId, String areaId, String areaName) {
-		if(StrKit.isBlank(openid) || StrKit.isBlank(idcard) || StrKit.isBlank(userName) || StrKit.isBlank(phone) || StrKit.isBlank(appId)) {
+		if(StrKit.isBlank(openid) || StrKit.isBlank(idcard) || StrKit.isBlank(userName) || StrKit.isBlank(phone) ) {
 			return RetKit.fail("参数不正确");
 		}
 		
 		
 		try {
-			
-			Db.use().insertForGeneratedKey(
+			String dateTimeStr = Long.toString(System.currentTimeMillis(), 100);
+			String adc = "" + (char)(Math.random()*26+'a');
+			String appointCode = dateTimeStr + adc;
+			Date _createTime = MDateUtil.stringToDate(createTime, null);
+			Long ids = Db.use().insertForGeneratedKey(
 				    Entity.create("user")
-				    .set("name", "unitTestUser")
-				    .set("age", 66)
+				    .set("openid", openid)
+				    .set("userName", userName)
+				    .set("appoint_code", appointCode)
+				    .set("idcard", idcard)
+				    .set("phone", phone)
+				    .set("taskId", taskId)
+				    .set("taskName", taskName)
+				    .set("createTime", _createTime)
+				    .set("status", 0)
+				    .set("appId", StrKit.isBlank(appId)?OtherConstant.appId:appId)
+				    .set("areaId", StrKit.isBlank(areaId)?OtherConstant.areaId:areaId)
+				    .set("areaName", StrKit.isBlank(areaName)?OtherConstant.areaName:areaName)
 			);
+			return RetKit.ok("预约成功！预约码:"+appointCode);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			log.error("预约失败！错误信息："+e.getMessage());
+			return RetKit.fail("预约失败！"+e.getMessage());
 		}
-		
-		
-				return null;
-		
-		
 	}
 	
 }
