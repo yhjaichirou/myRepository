@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.yhj.pdj.kit.EncryptDesUtils;
 import com.yhj.pdj.kit.MDateUtil;
 import com.yhj.pdj.kit.RetKit;
+import com.yhj.pdj.kit.StrKit;
 import com.yhj.pdj.model.po.PdjAppoint;
 import com.yhj.pdj.model.po.PdjRecord;
 import com.yhj.pdj.service.ApiService;
@@ -40,8 +42,10 @@ public class ApiController {
 	@RequestMapping("appoint")
 	@ResponseBody
 	public RetKit appoint(String openid,String userName,String idcard,String phone,
-			String taskId,String taskName,String createTime,Integer status,String appId,String areaId,String areaName) {
-		return apiService.appoint( openid, userName, idcard, phone, taskId, taskName, createTime, status, appId, areaId, areaName);
+			String taskId,String taskName,String createTime,Integer status,String appId,
+			String areaId,String areaName,String orderDate) {
+		return apiService.appoint( openid, userName, idcard, phone, taskId, taskName, createTime,
+				status, appId, areaId, areaName,orderDate);
 	}
 	
 	//查询预约
@@ -55,10 +59,19 @@ public class ApiController {
 	//更新预约记录
 	@RequestMapping("upAppoint")
 	@ResponseBody
-	public RetKit upAppoint(String openid) {
-		
-		
-		return RetKit.ok();
+	public RetKit upAppoint(String openid,String appointCode) {
+		String a = "密文";
+		return RetKit.okData(a);
+	}
+	//加密
+	@RequestMapping("encode")
+	@ResponseBody
+	public RetKit encode(String string,String key) {
+		if(StrKit.isBlank(string)) {
+			return RetKit.fail("加密内容不能为空！");
+		}
+		String a  = EncryptDesUtils.encrypt(string,key);
+		return RetKit.okData(a);
 	}
 	
 	@RequestMapping("reporting")

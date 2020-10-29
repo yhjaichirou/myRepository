@@ -13,9 +13,11 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.yhj.pdj.constant.OtherConstant;
 import com.yhj.pdj.controller.api.ApiController;
 import com.yhj.pdj.kit.BeanKit;
@@ -24,14 +26,20 @@ import com.yhj.pdj.kit.RetKit;
 import com.yhj.pdj.kit.StrKit;
 import com.yhj.pdj.model.po.PdjRecord;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
+import cn.hutool.extra.qrcode.QrCodeUtil;
+import cn.hutool.extra.qrcode.QrConfig;
 import cn.hutool.http.HttpUtil;
 
 @Service
 public class ApiService {
 
+	@Value("${uploadPath}")
+	private String uploadPath;
+	
 	private Log log = LogFactory.getLog(ApiService.class);
 	
 	public RetKit delUser(List<Integer> ids) {
@@ -122,13 +130,13 @@ public class ApiService {
 			map.put("appId", OtherConstant.appId);
 			
 //			map.put("projectId", "");
-//			map.put("pf", pr.getPf());
+			map.put("pf", pr.getPf());////评价（5：非常满意 4满意，3基本满意，2不满意，1非常不满意）
 //			map.put("proManagerNo", "");
 //			map.put("useLevel", pr.getUserCert());
 //			map.put("taskHandleItem", "");
-//			map.put("apprate", pr.getApprate());// 评价级别   满意非常满意
-//			map.put("mouldAp", pr.getMouldAp());
-//			map.put("apprateDetail", pr.getApprateDetail());
+			map.put("apprate", pr.getApprate());// 评价级别   满意非常满意
+			map.put("mouldAp", pr.getMouldAp());
+			map.put("apprateDetail", pr.getApprateDetail());
 			
 			String result = HttpUtil.get(OtherConstant.ReportingUrl, map);
 			String errorMsg = "";
@@ -173,22 +181,48 @@ public class ApiService {
 	}
 
 	public RetKit appoint(String openid, String userName, String idcard, String phone, String taskId, String taskName,
-			String createTime, Integer status, String appId, String areaId, String areaName) {
+			String createTime, Integer status, String appId, String areaId, String areaName,String orderDate) {
 		if(StrKit.isBlank(openid) || StrKit.isBlank(idcard) || StrKit.isBlank(userName) || StrKit.isBlank(phone) ) {
 			return RetKit.fail("参数不正确");
 		}
-		
-		
 		try {
 			String dateTimeStr = Long.toString(System.currentTimeMillis(), 100);
 			String adc = "" + (char)(Math.random()*26+'a');
 			String appointCode = dateTimeStr + adc;
 			Date _createTime = MDateUtil.stringToDate(createTime, null);
+			
+			//获取排队机当前某业务排号
+			String orderNumber = "";
+			
+			// 生成二维码
+			Map<String, Object> map = new HashMap<>();
+			map.put("openid",openid);
+			map.put("userName", userName);
+			map.put("appointCode", appointCode);
+			map.put("idcard", idcard);
+			map.put("phone", phone);
+			map.put("taskId", taskId);
+			map.put("taskName", taskName);
+			map.put("createTime", createTime);
+			map.put("status", 0);
+			map.put("appId", StrKit.isBlank(appId)?OtherConstant.appId:appId);
+			map.put("areaId", StrKit.isBlank(areaId)?OtherConstant.areaId:areaId);
+			map.put("areaName", StrKit.isBlank(areaName)?OtherConstant.areaName:areaName);
+			map.put("orderNumber", orderNumber);
+			map.put("orderDate", orderDate);
+			
+			String codeName = System.currentTimeMillis() + "_unicom_code.jpg";
+			String codePath = uploadPath + codeName;
+			QrCodeUtil.generate(JSONObject.toJSONString(map), // 二维码内容
+					QrConfig.create().setErrorCorrection(ErrorCorrectionLevel.H).setImg(uploadPath + "syspic/pdj.png"), // 附带logo  
+					FileUtil.file(codePath)// 写出到的文件
+			);
+			
 			Long ids = Db.use().insertForGeneratedKey(
 				    Entity.create("user")
 				    .set("openid", openid)
 				    .set("userName", userName)
-				    .set("appoint_code", appointCode)
+				    .set("appointCode", appointCode)
 				    .set("idcard", idcard)
 				    .set("phone", phone)
 				    .set("taskId", taskId)
@@ -198,6 +232,9 @@ public class ApiService {
 				    .set("appId", StrKit.isBlank(appId)?OtherConstant.appId:appId)
 				    .set("areaId", StrKit.isBlank(areaId)?OtherConstant.areaId:areaId)
 				    .set("areaName", StrKit.isBlank(areaName)?OtherConstant.areaName:areaName)
+				    .set("codePath", codePath)
+				    .set("orderNumber", orderNumber)
+				    .set("orderDate", orderDate)
 			);
 			return RetKit.ok("预约成功！预约码:"+appointCode);
 		} catch (SQLException e) {
