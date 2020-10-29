@@ -3,7 +3,7 @@ package com.yhj.pdj.model.po;
 import java.util.Date;
 
 /**
- * 佣金收益记录表
+ * 排队机上报信息
  * @author Administrator
  *
  */

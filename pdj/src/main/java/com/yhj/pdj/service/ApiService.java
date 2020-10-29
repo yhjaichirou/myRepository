@@ -169,5 +169,30 @@ public class ApiService {
 		};
 		ThreadUtil.execute(run);
 	}
+
+	public RetKit appoint(String openid, String userName, String idcard, String phone, String taskId, String taskName,
+			String createTime, Integer status, String appId, String areaId, String areaName) {
+		if(StrKit.isBlank(openid) || StrKit.isBlank(idcard) || StrKit.isBlank(userName) || StrKit.isBlank(phone) || StrKit.isBlank(appId)) {
+			return RetKit.fail("参数不正确");
+		}
+		
+		
+		try {
+			
+			Db.use().insertForGeneratedKey(
+				    Entity.create("user")
+				    .set("name", "unitTestUser")
+				    .set("age", 66)
+			);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+				return null;
+		
+		
+	}
 	
 }

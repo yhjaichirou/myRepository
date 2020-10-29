@@ -4,10 +4,15 @@ import javax.crypto.Cipher;
 import java.security.Key;
 
 /**
+ * despass@ 默认为好差评 密钥
  * @Description des加解密类
  * @since 2019-08-28
  */
 public class EncryptDesUtils {
+	
+	public static final String unicom_key = "chinaunicom";
+	
+	
     /**
      * 使用默认密钥，加密字符串
      * @param msg  需加密的字符串
