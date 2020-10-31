@@ -73,6 +73,21 @@ public class ApiController {
 		String a  = EncryptDesUtils.encrypt(string,key);
 		return RetKit.okData(a);
 	}
+	//解密
+	@RequestMapping("decode")
+	@ResponseBody
+	public RetKit decode(String string,String key) {
+		if(StrKit.isBlank(string)) {
+			return RetKit.fail("解密内容不能为空！");
+		}
+		try {
+			String b = EncryptDesUtils.decrypt(string,key);
+			return RetKit.okData(b);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return RetKit.okData("解密失败！"+e.getMessage());
+		}
+	}
 	
 	@RequestMapping("reporting")
 	@ResponseBody
