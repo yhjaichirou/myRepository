@@ -24,6 +24,7 @@ import com.yhj.pdj.kit.BeanKit;
 import com.yhj.pdj.kit.MDateUtil;
 import com.yhj.pdj.kit.RetKit;
 import com.yhj.pdj.kit.StrKit;
+import com.yhj.pdj.model.po.HttpRequestVo;
 import com.yhj.pdj.model.po.PdjRecord;
 
 import cn.hutool.core.io.FileUtil;
@@ -66,8 +67,9 @@ public class ApiService {
 		
 	}
 	
-	public String reporting2(PdjRecord pr) {
+	public RetKit reporting2(PdjRecord pr) {
 		try {
+			
 			//上报好差评系统
 			Map<String, Object> map = new HashMap<>();//BeanKit.objectToMap(pr);
 			map.put("areaId", OtherConstant.areaId);
@@ -98,11 +100,64 @@ public class ApiService {
 //			map.put("apprateDetail", pr.getApprateDetail());
 			
 			String result = HttpUtil.get(OtherConstant.ReportingUrl, map);
-			log.info(result);
-			return result;
+			log.info("上报好差评系统结果："+result);
+			HttpRequestVo r = JSONObject.parseObject(result, HttpRequestVo.class);
+			if("200".equals(r.getState())) {
+				Db.use().insert(
+					    Entity.create("pdj_record")
+					    .set("area_id", OtherConstant.areaId)
+					    .set("area_name",OtherConstant.areaName)
+					    .set("task_id", pr.getTaskId())
+					    .set("task_name",pr.getTaskName())
+					    .set("pro_depart_id", pr.getProDepartId())
+					    .set("pro_depart", pr.getProDepart())
+					    .set("user_name", pr.getUserName())
+					    .set("user_cert", pr.getUserCert())
+					    .set("phonumber", pr.getPhonumber())
+					    .set("app_id",  OtherConstant.appId)
+					    .set("cert_type", pr.getCertType())
+					    .set("dept_code", pr.getDeptCode())
+					    .set("pro_status", pr.getProStatus())
+					    .set("task_type", pr.getTaskType())
+					    .set("sub_matter", pr.getSubMatter())
+					    .set("pro_manager", pr.getProManager())
+					    
+					    .set("record_code", pr.getRecordCode())
+					    .set("create_time", MDateUtil.stringToDate( pr.getCreateTimeStr(), null))
+					    .set("status", 1)
+				);
+				return RetKit.ok("上报成功！");
+			}else {
+				Db.use().insert(
+					    Entity.create("pdj_record")
+					    .set("area_id", OtherConstant.areaId)
+					    .set("area_name",OtherConstant.areaName)
+					    .set("task_id", pr.getTaskId())
+					    .set("task_name",pr.getTaskName())
+					    .set("pro_depart_id", pr.getProDepartId())
+					    .set("pro_depart", pr.getProDepart())
+					    .set("user_name", pr.getUserName())
+					    .set("user_cert", pr.getUserCert())
+					    .set("phonumber", pr.getPhonumber())
+					    .set("app_id",  OtherConstant.appId)
+					    .set("cert_type", pr.getCertType())
+					    .set("dept_code", pr.getDeptCode())
+					    .set("pro_status", pr.getProStatus())
+					    .set("task_type", pr.getTaskType())
+					    .set("sub_matter", pr.getSubMatter())
+					    .set("pro_manager", pr.getProManager())
+					    
+					    .set("record_code", pr.getRecordCode())
+					    .set("create_time", MDateUtil.stringToDate( pr.getCreateTimeStr(), null))
+					    .set("status", 0)
+				);
+				return RetKit.fail("上报失败！"+r.getError());
+			}
+			
+			
 		} catch (Exception e) {
 			log.error("上报失败！"+e.getMessage());
-			return "";
+			return RetKit.fail("上报失败！"+e.getMessage());
 		}
 	}
 	

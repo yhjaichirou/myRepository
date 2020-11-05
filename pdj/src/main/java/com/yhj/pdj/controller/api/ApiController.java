@@ -99,7 +99,7 @@ public class ApiController {
 	}
 	
 	@RequestMapping("reporting2")
-	public String reporting2(String jsondata) {
+	public RetKit reporting2(String jsondata) {
 		PdjRecord pr = JSONObject.parseObject(jsondata, PdjRecord.class);
 		log.info("接受到的JSON:"+jsondata);
 		log.info("解析后的JSONObject:"+pr);
