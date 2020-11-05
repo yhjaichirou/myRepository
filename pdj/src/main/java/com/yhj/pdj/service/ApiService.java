@@ -136,7 +136,7 @@ public class ApiService {
 //			map.put("taskHandleItem", "");
 			map.put("apprate", pr.getApprate());// 评价级别   满意非常满意
 			map.put("mouldAp", pr.getMouldAp());
-			map.put("apprateDetail", pr.getApprateDetail());
+			map.put("apprateDetail", pr.getApprateDetail()); 
 			
 			String result = HttpUtil.get(OtherConstant.ReportingUrl, map);
 			String errorMsg = "";
