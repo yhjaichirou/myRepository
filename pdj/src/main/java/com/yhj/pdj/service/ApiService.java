@@ -189,7 +189,7 @@ public class ApiService {
 			String dateTimeStr = Long.toString(System.currentTimeMillis(), 100);
 			String adc = "" + (char)(Math.random()*26+'a');
 			String appointCode = dateTimeStr + adc;
-			Date _createTime = MDateUtil.stringToDate(createTime, null);
+			Date _createTime = MDateUtil.stringToDate(createTime, null);//预约时间
 			
 			//获取排队机当前某业务排号
 			String orderNumber = "";
