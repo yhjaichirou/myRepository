@@ -16,4 +16,5 @@ public class OtherConstant {
 	public static final String appId = "3BCC99A967";
 	public static final String deptCode = "11150100MB0R97812Y";
 	public static final String proDepartId = "11150100MB0R97812Y";
+	public static final String proDepart = "赛罕区政务服务中心";
 }

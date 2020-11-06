@@ -75,29 +75,30 @@ public class ApiService {
 			map.put("areaId", OtherConstant.areaId);
 			map.put("areaName", OtherConstant.areaName);
 			map.put("taskId", pr.getTaskId());
+			map.put("taskType", StrKit.isBlank(pr.getTaskType())?"1":pr.getTaskType());//及办件 =1 ，承诺办件=2  默认传1
 			map.put("taskName", pr.getTaskName());
-			map.put("subMatter", pr.getSubMatter());
+			map.put("subMatter", StrKit.isBlank(pr.getSubMatter())?"1":pr.getSubMatter());//申请人类型（1 自然人  2 企业法人 3事业法人  4 社会组织法人  5非法人企业  6 行政机关    9其他组织）  (传默认值 1 )
 
-			map.put("proStatus", pr.getProStatus());
-			map.put("proDepartId", pr.getProDepartId());
-			map.put("proDepart", pr.getProDepart());
-			map.put("proManager", pr.getProManager()); //一窗受理张萌
-			map.put("deptCode", pr.getDeptCode());
+			map.put("proStatus", StrKit.isBlank(pr.getProStatus())?"3":pr.getProStatus());//1 受理  ， 2 已受理  3已办结 取号为受理 呼叫为已受理 评价为办结是否可以这么理解(可以)
+			map.put("proDepartId", OtherConstant.proDepartId);//受理部门编码
+			map.put("proDepart", OtherConstant.proDepart);//受理部门
+			map.put("deptCode", OtherConstant.deptCode);//受理部门信用代码
+			map.put("proManager", pr.getProManager()); //经办人姓名  窗口人员姓名
+		
 			map.put("userName", pr.getUserName());
 			map.put("userCert", pr.getUserCert());
-			map.put("phonumber", pr.getPhonumber());
-			map.put("taskType", pr.getTaskType());
-			map.put("certType", pr.getCertType());//身份证：111
+			map.put("phonumber", StrKit.isBlank(pr.getPhonumber())?"":pr.getPhonumber());//暂时不传 电话号码
+			map.put("certType", StrKit.isBlank(pr.getCertType())?"111":pr.getCertType());//身份证：111
 			map.put("appId", OtherConstant.appId);
 			
-//			map.put("projectId", "");
-//			map.put("pf", pr.getPf());
-//			map.put("proManagerNo", "");
-//			map.put("useLevel", pr.getUserCert());
-//			map.put("taskHandleItem", "");
-//			map.put("apprate", pr.getApprate());// 评价级别   满意非常满意
-//			map.put("mouldAp", pr.getMouldAp());
-//			map.put("apprateDetail", pr.getApprateDetail());
+			map.put("projectId", "");
+			map.put("pf", "4");//pr.getPf()
+			map.put("proManagerNo", "");
+			map.put("useLevel", "");
+			map.put("taskHandleItem", "");
+			map.put("apprate", StrKit.isBlank(pr.getApprate())?4:pr.getApprate());// 评价级别  默认不评价：4   （5：非常满意 4满意，3基本满意，2不满意，1非常不满意）
+			map.put("mouldAp", StrKit.isBlank(pr.getMouldAp())?"":pr.getMouldAp());//评价选项
+			map.put("apprateDetail", StrKit.isBlank(pr.getApprateDetail())?"":pr.getApprateDetail());
 			
 			String result = HttpUtil.get(OtherConstant.ReportingUrl, map);
 			log.info("上报好差评系统结果："+result);
@@ -108,48 +109,68 @@ public class ApiService {
 					    .set("area_id", OtherConstant.areaId)
 					    .set("area_name",OtherConstant.areaName)
 					    .set("task_id", pr.getTaskId())
+					    .set("task_type", StrKit.isBlank(pr.getTaskType())?"1":pr.getTaskType())
 					    .set("task_name",pr.getTaskName())
-					    .set("pro_depart_id", pr.getProDepartId())
-					    .set("pro_depart", pr.getProDepart())
+					    .set("sub_matter", StrKit.isBlank(pr.getSubMatter())?"1":pr.getSubMatter())
+					    .set("pro_status", StrKit.isBlank(pr.getProStatus())?"3":pr.getProStatus())
+					    .set("pro_depart_id", OtherConstant.proDepartId)
+					    .set("pro_depart", OtherConstant.proDepart)
+					    .set("dept_code", OtherConstant.deptCode)
+					    .set("pro_manager", pr.getProManager())
+					    
 					    .set("user_name", pr.getUserName())
 					    .set("user_cert", pr.getUserCert())
-					    .set("phonumber", pr.getPhonumber())
+					    .set("phonumber", StrKit.isBlank(pr.getPhonumber())?"":pr.getPhonumber())
+					    .set("cert_type", StrKit.isBlank(pr.getCertType())?"111":pr.getCertType())
 					    .set("app_id",  OtherConstant.appId)
-					    .set("cert_type", pr.getCertType())
-					    .set("dept_code", pr.getDeptCode())
-					    .set("pro_status", pr.getProStatus())
-					    .set("task_type", pr.getTaskType())
-					    .set("sub_matter", pr.getSubMatter())
-					    .set("pro_manager", pr.getProManager())
+					    
+					    .set("project_id", "")
+					    .set("pf", "4")
+					    .set("pro_manager_no", "")
+					    .set("use_level", "")
+					    .set("task_handle_item", "")
+					    .set("apprate", StrKit.isBlank(pr.getApprate())?4:pr.getApprate())
+					    .set("mould_ap", StrKit.isBlank(pr.getMouldAp())?"":pr.getMouldAp())
+					    .set("apprate_detail", StrKit.isBlank(pr.getApprateDetail())?"":pr.getApprateDetail())
 					    
 					    .set("record_code", pr.getRecordCode())
 					    .set("create_time", MDateUtil.stringToDate( pr.getCreateTimeStr(), null))
-					    .set("status", 1)
+					    .set("status", 1)//上报状态 1 成功 2失败
 				);
 				return RetKit.ok("上报成功！");
 			}else {
 				Db.use().insert(
-					    Entity.create("pdj_record")
-					    .set("area_id", OtherConstant.areaId)
-					    .set("area_name",OtherConstant.areaName)
-					    .set("task_id", pr.getTaskId())
-					    .set("task_name",pr.getTaskName())
-					    .set("pro_depart_id", pr.getProDepartId())
-					    .set("pro_depart", pr.getProDepart())
-					    .set("user_name", pr.getUserName())
-					    .set("user_cert", pr.getUserCert())
-					    .set("phonumber", pr.getPhonumber())
-					    .set("app_id",  OtherConstant.appId)
-					    .set("cert_type", pr.getCertType())
-					    .set("dept_code", pr.getDeptCode())
-					    .set("pro_status", pr.getProStatus())
-					    .set("task_type", pr.getTaskType())
-					    .set("sub_matter", pr.getSubMatter())
-					    .set("pro_manager", pr.getProManager())
-					    
-					    .set("record_code", pr.getRecordCode())
-					    .set("create_time", MDateUtil.stringToDate( pr.getCreateTimeStr(), null))
-					    .set("status", 0)
+						  Entity.create("pdj_record")
+						    .set("area_id", OtherConstant.areaId)
+						    .set("area_name",OtherConstant.areaName)
+						    .set("task_id", pr.getTaskId())
+						    .set("task_type", StrKit.isBlank(pr.getTaskType())?"1":pr.getTaskType())
+						    .set("task_name",pr.getTaskName())
+						    .set("sub_matter", StrKit.isBlank(pr.getSubMatter())?"1":pr.getSubMatter())
+						    .set("pro_status", StrKit.isBlank(pr.getProStatus())?"3":pr.getProStatus())
+						    .set("pro_depart_id", OtherConstant.proDepartId)
+						    .set("pro_depart", OtherConstant.proDepart)
+						    .set("dept_code", OtherConstant.deptCode)
+						    .set("pro_manager", pr.getProManager())
+						    
+						    .set("user_name", pr.getUserName())
+						    .set("user_cert", pr.getUserCert())
+						    .set("phonumber", StrKit.isBlank(pr.getPhonumber())?"":pr.getPhonumber())
+						    .set("cert_type", StrKit.isBlank(pr.getCertType())?"111":pr.getCertType())
+						    .set("app_id",  OtherConstant.appId)
+						    
+						    .set("project_id", "")
+						    .set("pf", "4")
+						    .set("pro_manager_no", "")
+						    .set("use_level", "")
+						    .set("task_handle_item", "")
+						    .set("apprate", StrKit.isBlank(pr.getApprate())?4:pr.getApprate())
+						    .set("mould_ap", StrKit.isBlank(pr.getMouldAp())?"":pr.getMouldAp())
+						    .set("apprate_detail", StrKit.isBlank(pr.getApprateDetail())?"":pr.getApprateDetail())
+						    
+						    .set("record_code", pr.getRecordCode())
+						    .set("create_time", MDateUtil.stringToDate( pr.getCreateTimeStr(), null))
+						    .set("status", 0)//上报状态 1 成功 2失败
 				);
 				return RetKit.fail("上报失败！"+r.getError());
 			}

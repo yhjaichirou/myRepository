@@ -32,17 +32,45 @@ public class PdjRecord {
 	private String subMatter;//申请人类型（1 自然人  2 企业法人 3事业法人  4 社会组织法人  5非法人企业  6 行政机关    9其他组织）
 	private String proManager;//经办人姓名
 	
-	//view
-	private String account;
-	private String createTimeStr;
-	
+	private String project_id;
 	private String pf;
+	private String pro_manager_no;
+	private String use_level;
+	private String task_handle_item;
 	private String apprate;//评价级别
 	private String mouldAp;//评价选项
 	private String apprateDetail;//评价详情
 	
+	//view
+	private String account;
+	private String createTimeStr;
+	
 	public Integer getId() {
 		return id;
+	}
+	public String getProject_id() {
+		return project_id;
+	}
+	public void setProject_id(String project_id) {
+		this.project_id = project_id;
+	}
+	public String getPro_manager_no() {
+		return pro_manager_no;
+	}
+	public void setPro_manager_no(String pro_manager_no) {
+		this.pro_manager_no = pro_manager_no;
+	}
+	public String getUse_level() {
+		return use_level;
+	}
+	public void setUse_level(String use_level) {
+		this.use_level = use_level;
+	}
+	public String getTask_handle_item() {
+		return task_handle_item;
+	}
+	public void setTask_handle_item(String task_handle_item) {
+		this.task_handle_item = task_handle_item;
 	}
 	public void setId(Integer id) {
 		this.id = id;
