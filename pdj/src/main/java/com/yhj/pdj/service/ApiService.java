@@ -100,80 +100,118 @@ public class ApiService {
 			map.put("mouldAp", StrKit.isBlank(pr.getMouldAp())?"":pr.getMouldAp());//评价选项
 			map.put("apprateDetail", StrKit.isBlank(pr.getApprateDetail())?"":pr.getApprateDetail());
 			
-			String result = HttpUtil.get(OtherConstant.ReportingUrl, map);
-			log.info("上报好差评系统结果："+result);
-			HttpRequestVo r = JSONObject.parseObject(result, HttpRequestVo.class);
-			if("200".equals(r.getState())) {
-				Db.use().insert(
-					    Entity.create("pdj_record")
-					    .set("area_id", OtherConstant.areaId)
-					    .set("area_name",OtherConstant.areaName)
-					    .set("task_id", pr.getTaskId())
-					    .set("task_type", StrKit.isBlank(pr.getTaskType())?"1":pr.getTaskType())
-					    .set("task_name",pr.getTaskName())
-					    .set("sub_matter", StrKit.isBlank(pr.getSubMatter())?"1":pr.getSubMatter())
-					    .set("pro_status", StrKit.isBlank(pr.getProStatus())?"3":pr.getProStatus())
-					    .set("pro_depart_id", OtherConstant.proDepartId)
-					    .set("pro_depart", OtherConstant.proDepart)
-					    .set("dept_code", OtherConstant.deptCode)
-					    .set("pro_manager", pr.getProManager())
-					    
-					    .set("user_name", pr.getUserName())
-					    .set("user_cert", pr.getUserCert())
-					    .set("phonumber", StrKit.isBlank(pr.getPhonumber())?"":pr.getPhonumber())
-					    .set("cert_type", StrKit.isBlank(pr.getCertType())?"111":pr.getCertType())
-					    .set("app_id",  OtherConstant.appId)
-					    
-					    .set("project_id", "")
-					    .set("pf", "4")
-					    .set("pro_manager_no", "")
-					    .set("use_level", "")
-					    .set("task_handle_item", "")
-					    .set("apprate", StrKit.isBlank(pr.getApprate())?4:pr.getApprate())
-					    .set("mould_ap", StrKit.isBlank(pr.getMouldAp())?"":pr.getMouldAp())
-					    .set("apprate_detail", StrKit.isBlank(pr.getApprateDetail())?"":pr.getApprateDetail())
-					    
-					    .set("record_code", pr.getRecordCode())
-					    .set("create_time", MDateUtil.stringToDate( pr.getCreateTimeStr(), null))
-					    .set("status", 1)//上报状态 1 成功 2失败
-				);
-				return RetKit.ok("上报成功！");
-			}else {
-				Db.use().insert(
-						  Entity.create("pdj_record")
-						    .set("area_id", OtherConstant.areaId)
-						    .set("area_name",OtherConstant.areaName)
-						    .set("task_id", pr.getTaskId())
-						    .set("task_type", StrKit.isBlank(pr.getTaskType())?"1":pr.getTaskType())
-						    .set("task_name",pr.getTaskName())
-						    .set("sub_matter", StrKit.isBlank(pr.getSubMatter())?"1":pr.getSubMatter())
-						    .set("pro_status", StrKit.isBlank(pr.getProStatus())?"3":pr.getProStatus())
-						    .set("pro_depart_id", OtherConstant.proDepartId)
-						    .set("pro_depart", OtherConstant.proDepart)
-						    .set("dept_code", OtherConstant.deptCode)
-						    .set("pro_manager", pr.getProManager())
-						    
-						    .set("user_name", pr.getUserName())
-						    .set("user_cert", pr.getUserCert())
-						    .set("phonumber", StrKit.isBlank(pr.getPhonumber())?"":pr.getPhonumber())
-						    .set("cert_type", StrKit.isBlank(pr.getCertType())?"111":pr.getCertType())
-						    .set("app_id",  OtherConstant.appId)
-						    
-						    .set("project_id", "")
-						    .set("pf", "4")
-						    .set("pro_manager_no", "")
-						    .set("use_level", "")
-						    .set("task_handle_item", "")
-						    .set("apprate", StrKit.isBlank(pr.getApprate())?4:pr.getApprate())
-						    .set("mould_ap", StrKit.isBlank(pr.getMouldAp())?"":pr.getMouldAp())
-						    .set("apprate_detail", StrKit.isBlank(pr.getApprateDetail())?"":pr.getApprateDetail())
-						    
-						    .set("record_code", pr.getRecordCode())
-						    .set("create_time", MDateUtil.stringToDate( pr.getCreateTimeStr(), null))
-						    .set("status", 0)//上报状态 1 成功 2失败
-				);
-				return RetKit.fail("上报失败！"+r.getError());
-			}
+			
+			
+			Db.use().insert(
+			    Entity.create("pdj_record")
+			    .set("area_id", OtherConstant.areaId)
+			    .set("area_name",OtherConstant.areaName)
+			    .set("task_id", pr.getTaskId())
+			    .set("task_type", StrKit.isBlank(pr.getTaskType())?"1":pr.getTaskType())
+			    .set("task_name",pr.getTaskName())
+			    .set("sub_matter", StrKit.isBlank(pr.getSubMatter())?"1":pr.getSubMatter())
+			    .set("pro_status", StrKit.isBlank(pr.getProStatus())?"3":pr.getProStatus())
+			    .set("pro_depart_id", OtherConstant.proDepartId)
+			    .set("pro_depart", OtherConstant.proDepart)
+			    .set("dept_code", OtherConstant.deptCode)
+			    .set("pro_manager", pr.getProManager())
+			    
+			    .set("user_name", pr.getUserName())
+			    .set("user_cert", pr.getUserCert())
+			    .set("phonumber", StrKit.isBlank(pr.getPhonumber())?"":pr.getPhonumber())
+			    .set("cert_type", StrKit.isBlank(pr.getCertType())?"111":pr.getCertType())
+			    .set("app_id",  OtherConstant.appId)
+			    
+			    .set("project_id", "")
+			    .set("pf", "4")
+			    .set("pro_manager_no", "")
+			    .set("use_level", "")
+			    .set("task_handle_item", "")
+			    .set("apprate", StrKit.isBlank(pr.getApprate())?4:pr.getApprate())
+			    .set("mould_ap", StrKit.isBlank(pr.getMouldAp())?"":pr.getMouldAp())
+			    .set("apprate_detail", StrKit.isBlank(pr.getApprateDetail())?"":pr.getApprateDetail())
+			    
+			    .set("record_code", pr.getRecordCode())
+			    .set("create_time",new Date())
+			    .set("status", 1)//上报状态 1 成功 2失败
+			);
+			
+			return RetKit.ok("上报成功！");
+			
+//			String result = HttpUtil.get(OtherConstant.ReportingUrl, map);
+//			log.info("上报好差评系统结果："+result);
+//			HttpRequestVo r = JSONObject.parseObject(result, HttpRequestVo.class);
+//			if("200".equals(r.getState())) {
+//				Db.use().insert(
+//					    Entity.create("pdj_record")
+//					    .set("area_id", OtherConstant.areaId)
+//					    .set("area_name",OtherConstant.areaName)
+//					    .set("task_id", pr.getTaskId())
+//					    .set("task_type", StrKit.isBlank(pr.getTaskType())?"1":pr.getTaskType())
+//					    .set("task_name",pr.getTaskName())
+//					    .set("sub_matter", StrKit.isBlank(pr.getSubMatter())?"1":pr.getSubMatter())
+//					    .set("pro_status", StrKit.isBlank(pr.getProStatus())?"3":pr.getProStatus())
+//					    .set("pro_depart_id", OtherConstant.proDepartId)
+//					    .set("pro_depart", OtherConstant.proDepart)
+//					    .set("dept_code", OtherConstant.deptCode)
+//					    .set("pro_manager", pr.getProManager())
+//					    
+//					    .set("user_name", pr.getUserName())
+//					    .set("user_cert", pr.getUserCert())
+//					    .set("phonumber", StrKit.isBlank(pr.getPhonumber())?"":pr.getPhonumber())
+//					    .set("cert_type", StrKit.isBlank(pr.getCertType())?"111":pr.getCertType())
+//					    .set("app_id",  OtherConstant.appId)
+//					    
+//					    .set("project_id", "")
+//					    .set("pf", "4")
+//					    .set("pro_manager_no", "")
+//					    .set("use_level", "")
+//					    .set("task_handle_item", "")
+//					    .set("apprate", StrKit.isBlank(pr.getApprate())?4:pr.getApprate())
+//					    .set("mould_ap", StrKit.isBlank(pr.getMouldAp())?"":pr.getMouldAp())
+//					    .set("apprate_detail", StrKit.isBlank(pr.getApprateDetail())?"":pr.getApprateDetail())
+//					    
+//					    .set("record_code", pr.getRecordCode())
+//					    .set("create_time", MDateUtil.stringToDate( pr.getCreateTimeStr(), null))
+//					    .set("status", 1)//上报状态 1 成功 2失败
+//				);
+//				return RetKit.ok("上报成功！");
+//			}else {
+//				Db.use().insert(
+//						  Entity.create("pdj_record")
+//						    .set("area_id", OtherConstant.areaId)
+//						    .set("area_name",OtherConstant.areaName)
+//						    .set("task_id", pr.getTaskId())
+//						    .set("task_type", StrKit.isBlank(pr.getTaskType())?"1":pr.getTaskType())
+//						    .set("task_name",pr.getTaskName())
+//						    .set("sub_matter", StrKit.isBlank(pr.getSubMatter())?"1":pr.getSubMatter())
+//						    .set("pro_status", StrKit.isBlank(pr.getProStatus())?"3":pr.getProStatus())
+//						    .set("pro_depart_id", OtherConstant.proDepartId)
+//						    .set("pro_depart", OtherConstant.proDepart)
+//						    .set("dept_code", OtherConstant.deptCode)
+//						    .set("pro_manager", pr.getProManager())
+//						    
+//						    .set("user_name", pr.getUserName())
+//						    .set("user_cert", pr.getUserCert())
+//						    .set("phonumber", StrKit.isBlank(pr.getPhonumber())?"":pr.getPhonumber())
+//						    .set("cert_type", StrKit.isBlank(pr.getCertType())?"111":pr.getCertType())
+//						    .set("app_id",  OtherConstant.appId)
+//						    
+//						    .set("project_id", "")
+//						    .set("pf", "4")
+//						    .set("pro_manager_no", "")
+//						    .set("use_level", "")
+//						    .set("task_handle_item", "")
+//						    .set("apprate", StrKit.isBlank(pr.getApprate())?4:pr.getApprate())
+//						    .set("mould_ap", StrKit.isBlank(pr.getMouldAp())?"":pr.getMouldAp())
+//						    .set("apprate_detail", StrKit.isBlank(pr.getApprateDetail())?"":pr.getApprateDetail())
+//						    
+//						    .set("record_code", pr.getRecordCode())
+//						    .set("create_time", MDateUtil.stringToDate( pr.getCreateTimeStr(), null))
+//						    .set("status", 0)//上报状态 1 成功 2失败
+//				);
+//				return RetKit.fail("上报失败！"+r.getError());
+//			}
 			
 			
 		} catch (Exception e) {

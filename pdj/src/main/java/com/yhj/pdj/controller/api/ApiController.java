@@ -99,10 +99,14 @@ public class ApiController {
 	}
 	
 	@RequestMapping("reporting2")
+	@ResponseBody
 	public RetKit reporting2(String jsondata) {
 		PdjRecord pr = JSONObject.parseObject(jsondata, PdjRecord.class);
 		log.info("接受到的JSON:"+jsondata);
-		log.info("解析后的JSONObject:"+pr);
+		if(StrKit.isBlank(pr.getTaskId()) || StrKit.isBlank(pr.getTaskName()) || StrKit.isBlank(pr.getProManager()) 
+			||StrKit.isBlank(pr.getUserName())||StrKit.isBlank(pr.getUserCert())	) {
+			return RetKit.fail("参数不正确！");
+		}
 		return apiService.reporting2(pr);
 	}
 	
