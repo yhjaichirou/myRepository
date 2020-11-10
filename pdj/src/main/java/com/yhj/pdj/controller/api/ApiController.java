@@ -34,6 +34,7 @@ public class ApiController {
 	private ApiService apiService;
 	
 	@RequestMapping("test")
+	@ResponseBody
 	public String home(HttpServletRequest  request,HttpServletResponse response) {
 		return "hello word!";
 	}
