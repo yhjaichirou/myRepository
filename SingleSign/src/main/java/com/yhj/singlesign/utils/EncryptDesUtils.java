@@ -18,7 +18,7 @@ public class EncryptDesUtils {
      * @param msg  需加密的字符串
      * @return 加密后的字符串
      */
-    private static String encrypt(String msg) throws Exception {
+    public static String encrypt(String msg) throws Exception {
         try {
             return byteArr2HexStr(encrypt(msg.getBytes(),unicom_key));
         }catch (Exception e){

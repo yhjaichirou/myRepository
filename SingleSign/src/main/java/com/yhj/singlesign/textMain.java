@@ -8,15 +8,20 @@ import org.springframework.context.annotation.ComponentScans;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication
-@ComponentScans({@ComponentScan("com.**.controller"),@ComponentScan("com.**.interceptors"),@ComponentScan("com.**.serviceImp"),@ComponentScan("com.**.service")})
-@EnableJpaRepositories(basePackages = "com.**.repository")
-@EntityScan("com.**.vo")
-@EnableTransactionManagement
-public class SingleSignApplication {
+import com.yhj.singlesign.utils.EncryptDesUtils;
+
+public class textMain {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SingleSignApplication.class, args);
+		
+		try {
+			String pwdEnctypt = EncryptDesUtils.encrypt("yhj911015");
+			System.out.println(pwdEnctypt);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		SpringApplication.run(textMain.class, args);
 	}
 
 }

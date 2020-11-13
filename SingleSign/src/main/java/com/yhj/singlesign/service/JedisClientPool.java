@@ -4,12 +4,15 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
  
 import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
  
 /**
  * 单击版的实现类
  * @author admin
  *
  */
+@Service
 public class JedisClientPool implements JedisClient {
     @Resource
     private JedisPool jedisPool;

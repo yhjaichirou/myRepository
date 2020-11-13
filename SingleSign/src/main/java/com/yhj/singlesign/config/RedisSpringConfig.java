@@ -23,6 +23,8 @@ public class RedisSpringConfig {
 
     @Value("${redis.node.port}")
     private Integer redisNodePort;
+    @Value("${redis.node.password}")
+    private String redisNodePassword;
 
     private JedisPoolConfig jedisPoolConfig() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
@@ -32,7 +34,7 @@ public class RedisSpringConfig {
     
     @Bean 
     public JedisPool getJedisPool(){    // 省略第一个参数则是采用 Protocol.DEFAULT_DATABASE
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig(), redisNodeHost, redisNodePort);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig(), redisNodeHost, redisNodePort,200,redisNodePassword);
         return jedisPool;
     }
 

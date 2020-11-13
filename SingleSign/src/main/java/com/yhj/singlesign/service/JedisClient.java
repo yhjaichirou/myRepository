@@ -1,5 +1,6 @@
 package com.yhj.singlesign.service;
 
+
 public interface JedisClient {
 
  	String set(String key, String value);

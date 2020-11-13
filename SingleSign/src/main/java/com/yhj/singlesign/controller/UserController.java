@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.yhj.singlesign.service.UserService;
+import com.yhj.singlesign.utils.CookieUtil;
 import com.yhj.singlesign.utils.RetKit;
 
 @Controller
@@ -32,9 +33,10 @@ public class UserController {
     }
     
     @RequestMapping(value="/logout/{token}")
-    public String logout(@PathVariable String token) {
+    public String logout(@PathVariable String token,HttpServletRequest request ,HttpServletResponse response) {
+    	CookieUtil.deleteCookie(request, response, "USER_TOKEN");
         userService.logout(token); // 思路是从Redis中删除key，实际情况请和业务逻辑结合
-        return "index";
+        return "index1";
     }
     
     @RequestMapping("/token/{token}")

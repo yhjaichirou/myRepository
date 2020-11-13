@@ -2,6 +2,8 @@ package com.yhj.singlesign.service;
 
 import javax.annotation.Resource;
 
+import org.springframework.stereotype.Service;
+
 import redis.clients.jedis.JedisCluster;
 
 /**
@@ -9,8 +11,9 @@ import redis.clients.jedis.JedisCluster;
  * @author admin
  *
  */
+@Service
 public class JedisClientCluster implements JedisClient{
-    @Resource
+    
     private JedisCluster jedisCluster;
  
     public JedisCluster getJedisCluster() {

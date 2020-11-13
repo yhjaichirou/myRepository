@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width, user-scalable=no" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+        <title>欢迎登录</title>
+        <link type="image/x-icon" href="images/favicon.ico" rel="shortcut icon">
+ 
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="container">
+                <h1>Welcome Come on Index 1</h1>
+            </div>
+            <ul class="bg-bubbles">
+                <li  ></li>
+                <li></li>
+            </ul>
+            <a href="javascript:;" id="back">退出</a>
+        </div>
+        <script type="text/javascript" th:src="@{/js/jquery-3.3.1-min.js}" ></script>
+        <script type="text/javascript" th:inline="javascript">
+       	 contextPath =  [[${#request.getContextPath()}]];
+       	var  cookies = [[${#request.getCookies()}]]
+            var redirectUrl = "${redirect}"; // 浏览器中返回的URL
+            function loginOut() {
+                $.post(contextPath + "/user/logout/"+getToken(), $(".form").serialize(),function(data){
+                    if (data.code == 200) {
+                        if (redirectUrl == "") {
+                            location.href = "http://localhost:8082";
+                        } else {
+                            location.href = redirectUrl;
+                        }
+                    } else {
+                        alert("登录失败，原因是：" + data.msg);
+                    }
+                });
+            }
+            function getToken(){
+            	for(var co of cookies){
+            		console.log(co);
+            		if(co.name == "USER_TOKEN"){
+            			return co.value;
+            		}
+            	}
+            	return "";
+            }
+            $(function(){
+                $("#back").click(function(){
+                	loginOut();
+                });
+            });
+        </script>
+    </body>
+</html>
