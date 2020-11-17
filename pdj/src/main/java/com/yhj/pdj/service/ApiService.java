@@ -301,7 +301,10 @@ public class ApiService {
 		}
 		try {
 			String dateTimeStr = Long.toString(System.currentTimeMillis(), 100);
-			String adc = "" + (char)(Math.random()*26+'a');
+			String adc = "";
+			for(int i =0 ;i<3;i++) {
+				adc += "" + (char)(Math.random()*26+'a');
+			}
 			String appointCode = dateTimeStr + adc;
 			Date _createTime = MDateUtil.stringToDate(createTime, null);//预约时间
 			
@@ -325,7 +328,7 @@ public class ApiService {
 			map.put("orderNumber", orderNumber);
 			map.put("orderDate", orderDate);
 			
-			String codeName = System.currentTimeMillis() + "_unicom_code.jpg";
+			String codeName = System.currentTimeMillis() + adc +"_unicom_code.jpg";
 			String codePath = uploadPath + codeName;
 			QrCodeUtil.generate(JSONObject.toJSONString(map), // 二维码内容
 					QrConfig.create().setErrorCorrection(ErrorCorrectionLevel.H).setImg(uploadPath + "syspic/pdj.png"), // 附带logo  
