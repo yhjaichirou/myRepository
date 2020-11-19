@@ -22,8 +22,31 @@ public class PdjAppoint {
 	private String appId;//系统分配的appid
 	private String areaId;//行政代码
 	private String areaName;//行政区名称
+	private String codePath;
+	private String orderNumber;
+	private String orderDate;
 	//view
 	private String createTimeStr;
+	
+	public String getCodePath() {
+		return codePath;
+	}
+	public void setCodePath(String codePath) {
+		this.codePath = codePath;
+	}
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+	public String getOrderDate() {
+		return orderDate;
+	}
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
+	}
+
 	
 	public Integer getId() {
 		return id;

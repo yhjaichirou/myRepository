@@ -1,6 +1,9 @@
 package com.yhj.pdj.controller.api;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +30,7 @@ import com.yhj.pdj.service.ApiService;
 
 @Controller
 @RequestMapping("api/record")
+@CrossOrigin
 public class ApiController {
 	
 	private Log log = LogFactory.getLog(ApiController.class);
@@ -49,7 +54,21 @@ public class ApiController {
 				status, appId, areaId, areaName,orderDate);
 	}
 	
-	//查询预约
+	//微信预约列表
+	@RequestMapping("appointList")
+	@ResponseBody
+	public RetKit appointList(String openid,String taskId) {
+		return apiService.appointList(openid, taskId);
+	}
+	
+	//获取业务类型
+	@RequestMapping("getTaskTypes")
+	@ResponseBody
+	public RetKit getTaskTypes() {
+		return apiService.getTaskTypes();
+	}
+	
+	//查询预约-废弃
 	@RequestMapping("findAppoint")
 	@ResponseBody
 	public RetKit findAppoint(String jsondata) {
@@ -60,9 +79,8 @@ public class ApiController {
 	//更新预约记录
 	@RequestMapping("upAppoint")
 	@ResponseBody
-	public RetKit upAppoint(String openid,String appointCode) {
-		String a = "密文";
-		return RetKit.okData(a);
+	public RetKit upAppoint(String appointCode) {
+		return apiService.upAppoint( appointCode);
 	}
 	//加密
 	@RequestMapping("encode")
@@ -74,6 +92,22 @@ public class ApiController {
 		String a  = EncryptDesUtils.encrypt(string,key);
 		return RetKit.okData(a);
 	}
+	//加密
+	@RequestMapping("encodeList")
+	@ResponseBody
+	public RetKit encodeList(String strings,String key) {
+		if(StrKit.isBlank(strings)) {
+			return RetKit.fail("加密内容不能为空！");
+		}
+		List<String> lstrings = JSONObject.parseArray(strings, String.class);
+		List<String> encodes = new ArrayList<>();
+		for (int i = 0; i < lstrings.size(); i++) {
+			String code  = EncryptDesUtils.encrypt(lstrings.get(i),key);
+			encodes.add(code);
+		}
+		return RetKit.okData(encodes);
+	}
+	
 	//解密
 	@RequestMapping("decode")
 	@ResponseBody
