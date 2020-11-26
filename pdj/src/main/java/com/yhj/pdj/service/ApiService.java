@@ -13,10 +13,18 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.yhj.pdj.constant.OtherConstant;
 import com.yhj.pdj.controller.api.ApiController;
@@ -227,39 +235,39 @@ public class ApiService {
 	public RetKit reporting(PdjRecord pr) {
 		try {
 			//先插入后更新
-			Long lid = Db.use().insertForGeneratedKey(
-				    Entity.create("pdj_record")
-				    .set("area_id", OtherConstant.areaId)
-				    .set("area_name",OtherConstant.areaName)
-				    .set("task_id", pr.getTaskId())
-				    .set("task_type", StrKit.isBlank(pr.getTaskType())?"1":pr.getTaskType())
-				    .set("task_name",pr.getTaskName())
-				    .set("sub_matter", StrKit.isBlank(pr.getSubMatter())?"1":pr.getSubMatter())
-				    .set("pro_status", StrKit.isBlank(pr.getProStatus())?"3":pr.getProStatus())
-				    .set("pro_depart_id", OtherConstant.proDepartId)
-				    .set("pro_depart", OtherConstant.proDepart)
-				    .set("dept_code", OtherConstant.deptCode)
-				    .set("pro_manager", pr.getProManager())
-				    
-				    .set("user_name", pr.getUserName())
-				    .set("user_cert", pr.getUserCert())
-				    .set("phonumber", StrKit.isBlank(pr.getPhonumber())?"":pr.getPhonumber())
-				    .set("cert_type", StrKit.isBlank(pr.getCertType())?"111":pr.getCertType())
-				    .set("app_id",  OtherConstant.appId)
-				    
-				    .set("project_id", "")
-				    .set("pf", "4")
-				    .set("pro_manager_no", "")
-				    .set("use_level", "")
-				    .set("task_handle_item", "")
-				    .set("apprate", StrKit.isBlank(pr.getApprate())?4:pr.getApprate())
-				    .set("mould_ap", StrKit.isBlank(pr.getMouldAp())?"":pr.getMouldAp())
-				    .set("apprate_detail", StrKit.isBlank(pr.getApprateDetail())?"":pr.getApprateDetail())
-				    
-				    .set("record_code", pr.getRecordCode())
-				    .set("create_time",new Date())
-				    .set("status", 2)//上报状态 1 成功 2失败
-			);
+//			Long lid = Db.use().insertForGeneratedKey(
+//				    Entity.create("pdj_record")
+//				    .set("area_id", OtherConstant.areaId)
+//				    .set("area_name",OtherConstant.areaName)
+//				    .set("task_id", pr.getTaskId())
+//				    .set("task_type", StrKit.isBlank(pr.getTaskType())?"1":pr.getTaskType())
+//				    .set("task_name",pr.getTaskName())
+//				    .set("sub_matter", StrKit.isBlank(pr.getSubMatter())?"1":pr.getSubMatter())
+//				    .set("pro_status", StrKit.isBlank(pr.getProStatus())?"3":pr.getProStatus())
+//				    .set("pro_depart_id", OtherConstant.proDepartId)
+//				    .set("pro_depart", OtherConstant.proDepart)
+//				    .set("dept_code", OtherConstant.deptCode)
+//				    .set("pro_manager", pr.getProManager())
+//				    
+//				    .set("user_name", pr.getUserName())
+//				    .set("user_cert", pr.getUserCert())
+//				    .set("phonumber", StrKit.isBlank(pr.getPhonumber())?"":pr.getPhonumber())
+//				    .set("cert_type", StrKit.isBlank(pr.getCertType())?"111":pr.getCertType())
+//				    .set("app_id",  OtherConstant.appId)
+//				    
+//				    .set("project_id", "")
+//				    .set("pf", "4")
+//				    .set("pro_manager_no", "")
+//				    .set("use_level", "")
+//				    .set("task_handle_item", "")
+//				    .set("apprate", StrKit.isBlank(pr.getApprate())?4:pr.getApprate())
+//				    .set("mould_ap", StrKit.isBlank(pr.getMouldAp())?"":pr.getMouldAp())
+//				    .set("apprate_detail", StrKit.isBlank(pr.getApprateDetail())?"":pr.getApprateDetail())
+//				    
+//				    .set("record_code", pr.getRecordCode())
+//				    .set("create_time",new Date())
+//				    .set("status", 2)//上报状态 1 成功 2失败
+//			);
 			
 			//上报好差评系统
 			Map<String, Object> map = new HashMap<>();//BeanKit.objectToMap(pr);
@@ -294,17 +302,35 @@ public class ApiService {
 			String result = HttpUtil.get(OtherConstant.ReportingUrl, map);
 			log.info("上报好差评系统结果："+result);
 			HttpRequestVo r = JSONObject.parseObject(result, HttpRequestVo.class);
-			if("200".equals(r.getState())) {
-				Db.use().update(
-					    Entity.create("pdj_record")
-					    .set("id", lid.intValue()),
-					    Entity.create("pdj_record")
-					    .set("status", 1)//上报状态 1 成功 2失败
-				);
-				return RetKit.ok("上报成功！");
-			}else {
-				return RetKit.fail("上报失败！"+r.getError());
+			
+			Document doc = Jsoup.parse(result);
+			Elements el = doc.getElementsByClass("expression");
+			Elements els = el.select("li");
+			for(Element elementLi : els) {
+				//elementLi.
 			}
+			
+			
+			 HtmlPage page=WebClient.getPage( "http://blog.java1234.com/index.html" ); // 解析获取页面
+             HtmlForm form=page.getFormByName( "myform" );  // 得到搜索Form
+             //HtmlTextInput textField=form.getInputByName( "q" );  // 获取查询文本框
+             HtmlSubmitInput button=form. getInputByName ( "submitButton" );  // 获取提交按钮
+             //textField.setValueAttribute( "java" );  // 文本框“填入”数据
+             HtmlPage page2=button.click();  // 模拟点击 
+             
+			
+			//doc.getElementById(id)
+//			if("200".equals(r.getState())) {
+//				Db.use().update(
+//					    Entity.create("pdj_record")
+//					    .set("id", lid.intValue()),
+//					    Entity.create("pdj_record")
+//					    .set("status", 1)//上报状态 1 成功 2失败
+//				);
+//				return RetKit.ok("上报成功！");
+//			}else {
+//				return RetKit.fail("上报失败！"+r.getError());
+//			}
 		} catch (Exception e) {
 			log.error("上报失败！"+e.getMessage());
 			return RetKit.fail("上报失败！"+e.getMessage());
@@ -326,6 +352,9 @@ public class ApiService {
 		ThreadUtil.execute(run);
 	}
 
+	/**
+	 * 	预约
+	 */
 	public RetKit appoint(String openid, String userName, String idcard, String phone, String taskId, String taskName,
 			String createTime, Integer status, String appId, String areaId, String areaName,String orderDate) {
 		if(StrKit.isBlank(openid) || StrKit.isBlank(idcard) || StrKit.isBlank(userName) || StrKit.isBlank(phone)|| StrKit.isBlank(orderDate)) {
@@ -371,7 +400,7 @@ public class ApiService {
 			map.put("phone", phone);
 			map.put("taskId", taskId);
 			map.put("taskName", taskName);
-			map.put("createTime", _createTime);
+			map.put("createTime", MDateUtil.dateToString(_createTime, null));
 			map.put("status", 0);
 			map.put("appId", StrKit.isBlank(appId)?OtherConstant.appId:appId);
 			map.put("areaId", StrKit.isBlank(areaId)?OtherConstant.areaId:areaId);

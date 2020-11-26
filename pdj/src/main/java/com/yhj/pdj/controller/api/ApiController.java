@@ -105,6 +105,7 @@ public class ApiController {
 			String code  = EncryptDesUtils.encrypt(lstrings.get(i),key);
 			encodes.add(code);
 		}
+		
 		return RetKit.okData(encodes);
 	}
 	
@@ -112,9 +113,6 @@ public class ApiController {
 	@RequestMapping("decode")
 	@ResponseBody
 	public RetKit decode(String string,String key) {
-		if(StrKit.isBlank(string)) {
-			return RetKit.fail("解密内容不能为空！");
-		}
 		try {
 			String b = EncryptDesUtils.decrypt(string,key);
 			return RetKit.okData(b);
