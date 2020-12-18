@@ -22,10 +22,24 @@ public class User implements java.io.Serializable {
 	private String name;
 	private Integer status;
 	private Integer orgId;
+	private String token;
+	private Integer groupId;
+	private Integer roleId;
 	
-	
-	
-
+	@Column(name = "group_id")
+	public Integer getGroupId() {
+		return groupId;
+	}
+	public void setGroupId(Integer groupId) {
+		this.groupId = groupId;
+	}
+	@Column(name = "role_id")
+	public Integer getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(Integer roleId) {
+		this.roleId = roleId;
+	}
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -78,6 +92,14 @@ public class User implements java.io.Serializable {
 	}
 	public void setOrgId(Integer orgId) {
 		this.orgId = orgId;
+	}
+	
+	@Column(name = "token")
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 

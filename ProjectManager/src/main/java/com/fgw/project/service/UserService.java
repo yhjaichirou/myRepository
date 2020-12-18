@@ -19,6 +19,7 @@ import com.fgw.project.repository.IUserRepository;
 import com.fgw.project.util.BeanKit;
 import com.fgw.project.util.HashKit;
 import com.fgw.project.util.RetKit;
+import com.fgw.project.util.TokenUtils;
 
 @Service
 public class UserService {
@@ -42,7 +43,9 @@ public class UserService {
 		if(u!=null) {
 			String oldpsw = u.getPassword();
 			if(psw.equals(oldpsw)) {
-				String token = "2222";
+				String token = TokenUtils.token(account, psw);
+				u.setToken(token);
+				userR.save(u);
 				Map<String,Object> rt = new HashMap<>();
 				List<Menu> menus = menuR.findAll();
 				List<MenuVo> mvs = coverMenuVo(menus);
@@ -83,6 +86,12 @@ public class UserService {
 		}
 		childList = childList.stream().sorted(Comparator.comparing(MenuVo::getSort)).collect(Collectors.toList());
 		return childList;
+	}
+
+
+	public RetKit getUserOfToken(String token) {
+		Map<String,Object> u = userR.getAdminUserOfToken(token);
+		return RetKit.okData(u);
 	}
 	
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,9 +36,14 @@ public class AdminController {
 	
 	@RequestMapping("/login")
 	public RetKit login(@RequestBody String param) {
-		String account = JSONObject.parseObject(param).getString("account");
-		String psw = JSONObject.parseObject(param).getString("psw");
+		String account = JSONObject.parseObject(param).getString("username");
+		String psw = JSONObject.parseObject(param).getString("password");
 		return userService.getUser(account,psw);
+	}
+	@RequestMapping("/userinfo")
+	public RetKit userinfo(HttpServletRequest request) {
+		String token = request.getHeader("X-Token");
+		return userService.getUserOfToken(token);
 	}
 	
 	@RequestMapping("/getRouter")
@@ -50,5 +56,16 @@ public class AdminController {
 	public RetKit getUserInfo(Integer userId ) {
 		User u = userService.getUserInfo(userId);
 		return RetKit.okData(u);
+	}
+	
+	/**
+	 * 分组
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping("/getGroup")
+	public RetKit getGroup(Integer userId ) {
+//		User u = userService.getGroup(userId);
+		return RetKit.ok();
 	}
 }
