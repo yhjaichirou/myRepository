@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "org")
-public class org implements java.io.Serializable {
+public class Org implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Integer id;

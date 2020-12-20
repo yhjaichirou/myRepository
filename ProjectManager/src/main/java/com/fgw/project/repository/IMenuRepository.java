@@ -21,9 +21,13 @@ import com.fgw.project.model.po.User;
  */
 @Repository
 public interface IMenuRepository extends JpaRepository<Menu	, Integer> {
+
+	List<Menu> findAllByIdIn(List<Integer> ids);
 //	@Modifying
 //	@Query(value = "delete from base_user where ding_userid=:dingUserid",nativeQuery = true)
 //	int deleteUsers(@Param("dingUserid") String dingUserid);
+
+	List<Menu> findAllByStatus(Integer status);
 	
 //	User findUserByName(String name);
 //	

@@ -12,6 +12,7 @@ public class MenuVo {
 	private String url;
 	private String icon;
 	private List<MenuVo> children;
+	private Integer roleId;
 	
 	public Integer getId() {
 		return id;
@@ -60,6 +61,12 @@ public class MenuVo {
 	}
 	public void setChildren(List<MenuVo> children) {
 		this.children = children;
+	}
+	public Integer getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(Integer roleId) {
+		this.roleId = roleId;
 	}
 	
 	

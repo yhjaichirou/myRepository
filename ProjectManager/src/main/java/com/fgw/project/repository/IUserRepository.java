@@ -39,4 +39,6 @@ public interface IUserRepository extends JpaRepository<User	, Integer> {
 	User findByAccount(String account);
 
 	User findByToken(String token);
+
+	User findById(int agentId);
 }

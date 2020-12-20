@@ -9,12 +9,13 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "org_group")
-public class group implements java.io.Serializable {
+public class Group implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String groupName;
 	private Integer orgId;
+	private String groupDecript;
 	
 	
 	@Id
@@ -28,6 +29,7 @@ public class group implements java.io.Serializable {
 		this.id = id;
 	}
 
+	@Column(name = "group_name")
 	public String getGroupName() {
 		return groupName;
 	}
@@ -36,12 +38,22 @@ public class group implements java.io.Serializable {
 		this.groupName = groupName;
 	}
 
+	@Column(name = "org_id")
 	public Integer getOrgId() {
 		return orgId;
 	}
 
 	public void setOrgId(Integer orgId) {
 		this.orgId = orgId;
+	}
+
+	@Column(name = "group_decript")
+	public String getGroupDecript() {
+		return groupDecript;
+	}
+
+	public void setGroupDecript(String groupDecript) {
+		this.groupDecript = groupDecript;
 	}
 
 }

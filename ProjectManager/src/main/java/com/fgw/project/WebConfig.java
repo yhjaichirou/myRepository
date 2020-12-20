@@ -22,7 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 
-		registry.addInterceptor(tokenInterceptor).addPathPatterns("/api/**").excludePathPatterns("/admin/*");// 排除的请求路径，排除静态资源路径
+		registry.addInterceptor(tokenInterceptor).excludePathPatterns("/project/admin/login").excludePathPatterns("/project/error");// 排除的请求路径，排除静态资源路径
 //      .addPathPatterns("/api/**")//拦截的访问路径，拦截所有
 //      .excludePathPatterns("/static/*");//排除的请求路径，排除静态资源路径
 
