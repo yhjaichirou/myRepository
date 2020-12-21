@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
+import com.fgw.project.model.po.Group;
 import com.fgw.project.model.po.Menu;
 import com.fgw.project.model.po.Role;
 import com.fgw.project.model.po.User;
@@ -123,7 +125,7 @@ public class UserService {
 					for (int i : menuIdArrs){
 						menuIds.add(i);
 					}
-					List<Menu> menus = menuR.findAllByIdIn(menuIds);
+					List<Menu> menus = menuR.findAllByIdInAndStatus(menuIds,1);
 					List<MenuVo> mvs = coverMenuVo(menus,roleId);
 					return RetKit.okData(mvs);
 				}
@@ -147,6 +149,113 @@ public class UserService {
 		List<Menu> menus = menuR.findAllByStatus(1);
 		List<MenuVo> mvs = coverMenuVo(menus,1);
 		return RetKit.okData(mvs);
+	}
+
+
+	public RetKit getRoles() {
+//		Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
+		List<Role> rs = roleR.findAllByStatus(1);
+		return RetKit.okData(rs);
+	}
+
+
+	public RetKit addRole(String param) {
+		String roleName = JSONObject.parseObject(param).getString("roleName");
+		String rolePrimary = JSONObject.parseObject(param).getString("rolePrimary");
+		String roleDescribe = JSONObject.parseObject(param).getString("roleDescribe");
+		String menus = JSONObject.parseObject(param).getString("menus");
+		Role r = new Role();
+		r.setRoleName(roleName);
+		r.setRoleDescribe(roleDescribe);
+		r.setStatus(1);
+		r.setMenus(menus);
+		r.setRolePrimary(rolePrimary);
+		roleR.save(r);
+		return RetKit.okData(r.getId());
+	}
+
+
+	public RetKit updateRole(String param) {
+		Integer id = JSONObject.parseObject(param).getInteger("id");
+		String roleName = JSONObject.parseObject(param).getString("roleName");
+		String rolePrimary = JSONObject.parseObject(param).getString("rolePrimary");
+		String roleDescribe = JSONObject.parseObject(param).getString("roleDescribe");
+		String menus = JSONObject.parseObject(param).getString("menus");
+		Optional<Role> r_ = roleR.findById(id);
+		if(r_.isPresent()) {
+			Role r = r_.get();
+			r.setRoleName(roleName);
+			r.setRoleDescribe(roleDescribe);
+			r.setStatus(1);
+			r.setMenus(menus);
+			r.setRolePrimary(rolePrimary);
+			roleR.save(r);
+			return RetKit.ok("修改成功！");
+		}
+		return RetKit.fail("修改失败！");
+	}
+
+
+	public RetKit getUsers(String orgIdstr) {
+		if(StrKit.isBlank(orgIdstr)) {
+			return RetKit.fail("参数不正确！");
+		}
+		Integer orgId = Integer.parseInt(orgIdstr);
+		List<Map<String, Object>> rs = new ArrayList<>();
+		if (orgId == 0) {
+			rs = userR.getAllByStatus();
+		}else {
+			rs = userR.getAllByOrgIdAndStatus(orgId);
+		}
+		return RetKit.okData(rs);
+	}
+
+
+	public RetKit addUser(String param) {
+		String account = JSONObject.parseObject(param).getString("account");
+		String password = JSONObject.parseObject(param).getString("password");
+		String userName = JSONObject.parseObject(param).getString("userName");
+		Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
+		Integer roleId = JSONObject.parseObject(param).getInteger("roleId");
+		List<User> us = userR.findAllByAccount(account); 
+		if(us.size()>0) {
+			return RetKit.fail("用户已存在！");
+		}
+		User r = new User();
+		r.setAccount(account);
+		r.setPassword(password);
+		r.setStatus(1);
+		r.setRoleId(roleId);
+		r.setName(userName);
+		r.setOrgId(orgId);
+		userR.save(r);
+		return RetKit.okData(r.getId());
+	}
+
+
+	public RetKit updateUser(String param) {
+		Integer id = JSONObject.parseObject(param).getInteger("id");
+		String account = JSONObject.parseObject(param).getString("account");
+		String password = JSONObject.parseObject(param).getString("password");
+		String userName = JSONObject.parseObject(param).getString("userName");
+		Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
+		Optional<User> r_ = userR.findById(id);
+		if(r_.isPresent()) {
+			User r = r_.get();
+			r.setAccount(account);
+			r.setPassword(password);
+			r.setStatus(1);
+			r.setName(userName);
+			userR.save(r);
+			return RetKit.ok("修改成功！");
+		}
+		return RetKit.fail("用户不存在！");
+	}
+
+
+	public RetKit deleteUser(Integer userId) {
+		userR.deleteById(userId);
+		return RetKit.ok("删除成功！");
 	}
 	
 }

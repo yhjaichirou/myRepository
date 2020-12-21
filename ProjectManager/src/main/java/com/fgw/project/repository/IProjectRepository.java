@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.fgw.project.model.po.Group;
+import com.fgw.project.model.po.Project;
 
 /**
  * 用户表
@@ -13,8 +14,8 @@ import com.fgw.project.model.po.Group;
  * @date 2020年12月17日
  */
 @Repository
-public interface IGroupRepository extends JpaRepository<Group , Integer> {
+public interface IProjectRepository extends JpaRepository<Project , Integer> {
 
-	List<Group> findAllByOrgId(Integer orgId);
+	List<Project> findAllByOrgIdAndStatus(Integer orgId,Integer status);
 
 }

@@ -5,9 +5,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -81,11 +84,48 @@ public class AdminController {
 	
 	/**
 	 * 	角色
-	 * @param request
-	 * @return
 	 */
 	@RequestMapping("/getAllRouters")
-	public RetKit getAllRouters(HttpServletRequest request) {
+	public RetKit getAllRouters() {
 		return userService.getAllRouters();
 	}
+	
+	@RequestMapping("/getRoles")
+	public RetKit getRoles() {
+		return userService.getRoles();
+	}
+	
+	@RequestMapping("/addRole")
+	public RetKit addRole(@RequestBody String param) {
+		return userService.addRole(param);
+	}
+	
+	@RequestMapping("/updateRole")
+	public RetKit updateRole(@RequestBody String param) {
+		return userService.updateRole(param);
+	}
+	
+	/**
+	 * 用户管理
+	 */
+	@RequestMapping("/getUsers")
+	public RetKit getUsers(@PathParam(value = "orgId") String orgId ) {
+		return userService.getUsers(orgId);
+	}
+	
+	@RequestMapping("/addUser")
+	public RetKit addUser(@RequestBody String param) {
+		return userService.addUser(param);
+	}
+	
+	@RequestMapping("/updateUser")
+	public RetKit updateUser(@RequestBody String param) {
+		return userService.updateUser(param);
+	}
+	
+	@DeleteMapping("/deleteUser/{userId}")
+	public RetKit deleteUser(@PathVariable String userId) {
+		return userService.deleteUser(Integer.parseInt(userId));
+	}
+	
 }

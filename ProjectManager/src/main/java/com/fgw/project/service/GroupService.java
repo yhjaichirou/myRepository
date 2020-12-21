@@ -44,15 +44,19 @@ public class GroupService {
 
 	public RetKit updateGroup(String param) {
 		String id = JSONObject.parseObject(param).getString("id");
-		Group g = groupR.findById(id);
-		String groupName = JSONObject.parseObject(param).getString("groupName");
-		String groupDecript = JSONObject.parseObject(param).getString("groupDecript");
-		Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
-		g.setGroupName(groupName);
-		g.setGroupDecript(groupDecript);
-		g.setOrgId(orgId);
-		groupR.save(g);
-		return RetKit.ok("修改成功！");
+		Optional<Group> g_ = groupR.findById(Integer.parseInt(id));
+		if(g_.isPresent()) {
+			Group g = g_.get();
+			String groupName = JSONObject.parseObject(param).getString("groupName");
+			String groupDecript = JSONObject.parseObject(param).getString("groupDecript");
+			Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
+			g.setGroupName(groupName);
+			g.setGroupDecript(groupDecript);
+			g.setOrgId(orgId);
+			groupR.save(g);
+			return RetKit.ok("修改成功！");
+		}
+		return RetKit.fail("分组不存在！");
 	}
 
 	public RetKit deleteGroup(int id) {

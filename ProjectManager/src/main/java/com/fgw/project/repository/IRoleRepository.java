@@ -21,5 +21,7 @@ import com.fgw.project.model.po.Role;
  */
 @Repository
 public interface IRoleRepository extends JpaRepository<Role	, Integer> {
+
+	List<Role> findAllByStatus(Integer status);
 	
 }
