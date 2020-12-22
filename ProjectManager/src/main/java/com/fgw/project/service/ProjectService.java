@@ -48,6 +48,11 @@ public class ProjectService {
 		}
 		return RetKit.okData(gs);
 	}
+	
+	public RetKit getProject(String projectId) {
+		Map<String,Object> gs = projectR.getProjectById(Integer.parseInt(projectId));
+		return RetKit.okData(gs);
+	}
 
 	public RetKit addProject(String param) {
 		JSONObject jb = JSONObject.parseObject(param);
@@ -194,6 +199,8 @@ public class ProjectService {
 		projectR.deleteById(id);
 		return RetKit.ok("删除成功！");
 	}
+
+
 
 	
 	

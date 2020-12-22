@@ -36,12 +36,12 @@ public class ProjectController {
 		return proService.getAllProject(orgId,status,search);
 	}
 	
-	@RequestMapping("/addProject")
-	public RetKit addProject(@RequestBody String param) {
-		if(StrKit.isBlank(param)) {
+	@RequestMapping("/getProject/{projectId}")
+	public RetKit getProject(@PathVariable String projectId) {
+		if(StrKit.isBlank(projectId)) {
 			return RetKit.fail("参数不正确！");
 		}
-		return proService.addProject(param);
+		return proService.getProject(projectId);
 	}
 	
 }
