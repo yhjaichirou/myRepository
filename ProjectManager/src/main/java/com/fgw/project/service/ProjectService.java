@@ -20,6 +20,7 @@ import com.fgw.project.model.po.Project;
 import com.fgw.project.repository.IGroupRepository;
 import com.fgw.project.repository.IProjectRepository;
 import com.fgw.project.util.RetKit;
+import com.fgw.project.util.StrKit;
 
 /**
  * 项目管理 服务
@@ -32,8 +33,19 @@ public class ProjectService {
 	@Autowired
 	private IProjectRepository projectR;
 
-	public RetKit getPorjects(Integer orgId) {
-		List<Project> gs = projectR.findAllByOrgIdAndStatus(orgId, 1);
+	public RetKit getAllProject(Integer orgId,String status,String search) {
+		List<Map<String,Object>> gs = new ArrayList<>();
+		String statusS = "";
+		if(StrKit.notBlank(status)){
+			statusS = status.toString();
+		}else {
+			statusS = "1,2,3";
+		}
+		if(StrKit.notBlank(search)) {
+			gs = projectR.getAllProjectOfOrgIdAndSearch(orgId, statusS,search);
+		}else {
+			gs = projectR.getAllProjectOfOrgId(orgId, statusS);
+		}
 		return RetKit.okData(gs);
 	}
 

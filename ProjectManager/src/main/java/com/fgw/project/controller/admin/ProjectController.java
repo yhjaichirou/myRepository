@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fgw.project.service.GroupService;
 import com.fgw.project.service.ProjectService;
 import com.fgw.project.util.RetKit;
+import com.fgw.project.util.StrKit;
 
 /**
  * 项目接口
@@ -30,9 +31,17 @@ public class ProjectController {
 	@Resource
 	private ProjectService proService;
 	
-	@RequestMapping("/getPorjects")
-	public RetKit getPorjects(@PathParam(value = "orgId") String orgId ) {
-		return proService.getPorjects(Integer.parseInt(orgId));
+	@RequestMapping("/getAllProject")
+	public RetKit getPorjects(@PathParam(value = "orgId") Integer orgId,@PathParam(value = "status") String status,@PathParam(value = "search") String search) {
+		return proService.getAllProject(orgId,status,search);
+	}
+	
+	@RequestMapping("/addProject")
+	public RetKit addProject(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不正确！");
+		}
+		return proService.addProject(param);
 	}
 	
 }
