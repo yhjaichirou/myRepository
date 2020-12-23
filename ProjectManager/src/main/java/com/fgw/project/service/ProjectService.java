@@ -15,10 +15,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fgw.project.model.po.Category;
 import com.fgw.project.model.po.Group;
+import com.fgw.project.model.po.Org;
+import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Project;
+import com.fgw.project.model.vo.ProjectVo;
+import com.fgw.project.repository.ICategoryRepository;
 import com.fgw.project.repository.IGroupRepository;
+import com.fgw.project.repository.IOrgRepository;
+import com.fgw.project.repository.IPeopleRepository;
 import com.fgw.project.repository.IProjectRepository;
+import com.fgw.project.util.BeanKit;
+import com.fgw.project.util.MDateUtil;
 import com.fgw.project.util.RetKit;
 import com.fgw.project.util.StrKit;
 
@@ -32,11 +41,17 @@ public class ProjectService {
 
 	@Autowired
 	private IProjectRepository projectR;
+	@Autowired
+	private IOrgRepository orgR;
+	@Autowired
+	private ICategoryRepository categoryR;
+	@Autowired
+	private IPeopleRepository peopleR;
 
 	public RetKit getAllProject(Integer orgId,String status,String search) {
 		List<Map<String,Object>> gs = new ArrayList<>();
 		String statusS = "";
-		if(StrKit.notBlank(status)){
+		if(StrKit.notBlank(status) && (Integer.parseInt(status))!=0){
 			statusS = status.toString();
 		}else {
 			statusS = "1,2,3";
@@ -46,10 +61,40 @@ public class ProjectService {
 		}else {
 			gs = projectR.getAllProjectOfOrgId(orgId, statusS);
 		}
-		return RetKit.okData(gs);
+		try {
+			List<ProjectVo> pvs = BeanKit.changeToListBean(gs, ProjectVo.class);
+			pvs = pvs.stream().map((ProjectVo pv)->{
+				pv.setCompleteDateStr(MDateUtil.dateToString(pv.getCompleteDate(), MDateUtil.formatDate));
+				pv.setDockingDateStr(MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
+				pv.setExpectedDateStr(MDateUtil.dateToString(pv.getExpectedDate(), MDateUtil.formatDate));
+				pv.setStartDateStr(MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
+				return pv;
+			}).collect(Collectors.toList());
+			return RetKit.okData(pvs);
+		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return RetKit.fail("获取失败！");
 	}
 	
 	public RetKit getProject(String projectId) {
+		Map<String,Object> gs = projectR.getProjectById(Integer.parseInt(projectId));
+		try {
+			ProjectVo pv = BeanKit.changeRecordToBean(gs, ProjectVo.class);
+			pv.setCompleteDateStr(MDateUtil.dateToString(pv.getCompleteDate(), MDateUtil.formatDate));
+			pv.setDockingDateStr(MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
+			pv.setExpectedDateStr(MDateUtil.dateToString(pv.getExpectedDate(), MDateUtil.formatDate));
+			pv.setStartDateStr(MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
+			return RetKit.okData(pv);
+		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return RetKit.okData(gs);
+	}
+	
+	public RetKit clickUpdateStatus(String projectId) {
 		Map<String,Object> gs = projectR.getProjectById(Integer.parseInt(projectId));
 		return RetKit.okData(gs);
 	}
@@ -198,6 +243,34 @@ public class ProjectService {
 	public RetKit deleteGroup(int id) {
 		projectR.deleteById(id);
 		return RetKit.ok("删除成功！");
+	}
+
+	public RetKit getAllFormParam(Integer orgId) {
+		if(orgId ==null) {
+			return RetKit.fail("获取表单参数失败！");
+		}
+		Map<String,Object> rt = new HashMap<>();
+		List<Category> cs = categoryR.findAllByStatus(1);
+		List<People> ps = peopleR.findAllByOrgId(orgId);
+		List<Org> orgs = orgR.findAllByStatus(1);
+		orgs = orgs.stream().filter((Org o)-> !o.getId().equals(orgId)).collect(Collectors.toList());
+		rt.put("categorys", cs);
+		rt.put("peoples", ps);
+		rt.put("orgs", orgs);
+		return RetKit.okData(rt);
+	}
+
+	public RetKit getJoiners(String orgIds) {
+		if(StrKit.isBlank(orgIds)) {
+			return RetKit.fail("获取表单参数失败！");
+		}
+		String[] ids = orgIds.split(",");
+		List<Integer> orgIdList = new ArrayList<>();
+		for (int i = 0; i < ids.length; i++) {
+			orgIdList.add(Integer.parseInt(ids[i]));
+		}
+		List<People> ps = peopleR.findAllByOrgIdIn(orgIdList);
+		return RetKit.okData(ps);
 	}
 
 

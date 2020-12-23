@@ -44,4 +44,31 @@ public class ProjectController {
 		return proService.getProject(projectId);
 	}
 	
+	@RequestMapping("/clickUpdateStatus/{projectId}")
+	public RetKit clickUpdateStatus(@PathVariable String projectId) {
+		if(StrKit.isBlank(projectId)) {
+			return RetKit.fail("参数不正确！");
+		}
+		return proService.clickUpdateStatus(projectId);
+	}
+	
+	@RequestMapping("/getAllFormParam/{orgId}")
+	public RetKit getAllFormParam(@PathVariable Integer orgId) {
+		return proService.getAllFormParam(orgId);
+	}
+	@RequestMapping("/getJoiners/{orgIds}")
+	public RetKit getJoiners(@PathVariable String orgIds) {
+		return proService.getJoiners(orgIds);
+	}
+	
+	
+	@RequestMapping("/addProject")
+	public RetKit addGroup(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不正确！");
+		}
+		return proService.addProject(param);
+	}
+	
+	
 }
