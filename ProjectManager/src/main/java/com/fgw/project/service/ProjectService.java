@@ -15,17 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fgw.project.constant.ProjectStatusEnum;
 import com.fgw.project.model.po.Category;
 import com.fgw.project.model.po.Group;
 import com.fgw.project.model.po.Org;
 import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Project;
+import com.fgw.project.model.po.Task;
 import com.fgw.project.model.vo.ProjectVo;
 import com.fgw.project.repository.ICategoryRepository;
 import com.fgw.project.repository.IGroupRepository;
 import com.fgw.project.repository.IOrgRepository;
 import com.fgw.project.repository.IPeopleRepository;
 import com.fgw.project.repository.IProjectRepository;
+import com.fgw.project.repository.ITaskRepository;
 import com.fgw.project.util.BeanKit;
 import com.fgw.project.util.MDateUtil;
 import com.fgw.project.util.RetKit;
@@ -47,19 +50,21 @@ public class ProjectService {
 	private ICategoryRepository categoryR;
 	@Autowired
 	private IPeopleRepository peopleR;
+	@Autowired
+	private ITaskRepository taskR;
+	
 
 	public RetKit getAllProject(Integer orgId,String status,String search) {
 		List<Map<String,Object>> gs = new ArrayList<>();
-		String statusS = "";
-		if(StrKit.notBlank(status) && (Integer.parseInt(status))!=0){
-			statusS = status.toString();
-		}else {
-			statusS = "1,2,3";
-		}
-		if(StrKit.notBlank(search)) {
+		Integer statusS = Integer.parseInt(status);
+		if(StrKit.notBlank(status) && (Integer.parseInt(status))!=0 && StrKit.notBlank(search)) {
 			gs = projectR.getAllProjectOfOrgIdAndSearch(orgId, statusS,search);
+		}else if(StrKit.notBlank(status) && (Integer.parseInt(status))!=0 && StrKit.isBlank(search)){
+			gs = projectR.getAllProjectOfOrgIdAndStatus(orgId, statusS);
+		}else if((StrKit.isBlank(status) || (Integer.parseInt(status))==0 ) && StrKit.notBlank(search)){
+			gs = projectR.getAllProjectOfOrgIdAndSearch(orgId,search);
 		}else {
-			gs = projectR.getAllProjectOfOrgId(orgId, statusS);
+			gs = projectR.getAllProjectOfOrgId(orgId);
 		}
 		try {
 			List<ProjectVo> pvs = BeanKit.changeToListBean(gs, ProjectVo.class);
@@ -107,7 +112,7 @@ public class ProjectService {
 		String content = jb.getString("name");
 		String number = jb.getString("number");
 		Integer maturity = jb.getInteger("maturity");
-		Date dockingDate = jb.getDate("dockingDate");
+		Date dockingDate = MDateUtil.stringToDate(jb.getString("dockingDate"), MDateUtil.formatDate);
 		String leader = jb.getString("leader");
 		String leadenter = jb.getString("leadenter");
 		String coordinate = jb.getString("coordinate");
@@ -117,8 +122,7 @@ public class ProjectService {
 		Integer process = jb.getInteger("process");
 		String remarks = jb.getString("remarks");
 		String invest = jb.getString("invest");//投资情况
-		Date expectedDate = jb.getDate("expectedDate");
-		Date startDate = jb.getDate("startDate");
+		Date expectedDate = MDateUtil.stringToDate(jb.getString("expectedDate"), MDateUtil.formatDate);
 		String approveCode = jb.getString("approveCode");
 		
 		Integer lxIsComapprove = jb.getInteger("lxIsComapprove");
@@ -171,7 +175,7 @@ public class ProjectService {
 		pro.setRemarks(remarks);
 		pro.setInvest(invest);
 		pro.setExpectedDate(expectedDate);
-		pro.setStartDate(startDate);
+		pro.setStartDate(new Date());
 		pro.setApproveCode(approveCode);
 		pro.setLxIsComapprove(lxIsComapprove);
 		pro.setLxHandleLevel(lxHandleLevel);
@@ -212,7 +216,7 @@ public class ProjectService {
 		pro.setEnterManager(enterManager);
 		pro.setEnterManagerMobile(enterManagerMobile);
 		pro.setStage(stage);
-		pro.setStatus(1);
+		pro.setStatus(ProjectStatusEnum.NEW.getId());
 		
 		
 		
@@ -252,11 +256,14 @@ public class ProjectService {
 		Map<String,Object> rt = new HashMap<>();
 		List<Category> cs = categoryR.findAllByStatus(1);
 		List<People> ps = peopleR.findAllByOrgId(orgId);
+		List<Map<String, Object>> qyList = peopleR.getAllPeopleOfEnter(orgId);
 		List<Org> orgs = orgR.findAllByStatus(1);
 		orgs = orgs.stream().filter((Org o)-> !o.getId().equals(orgId)).collect(Collectors.toList());
 		rt.put("categorys", cs);
 		rt.put("peoples", ps);
 		rt.put("orgs", orgs);
+		rt.put("qys", qyList);
+		
 		return RetKit.okData(rt);
 	}
 
@@ -271,6 +278,34 @@ public class ProjectService {
 		}
 		List<People> ps = peopleR.findAllByOrgIdIn(orgIdList);
 		return RetKit.okData(ps);
+	}
+
+	public RetKit authProject(Integer projectId) {
+		Optional<Project> pr_ = projectR.findById(projectId);
+		if(pr_.isPresent()) {
+			List<Task> tasks = taskR.findAllByProId(projectId);
+			if(tasks.size()<=0) {
+				return RetKit.fail("该项目未添加任何任务项，无法提交审核！");
+			}
+			Project p = pr_.get();
+			p.setStatus(ProjectStatusEnum.APPROVAL.getId());
+			projectR.save(p);
+			return RetKit.ok("提交审核成功！");
+		}
+		return RetKit.fail("提交失败，项目不存在！");
+	}
+
+	public RetKit deleteProject(Integer projectId) {
+		Optional<Project> pr_ = projectR.findById(projectId);
+		if(pr_.isPresent()) {
+			Project p = pr_.get();
+			if(p.getStatus()!=ProjectStatusEnum.NEW.getId()) {
+				return RetKit.fail("项目处于不可删除状态！");
+			}
+			projectR.deleteById(projectId);
+			return RetKit.ok("删除成功！");
+		}
+		return RetKit.fail("提交失败，项目不存在！");
 	}
 
 

@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "org_group")
+@Table(name = "project")
 public class Project implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
