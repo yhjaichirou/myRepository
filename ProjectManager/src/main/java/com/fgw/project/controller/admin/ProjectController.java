@@ -61,7 +61,13 @@ public class ProjectController {
 		return proService.getJoiners(orgIds);
 	}
 	
-	
+	@RequestMapping("/updateProject")
+	public RetKit updateProject(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不正确！");
+		}
+		return proService.addProject(param);
+	}
 	@RequestMapping("/addProject")
 	public RetKit addGroup(@RequestBody String param) {
 		if(StrKit.isBlank(param)) {

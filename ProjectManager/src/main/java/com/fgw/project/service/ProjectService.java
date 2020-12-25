@@ -69,10 +69,10 @@ public class ProjectService {
 		try {
 			List<ProjectVo> pvs = BeanKit.changeToListBean(gs, ProjectVo.class);
 			pvs = pvs.stream().map((ProjectVo pv)->{
-				pv.setCompleteDateStr(MDateUtil.dateToString(pv.getCompleteDate(), MDateUtil.formatDate));
-				pv.setDockingDateStr(MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
-				pv.setExpectedDateStr(MDateUtil.dateToString(pv.getExpectedDate(), MDateUtil.formatDate));
-				pv.setStartDateStr(MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
+				pv.setCompleteDateStr(pv.getCompleteDate()==null?"":MDateUtil.dateToString(pv.getCompleteDate(), MDateUtil.formatDate));
+				pv.setDockingDateStr(pv.getDockingDate()==null?"":MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
+				pv.setExpectedDateStr(pv.getExpectedDate()==null?"":MDateUtil.dateToString(pv.getExpectedDate(), MDateUtil.formatDate));
+				pv.setStartDateStr(pv.getStartDate()==null?"":MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
 				return pv;
 			}).collect(Collectors.toList());
 			return RetKit.okData(pvs);
@@ -87,10 +87,10 @@ public class ProjectService {
 		Map<String,Object> gs = projectR.getProjectById(Integer.parseInt(projectId));
 		try {
 			ProjectVo pv = BeanKit.changeRecordToBean(gs, ProjectVo.class);
-			pv.setCompleteDateStr(MDateUtil.dateToString(pv.getCompleteDate(), MDateUtil.formatDate));
-			pv.setDockingDateStr(MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
-			pv.setExpectedDateStr(MDateUtil.dateToString(pv.getExpectedDate(), MDateUtil.formatDate));
-			pv.setStartDateStr(MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
+			pv.setCompleteDateStr(pv.getCompleteDate()==null?"":MDateUtil.dateToString(pv.getCompleteDate(), MDateUtil.formatDate));
+			pv.setDockingDateStr(pv.getDockingDate()==null?"":MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
+			pv.setExpectedDateStr(pv.getExpectedDate()==null?"":MDateUtil.dateToString(pv.getExpectedDate(), MDateUtil.formatDate));
+			pv.setStartDateStr(pv.getStartDate()==null?"":MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
 			return RetKit.okData(pv);
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
 			// TODO Auto-generated catch block
@@ -106,6 +106,7 @@ public class ProjectService {
 
 	public RetKit addProject(String param) {
 		JSONObject jb = JSONObject.parseObject(param);
+		Integer id = jb.getInteger("id");
 		String name = jb.getString("name");
 		Integer orgId = jb.getInteger("orgId");
 		Integer industryCategory = jb.getInteger("industryCategory");
@@ -113,9 +114,9 @@ public class ProjectService {
 		String number = jb.getString("number");
 		Integer maturity = jb.getInteger("maturity");
 		Date dockingDate = MDateUtil.stringToDate(jb.getString("dockingDate"), MDateUtil.formatDate);
-		String leader = jb.getString("leader");
-		String leadenter = jb.getString("leadenter");
-		String coordinate = jb.getString("coordinate");
+		Integer leader = jb.getInteger("leader");
+		Integer leadenter = jb.getInteger("leadenter");
+		Integer coordinate = jb.getInteger("coordinate");
 		String taskPrefix = jb.getString("taskPrefix");
 		String visibleRange = jb.getString("visibleRange");
 		String joiners = jb.getString("joiners");
@@ -151,16 +152,24 @@ public class ProjectService {
 		Integer rfIsSendappdepart = jb.getInteger("rfIsSendappdepart");
 		String otherBl = jb.getString("otherBl");
 		String diffAndProblem = jb.getString("diffAndProblem");
-		String proManager = jb.getString("proManager");
+		Integer proManager = jb.getInteger("proManager");
 		String proManagerMobile = jb.getString("proManagerMobile");
-		String enterManager = jb.getString("enterManager");
+		Integer enterManager = jb.getInteger("enterManager");
 		String enterManagerMobile = jb.getString("enterManagerMobile");
 		String stage = jb.getString("stage");
 		
 		Project pro = new Project();
+		if(id!=null) {
+			Optional<Project> pro_ = projectR.findById(id);
+			if(pro_.isPresent()) {
+				pro = pro_.get();
+			}
+		}else {
+			pro.setOrgId(orgId);
+			pro.setStartDate(new Date());
+		}
 		pro.setName(name);
 		pro.setIndustryCategory(industryCategory);
-		pro.setOrgId(orgId);
 		pro.setContent(content);
 		pro.setNumber(number);
 		pro.setMaturity(maturity);
@@ -175,8 +184,8 @@ public class ProjectService {
 		pro.setRemarks(remarks);
 		pro.setInvest(invest);
 		pro.setExpectedDate(expectedDate);
-		pro.setStartDate(new Date());
 		pro.setApproveCode(approveCode);
+		
 		pro.setLxIsComapprove(lxIsComapprove);
 		pro.setLxHandleLevel(lxHandleLevel);
 		pro.setLxIsSendappdepart(lxIsSendappdepart);
@@ -227,22 +236,22 @@ public class ProjectService {
 		return RetKit.okData(pro.getId());
 	}
 
-	public RetKit updateGroup(String param) {
-		String id = JSONObject.parseObject(param).getString("id");
-		Optional<Project> g_ = projectR.findById(Integer.parseInt(id));
-		if(g_.isPresent()) {
-			Project g = g_.get();
-			String groupName = JSONObject.parseObject(param).getString("groupName");
-			String groupDecript = JSONObject.parseObject(param).getString("groupDecript");
-			Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
-//			g.setGroupName(groupName);
-//			g.setGroupDecript(groupDecript);
-			g.setOrgId(orgId);
-			projectR.save(g);
-			return RetKit.ok("修改成功！");
-		}
-		return RetKit.fail("项目不存在！");
-	}
+//	public RetKit updateGroup(String param) {
+//		String id = JSONObject.parseObject(param).getString("id");
+//		Optional<Project> g_ = projectR.findById(Integer.parseInt(id));
+//		if(g_.isPresent()) {
+//			Project g = g_.get();
+//			String groupName = JSONObject.parseObject(param).getString("groupName");
+//			String groupDecript = JSONObject.parseObject(param).getString("groupDecript");
+//			Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
+////			g.setGroupName(groupName);
+////			g.setGroupDecript(groupDecript);
+//			g.setOrgId(orgId);
+//			projectR.save(g);
+//			return RetKit.ok("修改成功！");
+//		}
+//		return RetKit.fail("项目不存在！");
+//	}
 
 	public RetKit deleteGroup(int id) {
 		projectR.deleteById(id);

@@ -11,9 +11,9 @@ public class ProjectVo {
 	private String number;
 	private Integer maturity;//项目成熟度
 	private Date dockingDate;//对接日期
-	private String leader;//牵头领导
-	private String leadenter;//牵头单位
-	private String coordinate;//协调负责人
+	private Integer leader;//牵头领导
+	private Integer leadenter;//牵头单位
+	private Integer coordinate;//协调负责人
 	private String taskPrefix;//项目划分任务前缀   项目代号
 	private String visibleRange;//显示范围
 	private String joiners;//项目参加人员
@@ -54,17 +54,20 @@ public class ProjectVo {
 	
 	private String otherBl;//其他需要解决的手续问题
 	private String diffAndProblem;//存在的困难和问题
-	private String proManager;//项目主管部门联系人
+	private Integer proManager;//项目主管部门联系人
 	private String proManagerMobile;//项目主管部门联系人电话
-	private String enterManager;
+	private Integer enterManager;
 	private String enterManagerMobile;
 	private String stage;//项目建设阶段
 	private Integer status;//
 	private Date completeDate;//完成时间
 	private Integer orgId;
 	
+	//外键
 	private String orgName;
 	private String categoryName;
+	private String leaderName;
+	
 	private String dockingDateStr;
 	private String expectedDateStr;
 	private String startDateStr;
@@ -111,22 +114,22 @@ public class ProjectVo {
 	public void setDockingDate(Date dockingDate) {
 		this.dockingDate = dockingDate;
 	}
-	public String getLeader() {
+	public Integer getLeader() {
 		return leader;
 	}
-	public void setLeader(String leader) {
+	public void setLeader(Integer leader) {
 		this.leader = leader;
 	}
-	public String getLeadenter() {
+	public Integer getLeadenter() {
 		return leadenter;
 	}
-	public void setLeadenter(String leadenter) {
+	public void setLeadenter(Integer leadenter) {
 		this.leadenter = leadenter;
 	}
-	public String getCoordinate() {
+	public Integer getCoordinate() {
 		return coordinate;
 	}
-	public void setCoordinate(String coordinate) {
+	public void setCoordinate(Integer coordinate) {
 		this.coordinate = coordinate;
 	}
 	public String getTaskPrefix() {
@@ -339,10 +342,10 @@ public class ProjectVo {
 	public void setDiffAndProblem(String diffAndProblem) {
 		this.diffAndProblem = diffAndProblem;
 	}
-	public String getProManager() {
+	public Integer getProManager() {
 		return proManager;
 	}
-	public void setProManager(String proManager) {
+	public void setProManager(Integer proManager) {
 		this.proManager = proManager;
 	}
 	public String getProManagerMobile() {
@@ -351,10 +354,10 @@ public class ProjectVo {
 	public void setProManagerMobile(String proManagerMobile) {
 		this.proManagerMobile = proManagerMobile;
 	}
-	public String getEnterManager() {
+	public Integer getEnterManager() {
 		return enterManager;
 	}
-	public void setEnterManager(String enterManager) {
+	public void setEnterManager(Integer enterManager) {
 		this.enterManager = enterManager;
 	}
 	public String getEnterManagerMobile() {
@@ -442,5 +445,11 @@ public class ProjectVo {
 	}
 	public void setTdIsSendappdepart(Integer tdIsSendappdepart) {
 		this.tdIsSendappdepart = tdIsSendappdepart;
+	}
+	public String getLeaderName() {
+		return leaderName;
+	}
+	public void setLeaderName(String leaderName) {
+		this.leaderName = leaderName;
 	}
 }

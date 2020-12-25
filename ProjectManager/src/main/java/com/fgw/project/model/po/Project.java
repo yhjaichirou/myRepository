@@ -22,9 +22,9 @@ public class Project implements java.io.Serializable {
 	private String number;
 	private Integer maturity;//项目成熟度
 	private Date dockingDate;//对接日期
-	private String leader;//牵头领导
-	private String leadenter;//牵头单位
-	private String coordinate;//协调负责人
+	private Integer leader;//牵头领导
+	private Integer leadenter;//牵头单位
+	private Integer coordinate;//协调负责人
 	private String taskPrefix;//项目划分任务前缀
 	private String visibleRange;//显示范围
 	private String joiners;//项目参加人员
@@ -65,9 +65,9 @@ public class Project implements java.io.Serializable {
 	
 	private String otherBl;//其他需要解决的手续问题
 	private String diffAndProblem;//存在的困难和问题
-	private String proManager;//项目主管部门联系人
+	private Integer proManager;//项目主管部门联系人
 	private String proManagerMobile;//项目主管部门联系人电话
-	private String enterManager;
+	private Integer enterManager;
 	private String enterManagerMobile;
 	private String stage;//项目建设阶段
 	private Integer status;//
@@ -136,26 +136,26 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "leader")
-	public String getLeader() {
+	public Integer getLeader() {
 		return leader;
 	}
-	public void setLeader(String leader) {
+	public void setLeader(Integer leader) {
 		this.leader = leader;
 	}
 
 	@Column(name = "leadenter")
-	public String getLeadenter() {
+	public Integer getLeadenter() {
 		return leadenter;
 	}
-	public void setLeadenter(String leadenter) {
+	public void setLeadenter(Integer leadenter) {
 		this.leadenter = leadenter;
 	}
 
 	@Column(name = "coordinate")
-	public String getCoordinate() {
+	public Integer getCoordinate() {
 		return coordinate;
 	}
-	public void setCoordinate(String coordinate) {
+	public void setCoordinate(Integer coordinate) {
 		this.coordinate = coordinate;
 	}
 
@@ -440,11 +440,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "pro_manager")
-	public String getProManager() {
+	public Integer getProManager() {
 		return proManager;
 	}
 
-	public void setProManager(String proManager) {
+	public void setProManager(Integer proManager) {
 		this.proManager = proManager;
 	}
 
@@ -458,10 +458,10 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "enter_manager")
-	public String getEnterManager() {
+	public Integer getEnterManager() {
 		return enterManager;
 	}
-	public void setEnterManager(String enterManager) {
+	public void setEnterManager(Integer enterManager) {
 		this.enterManager = enterManager;
 	}
 
