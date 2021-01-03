@@ -18,7 +18,9 @@ import com.fgw.project.model.po.Project;
  */
 @Repository
 public interface IProjectRepository extends JpaRepository<Project , Integer> {
-
+	
+	List<Project> findAllByOrgId(Integer orgId);
+	
 	List<Project> findAllByOrgIdAndStatus(Integer orgId,Integer status);
 
 	@Query(value="SELECT "
@@ -120,12 +122,19 @@ public interface IProjectRepository extends JpaRepository<Project , Integer> {
 			+ " p.rf_is_bl as rfIsBl,p.rf_handle_level as rf_handleLevel,p.rf_is_sendappdepart as rfIsSendappdepart,"
 			+ " p.other_bl as otherBl,p.diff_and_problem as diffAndProblem,p.pro_manager as proManager,"
 			+ " p.pro_manager_mobile as proManagerMobile,p.stage,p.status,p.complete_date as completeDate,   "
-			+ " o.name as orgName , ic.category_name as categoryName,pel1.name as leaderName "
+			+ " o.name as orgName , ic.category_name as categoryName,pel1.name as leaderName ,o2.name as leadenterName ,pel2.name as coordinateName ,"
+			+ " pel3.name as proManagerName , pel4.name as enterManagerName "
 			+ " FROM project p "
 			+ " LEFT JOIN org o on o.id = p.org_id "
+			+ " LEFT JOIN org o2 on o2.id = p.leadenter "
 			+ " LEFT JOIN industry_category ic on ic.id = p.industry_category "
 			+ " LEFT JOIN people pel1 on pel1.id = p.leader "
+			+ " LEFT JOIN people pel2 on pel2.id = p.coordinate "
+			+ " LEFT JOIN people pel3 on pel3.id = p.pro_manager "
+			+ " LEFT JOIN people pel4 on pel4.id = p.enter_manager "
 			+ " WHERE p.id=:id ",nativeQuery=true)
 	Map<String, Object> getProjectById(Integer id);
+
+	
 	
 }

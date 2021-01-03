@@ -20,7 +20,7 @@ public interface IPeopleRepository extends JpaRepository<People , Integer> {
 
 	List<People> findAllByOrgId(Integer orgId);
 
-	List<People> findAllByOrgIdIn(List<Integer> orgIdList);
+	List<People> findAllByOrgIdInAndStatus(List<Integer> orgIdList,Integer status);
 
 	@Query(value="SELECT "
 			+ " p.id,p.name,p.mobile,p.org_id as orgId,p.sex,p.job,p.age,p.status,p.openid"
@@ -28,4 +28,10 @@ public interface IPeopleRepository extends JpaRepository<People , Integer> {
 			+ " LEFT JOIN org o on o.id = p.org_id "
 			+ " WHERE o.property = 3 AND p.status=1 AND o.pid=:orgId ",nativeQuery=true)
 	List<Map<String, Object>> getAllPeopleOfEnter(@Param("orgId")Integer orgId);
+
+	@Query(value="SELECT * FROM people "
+			+ " WHERE id=:id ",nativeQuery=true)
+	People getById(@Param("id")Integer id);
+
+	List<People> findAllByOrgIdAndStatus(Integer orgId,Integer status);
 }

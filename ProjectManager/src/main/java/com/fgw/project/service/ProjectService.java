@@ -1,5 +1,6 @@
 package com.fgw.project.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -12,10 +13,12 @@ import java.util.stream.Collectors;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.ProjectedPayload;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fgw.project.constant.ProjectStatusEnum;
+import com.fgw.project.constant.TaskStatusEnum;
 import com.fgw.project.model.po.Category;
 import com.fgw.project.model.po.Group;
 import com.fgw.project.model.po.Org;
@@ -23,11 +26,13 @@ import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Project;
 import com.fgw.project.model.po.Task;
 import com.fgw.project.model.vo.ProjectVo;
+import com.fgw.project.model.vo.TaskVo;
 import com.fgw.project.repository.ICategoryRepository;
 import com.fgw.project.repository.IGroupRepository;
 import com.fgw.project.repository.IOrgRepository;
 import com.fgw.project.repository.IPeopleRepository;
 import com.fgw.project.repository.IProjectRepository;
+import com.fgw.project.repository.IShbRepository;
 import com.fgw.project.repository.ITaskRepository;
 import com.fgw.project.util.BeanKit;
 import com.fgw.project.util.MDateUtil;
@@ -52,15 +57,33 @@ public class ProjectService {
 	private IPeopleRepository peopleR;
 	@Autowired
 	private ITaskRepository taskR;
+	@Autowired
+	private IShbRepository shbR;
 	
+	public RetKit getAllMsg(Integer orgId) {
+		Map<String,Object> rt = new HashMap<>();
+		List<Project> sp = projectR.findAllByOrgId(orgId);
+		List<Project> spc = sp.stream().filter((Project o)-> o.getStatus().equals(ProjectStatusEnum.COMPLETE.getId())).collect(Collectors.toList());
+		BigDecimal allInvest = new BigDecimal(0);
+		for (Project project : sp) {
+			String ii= StrKit.isBlank(project.getInvest())?"0":project.getInvest();
+			BigDecimal ss =new BigDecimal(ii);
+			allInvest = allInvest.add(ss);
+		}
+		List<People> allPeople = peopleR.findAllByOrgId(orgId);
+		rt.put("allProject", sp.size());
+		rt.put("allInvest", allInvest);
+		rt.put("allComProject", spc.size());
+		rt.put("allPeople", allPeople.size());
+		return RetKit.okData(rt);
+	}
 
 	public RetKit getAllProject(Integer orgId,String status,String search) {
 		List<Map<String,Object>> gs = new ArrayList<>();
-		Integer statusS = Integer.parseInt(status);
 		if(StrKit.notBlank(status) && (Integer.parseInt(status))!=0 && StrKit.notBlank(search)) {
-			gs = projectR.getAllProjectOfOrgIdAndSearch(orgId, statusS,search);
+			gs = projectR.getAllProjectOfOrgIdAndSearch(orgId, Integer.parseInt(status),search);
 		}else if(StrKit.notBlank(status) && (Integer.parseInt(status))!=0 && StrKit.isBlank(search)){
-			gs = projectR.getAllProjectOfOrgIdAndStatus(orgId, statusS);
+			gs = projectR.getAllProjectOfOrgIdAndStatus(orgId, Integer.parseInt(status));
 		}else if((StrKit.isBlank(status) || (Integer.parseInt(status))==0 ) && StrKit.notBlank(search)){
 			gs = projectR.getAllProjectOfOrgIdAndSearch(orgId,search);
 		}else {
@@ -73,8 +96,9 @@ public class ProjectService {
 				pv.setDockingDateStr(pv.getDockingDate()==null?"":MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
 				pv.setExpectedDateStr(pv.getExpectedDate()==null?"":MDateUtil.dateToString(pv.getExpectedDate(), MDateUtil.formatDate));
 				pv.setStartDateStr(pv.getStartDate()==null?"":MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
+				pv.setStatusStr(ProjectStatusEnum.getByValue(pv.getStatus()).getText());
 				return pv;
-			}).collect(Collectors.toList());
+			}).sorted(Comparator.comparing(ProjectVo::getStartDate)).collect(Collectors.toList());
 			return RetKit.okData(pvs);
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
 			// TODO Auto-generated catch block
@@ -91,12 +115,163 @@ public class ProjectService {
 			pv.setDockingDateStr(pv.getDockingDate()==null?"":MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
 			pv.setExpectedDateStr(pv.getExpectedDate()==null?"":MDateUtil.dateToString(pv.getExpectedDate(), MDateUtil.formatDate));
 			pv.setStartDateStr(pv.getStartDate()==null?"":MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
+			pv.setMaturityStr(pv.getMaturity().equals(1)?"加快前期":pv.getMaturity().equals(2)?"新开工":pv.getMaturity().equals(3)?"续建":"竣工");
+			String vs = pv.getVisibleRange();
+			String visibleRangeStr = "";
+			if(StrKit.notBlank(vs)) {
+				vs = vs.substring(1,vs.length()-1);
+				for (String j : vs.split(",")) {
+					Org p = orgR.getById(Integer.parseInt(j));
+					if(p!=null) {
+						visibleRangeStr += "、,"+p.getName();
+					}
+				}
+			}
+			pv.setVisibleRangeStr(StrKit.notBlank(visibleRangeStr)?visibleRangeStr.substring(1) : visibleRangeStr);
+			String jos = pv.getJoiners();
+			String joinersStr = "";
+			if(StrKit.notBlank(jos)) {
+				jos = jos.substring(1,jos.length()-1);
+				for (String j : jos.split(",")) {
+					People p = peopleR.getById(Integer.parseInt(j));
+					if(p!=null) {
+						joinersStr += "、,"+p.getName();
+					}
+				}
+			}
+			pv.setJoinersStr(StrKit.notBlank(joinersStr)?joinersStr.substring(1) : joinersStr);
 			return RetKit.okData(pv);
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return RetKit.fail(e.getMessage());
 		}
-		return RetKit.okData(gs);
+	}
+	
+	public RetKit getProjectAboutSHB(Integer projectId) {
+		Project p = projectR.findById(projectId).get();
+		List<Map<String,Object>> cs_ = taskR.getByProIdAndShb(projectId);
+		try {
+			List<Map<String,Object>> rt = new ArrayList<>();
+			List<TaskVo> cs = BeanKit.changeToListBean(cs_, TaskVo.class);
+			for (TaskVo taskVo : cs) {
+				Map<String,Object> rtm = new HashMap<>();
+				rtm.put("number",taskVo.getShb());
+				rtm.put("name",taskVo.getShbName());
+				rtm.put("setp1",taskVo.getStep1());
+				rtm.put("setp2",taskVo.getStep2());
+				rtm.put("setp3",taskVo.getStep3());
+				int i = 0;
+				switch (taskVo.getShb()) {
+				case 1:
+					if(p.getLxIsComapprove()!=null) {
+						i = 1;
+					}
+					if(p.getLxHandleLevel()!=null) {
+						i = 2;
+					}
+					if(p.getLxIsSendappdepart()!=null) {
+						i = 3;
+					}
+					break;
+				case 2:
+					if(p.getYdcardIsHascard()!=null) {
+						i = 1;
+					}
+					if(p.getYdcardHandleLevel()!=null) {
+						i = 2;
+					}
+					if(p.getYdcardIsSendappdepart()!=null) {
+						i = 3;
+					}
+					break;
+				case 3:
+					if(p.getEnergyIsCensor()!=null) {
+						i = 1;
+					}
+					if(p.getEnergyHandleLevel()!=null) {
+						i = 2;
+					}
+					if(p.getEnergyIsSendappdepart()!=null) {
+						i = 3;
+					}
+					break;
+				case 4:
+					if(p.getLcIsBl()!=null) {
+						i = 1;
+					}
+					if(p.getLcHandleLevel()!=null) {
+						i = 2;
+					}
+					if(p.getLcIsSendappdepart()!=null) {
+						i = 3;
+					}
+					break;
+				case 5:
+					if(p.getTdIsBl()!=null) {
+						i = 1;
+					}
+					if(p.getTdHandleLevel()!=null) {
+						i = 2;
+					}
+					if(p.getTdIsSendappdepart()!=null) {
+						i = 3;
+					}
+					break;
+				case 6:
+					if(p.getEnvirIsBl()!=null) {
+						i = 1;
+					}
+					if(p.getEnvirHandleLevel()!=null) {
+						i = 2;
+					}
+					if(p.getEnvirIsSendappdepart()!=null) {
+						i = 3;
+					}
+					break;
+				case 7:
+					if(p.getSgIsBl()!=null) {
+						i = 1;
+					}
+					if(p.getSgHandleLevel()!=null) {
+						i = 2;
+					}
+					if(p.getSgIsSendappdepart()!=null) {
+						i = 3;
+					}
+					break;
+				case 8:
+					if(p.getXfIsBl()!=null) {
+						i = 1;
+					}
+					if(p.getXfHandleLevel()!=null) {
+						i = 2;
+					}
+					if(p.getXfIsSendappdepart()!=null) {
+						i = 3;
+					}
+					break;
+				case 9:
+					if(p.getRfIsBl()!=null) {
+						i = 1;
+					}
+					if(p.getRfHandleLevel()!=null) {
+						i = 2;
+					}
+					if(p.getRfIsSendappdepart()!=null) {
+						i = 3;
+					}
+					break;
+				default:
+					break;
+				}
+				rtm.put("index",i);
+				rt.add(rtm);
+			}
+			return RetKit.okData(rt);
+		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
+			e.printStackTrace();
+			return RetKit.fail(e.getMessage());
+		}
 	}
 	
 	public RetKit clickUpdateStatus(String projectId) {
@@ -228,7 +403,6 @@ public class ProjectService {
 		pro.setStatus(ProjectStatusEnum.NEW.getId());
 		
 		
-		
 //		pro.setGroupName(groupName);
 //		pro.setGroupDecript(groupDecript);
 //		pro.setOrgId(orgId);
@@ -275,6 +449,11 @@ public class ProjectService {
 		
 		return RetKit.okData(rt);
 	}
+	
+	public RetKit getAllOrgs() {
+		List<Org> orgs = orgR.findAllByStatus(1);
+		return RetKit.okData(orgs);
+	}
 
 	public RetKit getJoiners(String orgIds) {
 		if(StrKit.isBlank(orgIds)) {
@@ -285,7 +464,7 @@ public class ProjectService {
 		for (int i = 0; i < ids.length; i++) {
 			orgIdList.add(Integer.parseInt(ids[i]));
 		}
-		List<People> ps = peopleR.findAllByOrgIdIn(orgIdList);
+		List<People> ps = peopleR.findAllByOrgIdInAndStatus(orgIdList,1);
 		return RetKit.okData(ps);
 	}
 
@@ -316,6 +495,8 @@ public class ProjectService {
 		}
 		return RetKit.fail("提交失败，项目不存在！");
 	}
+
+
 
 
 

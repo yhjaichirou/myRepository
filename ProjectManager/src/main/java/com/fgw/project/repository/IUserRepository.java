@@ -30,7 +30,7 @@ public interface IUserRepository extends JpaRepository<User	, Integer> {
 	
 	//系统用户登录
 	@Query(value="SELECT u.id,u.name as userName,u.account,u.status,u.org_id as orgId, u.token,u.role_id as roleId,u.group_id as groupId,"
-			+ "ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName,o.name as orgName "
+			+ "ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName,o.name as orgName,o.property,o.type "
 			+ " FROM admin_user u"
 			+ " LEFT JOIN admin_role ro on u.role_id = ro.id"
 			+ " LEFT JOIN org o on u.org_id = o.id"

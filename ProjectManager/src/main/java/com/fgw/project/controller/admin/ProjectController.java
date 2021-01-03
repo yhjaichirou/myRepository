@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.fgw.project.service.GroupService;
 import com.fgw.project.service.ProjectService;
+import com.fgw.project.service.TaskService;
 import com.fgw.project.util.RetKit;
 import com.fgw.project.util.StrKit;
 
@@ -30,6 +31,13 @@ public class ProjectController {
 
 	@Resource
 	private ProjectService proService;
+	@Resource
+	private TaskService taskService;
+	
+	@RequestMapping("/getAllMsg/{orgId}")
+	public RetKit getAllMsg(@PathVariable Integer orgId) {
+		return proService.getAllMsg(orgId);
+	}
 	
 	@RequestMapping("/getAllProject")
 	public RetKit getPorjects(@PathParam(value = "orgId") Integer orgId,@PathParam(value = "status") String status,@PathParam(value = "search") String search) {
@@ -44,6 +52,14 @@ public class ProjectController {
 		return proService.getProject(projectId);
 	}
 	
+	@RequestMapping("/getProjectAboutSHB/{projectId}")
+	public RetKit getProjectAboutSHB(@PathVariable Integer projectId) {
+		if(projectId==null) {
+			return RetKit.fail("参数不正确！");
+		}
+		return proService.getProjectAboutSHB(projectId);
+	}
+	
 	@RequestMapping("/clickUpdateStatus/{projectId}")
 	public RetKit clickUpdateStatus(@PathVariable String projectId) {
 		if(StrKit.isBlank(projectId)) {
@@ -56,6 +72,11 @@ public class ProjectController {
 	public RetKit getAllFormParam(@PathVariable Integer orgId) {
 		return proService.getAllFormParam(orgId);
 	}
+	@RequestMapping("/getAllOrgs")
+	public RetKit getAllOrgs() {
+		return proService.getAllOrgs();
+	}
+	
 	@RequestMapping("/getJoiners/{orgIds}")
 	public RetKit getJoiners(@PathVariable String orgIds) {
 		return proService.getJoiners(orgIds);
@@ -69,7 +90,7 @@ public class ProjectController {
 		return proService.addProject(param);
 	}
 	@RequestMapping("/addProject")
-	public RetKit addGroup(@RequestBody String param) {
+	public RetKit addProject(@RequestBody String param) {
 		if(StrKit.isBlank(param)) {
 			return RetKit.fail("参数不正确！");
 		}
@@ -90,4 +111,62 @@ public class ProjectController {
 		}
 		return proService.deleteProject(projectId);
 	}
+	
+	
+	//任务
+	@RequestMapping("/getAllTaskList/{projectId}/{typeId}")
+	public RetKit getAllTaskList(@PathVariable Integer projectId,@PathVariable Integer typeId) {
+		return taskService.getAllTaskList(projectId,typeId);
+	}
+	@RequestMapping("/getTask/{projectId}")
+	public RetKit getTask(@PathVariable Integer projectId) {
+		return taskService.getTask(projectId);
+	}
+	@RequestMapping("/getExecutorList/{orgId}")
+	public RetKit getExecutorList(@PathVariable Integer orgId) {
+		return taskService.getExecutorList(orgId);
+	}
+	
+	
+	@RequestMapping("/getAllTaskFormParam/{projectId}")
+	public RetKit getAllTaskFormParam(@PathVariable Integer projectId) {
+		return taskService.getAllTaskFormParam(projectId);
+	}
+
+	@RequestMapping("/updateTask")
+	public RetKit updateTask(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不正确！");
+		}
+		return taskService.addTask(param);
+	}
+	@RequestMapping("/addTask")
+	public RetKit addTask(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不正确！");
+		}
+		return taskService.addTask(param);
+	}
+	
+	@DeleteMapping("/deleteTask/{projectId}")
+	public RetKit deleteTask(@PathVariable Integer projectId) {
+		if(projectId==null) {
+			return RetKit.fail("参数不正确！");
+		}
+		return taskService.deleteTask(projectId);
+	}
+	
+	
+	@RequestMapping("/getAllTasksOfProject/{orgId}/{projectId}")
+	public RetKit getAllTasksOfProject(@PathVariable Integer orgId,@PathVariable Integer projectId) {
+		return taskService.getAllTasksOfProject(orgId,projectId);
+	}
+	
+	@RequestMapping("/getAllTaskMyList/{orgId}/{projectId}")
+	public RetKit getAllTaskMyList(@PathVariable Integer orgId,@PathVariable Integer projectId) {
+		return taskService.taskMyList(orgId,projectId);
+	}
+	
+	
+	
 }

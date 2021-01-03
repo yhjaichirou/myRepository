@@ -65,13 +65,23 @@ public class ProjectVo {
 	
 	//外键
 	private String orgName;
+	private String leadenterName;
 	private String categoryName;
 	private String leaderName;
+	private String coordinateName;
+	private String proManagerName;
+	private String enterManagerName;
 	
 	private String dockingDateStr;
 	private String expectedDateStr;
 	private String startDateStr;
 	private String completeDateStr;
+	
+	private String maturityStr;
+	private String visibleRangeStr;
+	private String joinersStr;
+	private String statusStr;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -451,5 +461,53 @@ public class ProjectVo {
 	}
 	public void setLeaderName(String leaderName) {
 		this.leaderName = leaderName;
+	}
+	public String getLeadenterName() {
+		return leadenterName;
+	}
+	public void setLeadenterName(String leadenterName) {
+		this.leadenterName = leadenterName;
+	}
+	public String getCoordinateName() {
+		return coordinateName;
+	}
+	public void setCoordinateName(String coordinateName) {
+		this.coordinateName = coordinateName;
+	}
+	public String getProManagerName() {
+		return proManagerName;
+	}
+	public void setProManagerName(String proManagerName) {
+		this.proManagerName = proManagerName;
+	}
+	public String getEnterManagerName() {
+		return enterManagerName;
+	}
+	public void setEnterManagerName(String enterManagerName) {
+		this.enterManagerName = enterManagerName;
+	}
+	public String getMaturityStr() {
+		return maturityStr;
+	}
+	public void setMaturityStr(String maturityStr) {
+		this.maturityStr = maturityStr;
+	}
+	public String getVisibleRangeStr() {
+		return visibleRangeStr;
+	}
+	public void setVisibleRangeStr(String visibleRangeStr) {
+		this.visibleRangeStr = visibleRangeStr;
+	}
+	public String getJoinersStr() {
+		return joinersStr;
+	}
+	public void setJoinersStr(String joinersStr) {
+		this.joinersStr = joinersStr;
+	}
+	public String getStatusStr() {
+		return statusStr;
+	}
+	public void setStatusStr(String statusStr) {
+		this.statusStr = statusStr;
 	}
 }

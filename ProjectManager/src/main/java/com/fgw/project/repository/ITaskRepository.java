@@ -1,8 +1,11 @@
 package com.fgw.project.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.fgw.project.model.po.Group;
@@ -20,4 +23,58 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 
 	List<Task> findAllByProId(Integer projectId);
 
+	List<Task> findByProId(Integer projectId);
+
+	List<Task> findByProIdAndStatus(Integer projectId, Integer status);
+
+	@Query(value="SELECT "
+			+ " t.id,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,"
+			+ " o.name as executOrgName , p.name as executorName "
+			+ " FROM task t "
+			+ " LEFT JOIN org o on o.id = t.execut_org "
+			+ " LEFT JOIN people p on p.id = t.executor "
+			+ " WHERE t.id=:id ",nativeQuery=true)
+	Map<String, Object> getTaskById(@Param("id")Integer id);
+
+	@Query(value="SELECT "
+			+ " t.id,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,"
+			+ " o.name as executOrgName , p.name as executorName "
+			+ " FROM task t "
+			+ " LEFT JOIN org o on o.id = t.execut_org "
+			+ " LEFT JOIN people p on p.id = t.executor "
+			+ " WHERE t.pro_id=:proId AND t.status=:status  ",nativeQuery=true)
+	List<Map<String, Object>> getByProIdAndStatus(@Param("proId")Integer projectId, @Param("status")Integer status);
+	
+	@Query(value="SELECT "
+			+ " t.id,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,"
+			+ " o.name as executOrgName , p.name as executorName "
+			+ " FROM task t "
+			+ " LEFT JOIN org o on o.id = t.execut_org "
+			+ " LEFT JOIN people p on p.id = t.executor "
+			+ " WHERE t.pro_id=:proId ",nativeQuery=true)
+	List<Map<String, Object>> getByProId(@Param("proId")Integer projectId);
+
+	@Query(value="SELECT "
+			+ " t.id,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,"
+			+ " o.name as executOrgName , p.name as executorName "
+			+ " FROM task t "
+			+ " LEFT JOIN org o on o.id = t.execut_org "
+			+ " LEFT JOIN people p on p.id = t.executor "
+			+ " WHERE t.org_id=:orgId AND t.pro_id=:proId AND t.status in (1,3,4) ",nativeQuery=true)
+	List<Map<String, Object>> getByProId(@Param("orgId")Integer orgId,@Param("proId")Integer projectId);
+	
+	@Query(value="SELECT "
+			+ " t.id,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,"
+			+ " o.name as executOrgName , p.name as executorName,s.name as shbName,s.step1,s.step2,s.step3,s.number "
+			+ " FROM task t "
+			+ " LEFT JOIN org o on o.id = t.execut_org "
+			+ " LEFT JOIN people p on p.id = t.executor "
+			+ " LEFT JOIN shb s on s.id = t.shb "
+			+ " WHERE t.pro_id=:proId AND t.shb is not null ",nativeQuery=true)
+	List<Map<String, Object>> getByProIdAndShb(@Param("proId")Integer projectId);
 }
