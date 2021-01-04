@@ -135,6 +135,8 @@ public interface IProjectRepository extends JpaRepository<Project , Integer> {
 			+ " WHERE p.id=:id ",nativeQuery=true)
 	Map<String, Object> getProjectById(Integer id);
 
+	List<Project> findAllByStatusNot(Integer status);
+
 	
 	
 }
