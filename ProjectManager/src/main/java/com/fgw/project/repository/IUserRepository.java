@@ -64,6 +64,8 @@ public interface IUserRepository extends JpaRepository<User	, Integer> {
 			+ " LEFT JOIN org_group g on u.group_id = g.id"
 			+ " WHERE u.status=1 AND u.org_id=:orgId ",nativeQuery=true)
 	List<Map<String, Object>> getAllByOrgIdAndStatus(@Param("orgId")Integer orgId);
+
+	List<User> findAllByRoleId(Integer roleId);
 	
 	
 }

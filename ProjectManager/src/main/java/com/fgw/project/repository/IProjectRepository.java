@@ -121,7 +121,7 @@ public interface IProjectRepository extends JpaRepository<Project , Integer> {
 			+ " p.xf_is_bl as xfIsBl,p.xf_handle_level as xfHandleLevel,p.xf_is_sendappdepart as xfIsSendappdepart,"
 			+ " p.rf_is_bl as rfIsBl,p.rf_handle_level as rf_handleLevel,p.rf_is_sendappdepart as rfIsSendappdepart,"
 			+ " p.other_bl as otherBl,p.diff_and_problem as diffAndProblem,p.pro_manager as proManager,"
-			+ " p.pro_manager_mobile as proManagerMobile,p.stage,p.status,p.complete_date as completeDate,   "
+			+ " p.pro_manager_mobile as proManagerMobile,p.enter_manager as enterManager,p.enter_manager_mobile as enterManagerMobile,p.stage,p.status,p.complete_date as completeDate,   "
 			+ " o.name as orgName , ic.category_name as categoryName,pel1.name as leaderName ,o2.name as leadenterName ,pel2.name as coordinateName ,"
 			+ " pel3.name as proManagerName , pel4.name as enterManagerName "
 			+ " FROM project p "
