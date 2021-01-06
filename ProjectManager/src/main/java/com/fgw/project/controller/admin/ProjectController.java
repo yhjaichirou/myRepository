@@ -34,6 +34,11 @@ public class ProjectController {
 	@Resource
 	private TaskService taskService;
 	
+	@RequestMapping("/getTzqkList/{projectId}")
+	public RetKit getTzqkList(@PathVariable Integer projectId) {
+		return proService.getTzqkList(projectId);
+	}
+	
 	@RequestMapping("/getAllMsg/{orgId}")
 	public RetKit getAllMsg(@PathVariable Integer orgId) {
 		return proService.getAllMsg(orgId);

@@ -15,7 +15,9 @@ import com.fgw.project.model.po.Yj;
 @Repository
 public interface IYjRepository extends JpaRepository<Yj , Integer> {
 
-	List<Yj> findAllByOrgId(String orgId);
+	List<Yj> findAllByOrgId(Integer orgId);
+
+	List<Yj> findAllByOrgIdAndStatus(Integer orgId, Integer status);
 
 
 }

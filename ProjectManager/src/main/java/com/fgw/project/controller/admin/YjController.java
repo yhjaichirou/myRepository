@@ -28,7 +28,7 @@ public class YjController {
 	private YjService yService;
 	
 	@RequestMapping("/getYjs")
-	public RetKit getPorjects(@PathParam(value = "orgId") Integer orgId,@PathParam(value = "status") String status,@PathParam(value = "search") String search) {
+	public RetKit getPorjects(@PathParam(value = "orgId") Integer orgId,@PathParam(value = "status") Integer status,@PathParam(value = "search") String search) {
 		return yService.getYjs(orgId,status,search);
 	}
 }

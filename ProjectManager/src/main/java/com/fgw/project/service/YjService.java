@@ -16,8 +16,13 @@ public class YjService {
 	@Autowired
 	private IYjRepository yR;
 
-	public RetKit getYjs(Integer orgId2, String orgId, String search) {
+	public RetKit getYjs(Integer orgId, Integer status, String search) {
 		List<Yj> ys = yR.findAllByOrgId(orgId);
+		if(status !=null) {
+			ys = yR.findAllByOrgId(orgId);
+		}else {
+			ys = yR.findAllByOrgIdAndStatus(orgId,status);
+		}
 		return RetKit.okData(ys);
 	}
 	

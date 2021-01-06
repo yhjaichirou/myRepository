@@ -21,14 +21,17 @@ import com.fgw.project.constant.ProjectStatusEnum;
 import com.fgw.project.constant.TaskStatusEnum;
 import com.fgw.project.model.po.Category;
 import com.fgw.project.model.po.Group;
+import com.fgw.project.model.po.Invest;
 import com.fgw.project.model.po.Org;
 import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Project;
 import com.fgw.project.model.po.Task;
+import com.fgw.project.model.vo.InvestVo;
 import com.fgw.project.model.vo.ProjectVo;
 import com.fgw.project.model.vo.TaskVo;
 import com.fgw.project.repository.ICategoryRepository;
 import com.fgw.project.repository.IGroupRepository;
+import com.fgw.project.repository.IInvestRepository;
 import com.fgw.project.repository.IOrgRepository;
 import com.fgw.project.repository.IPeopleRepository;
 import com.fgw.project.repository.IProjectRepository;
@@ -59,6 +62,19 @@ public class ProjectService {
 	private ITaskRepository taskR;
 	@Autowired
 	private IShbRepository shbR;
+	@Autowired
+	private IInvestRepository investR;
+	
+	//投资情况
+	public RetKit getTzqkList(Integer projectId) {
+		List<Invest> ins = investR.findAllByProId(projectId);
+		List<InvestVo> insv = BeanKit.copyBeanList(ins, InvestVo.class);
+		insv = insv.stream().map((InvestVo m)->{
+			m.setInvestDateStr(m.getInvestDate()==null?"":MDateUtil.dateToString(m.getInvestDate(), MDateUtil.formatDate));
+			return m;
+		}).collect(Collectors.toList());
+		return RetKit.okData(insv);
+	}
 	
 	public RetKit getAllMsg(Integer orgId) {
 		Map<String,Object> rt = new HashMap<>();
@@ -495,6 +511,8 @@ public class ProjectService {
 		}
 		return RetKit.fail("提交失败，项目不存在！");
 	}
+
+
 
 
 

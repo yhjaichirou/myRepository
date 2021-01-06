@@ -22,6 +22,7 @@ public class Yj implements java.io.Serializable {
 	private Date time;
 	private Integer orgId;
 	private String noticePeople;
+	private Integer status;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -85,6 +86,15 @@ public class Yj implements java.io.Serializable {
 
 	public void setNoticePeople(String noticePeople) {
 		this.noticePeople = noticePeople;
+	}
+
+	@Column(name = "status")
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	
