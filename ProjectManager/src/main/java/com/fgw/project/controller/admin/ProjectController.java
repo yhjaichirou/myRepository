@@ -123,9 +123,9 @@ public class ProjectController {
 	public RetKit getAllTaskList(@PathVariable Integer projectId,@PathVariable Integer typeId) {
 		return taskService.getAllTaskList(projectId,typeId);
 	}
-	@RequestMapping("/getTask/{projectId}")
-	public RetKit getTask(@PathVariable Integer projectId) {
-		return taskService.getTask(projectId);
+	@RequestMapping("/getTask/{id}")
+	public RetKit getTask(@PathVariable Integer id) {
+		return taskService.getTask(id);
 	}
 	@RequestMapping("/getExecutorList/{orgId}")
 	public RetKit getExecutorList(@PathVariable Integer orgId) {
@@ -172,6 +172,13 @@ public class ProjectController {
 		return taskService.taskMyList(orgId,projectId);
 	}
 	
-	
+	//工作任务
+	@DeleteMapping("/fileDelete/{taskId}/{fileId}")
+	public RetKit deleteTask(@PathVariable Integer taskId,@PathVariable Integer fileId) {
+		if(taskId==null || fileId==null) {
+			return RetKit.fail("参数不正确！");
+		}
+		return taskService.fileDelete(taskId,fileId);
+	}
 	
 }

@@ -26,6 +26,7 @@ import com.fgw.project.model.po.Org;
 import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Project;
 import com.fgw.project.model.po.Task;
+import com.fgw.project.model.vo.Annex;
 import com.fgw.project.model.vo.ProjectVo;
 import com.fgw.project.model.vo.TaskVo;
 import com.fgw.project.repository.ICategoryRepository;
@@ -120,14 +121,21 @@ public class TaskService {
 		}
 	}
 	
-	public RetKit getTask(Integer projectId) {
-		Map<String,Object> gs = taskR.getTaskById(projectId);
+	public RetKit getTask(Integer id) {
+		Map<String,Object> gs = taskR.getTaskById(id);
 		try {
 			TaskVo pv = BeanKit.changeRecordToBean(gs, TaskVo.class);
+			if(StrKit.notBlank(pv.getAnnex())) {
+				List<Annex> annexs = JSONObject.parseArray(pv.getAnnex(), Annex.class);
+				pv.setFileInfos(annexs);
+			}else {
+				pv.setFileInfos(new ArrayList<>());
+			}
 			pv.setStartDateStr(pv.getStartDate()==null?"":MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
 			pv.setEndDateStr(pv.getEndDate()==null?"":MDateUtil.dateToString(pv.getEndDate(), MDateUtil.formatDate));
 			pv.setPriorityStr(pv.getPriority().equals(1)?"一级":pv.getPriority().equals(2)?"二级":pv.getPriority().equals(3)?"三级":"无");
 			pv.setStageStr(pv.getStageId().equals(1)?"无":pv.getStageId().equals(2)?"立项阶段":pv.getStageId().equals(3)?"执行阶段":"验收阶段");
+			pv.setStatusStr(TaskStatusEnum.getByValue(pv.getStatus()).getText());
 			return RetKit.okData(pv);
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
 			e.printStackTrace();
@@ -308,6 +316,15 @@ public class TaskService {
 			e.printStackTrace();
 			return RetKit.fail(e.getMessage());
 		}
+	}
+
+	
+	//执行任务
+	
+	
+	public RetKit fileDelete(Integer taskId, Integer fileId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

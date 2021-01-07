@@ -1,6 +1,7 @@
 package com.fgw.project.model.vo;
 
 import java.util.Date;
+import java.util.List;
 
 public class TaskVo {
 
@@ -26,6 +27,7 @@ public class TaskVo {
 	
 	//外键
 	private String orgName;
+	private String projectName;
 	private String executorName;
 	private String stageStr;
 	private String priorityStr;
@@ -40,6 +42,7 @@ public class TaskVo {
 	private String step2;
 	private String step3;
 	private Integer number;
+	private List<Annex> fileInfos;
 	
 	public String getShbName() {
 		return shbName;
@@ -238,6 +241,18 @@ public class TaskVo {
 	}
 	public void setShb(Integer shb) {
 		this.shb = shb;
+	}
+	public String getProjectName() {
+		return projectName;
+	}
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+	public List<Annex> getFileInfos() {
+		return fileInfos;
+	}
+	public void setFileInfos(List<Annex> fileInfos) {
+		this.fileInfos = fileInfos;
 	}
 	
 	

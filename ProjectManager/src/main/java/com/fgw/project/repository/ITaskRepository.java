@@ -30,10 +30,12 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 	@Query(value="SELECT "
 			+ " t.id,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,"
 			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,"
-			+ " o.name as executOrgName , p.name as executorName "
+			+ " o.name as executOrgName , p.name as executorName,pro.name as projectName ,shb.name as shbName,shb.step1,shb.step2,shb.step3,shb.number "
 			+ " FROM task t "
 			+ " LEFT JOIN org o on o.id = t.execut_org "
 			+ " LEFT JOIN people p on p.id = t.executor "
+			+ " LEFT JOIN project pro on pro.id = t.pro_id "
+			+ " LEFT JOIN shb shb on shb.id = t.shb "
 			+ " WHERE t.id=:id ",nativeQuery=true)
 	Map<String, Object> getTaskById(@Param("id")Integer id);
 
