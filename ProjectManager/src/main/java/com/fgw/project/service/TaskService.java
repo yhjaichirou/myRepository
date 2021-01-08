@@ -321,10 +321,60 @@ public class TaskService {
 	
 	//执行任务
 	
-	
+	/**
+	 * 删除附件内容
+	 * @param taskId
+	 * @param fileId
+	 * @return
+	 */
 	public RetKit fileDelete(Integer taskId, Integer fileId) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			Optional<Task> cs_ = taskR.findById(taskId);
+			if(cs_.isPresent()) {
+				Task ta = cs_.get();
+				String annex = ta.getAnnex();
+				List<Annex> anxs =  StrKit.notBlank(annex)?JSONObject.parseArray(annex, Annex.class):new ArrayList<>();
+				List<Annex> newanxs = new ArrayList<>(); 
+				for (int i = 0; i < anxs.size(); i++) {
+					if(!(anxs.get(i).getId()).equals(fileId)) {
+						newanxs.add(anxs.get(i));
+					}
+				}
+				String annexNewStr =  "";
+				if(newanxs.size()>0) {
+					annexNewStr = JSONObject.toJSONString(newanxs);
+				}
+				ta.setAnnex(annexNewStr);
+				taskR.save(ta);
+			}
+			return RetKit.okData("删除成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return RetKit.fail(e.getMessage());
+		}
+	}
+
+	public RetKit confirmTask(String param) {
+		JSONObject jb = JSONObject.parseObject(param);
+		Integer id = jb.getInteger("id");
+		if(id!=null) {
+			Optional<Task> t_ = taskR.findById(id);
+			if(t_.isPresent()) {
+				Task task = t_.get();
+				String comContent = jb.getString("comContent");
+				String fileInfos = jb.getString("fileInfos");
+				task.setComDate(new Date());
+				task.setComContent(comContent);
+				task.setAnnex(fileInfos);
+				task.setStatus(TaskStatusEnum.COMPLETE.getId());
+				taskR.save(task);
+			}else {
+				return RetKit.fail("任务不存在！");
+			}
+		}else {
+			return RetKit.fail("任务ID不能为空！");
+		}
+		return RetKit.okData("完成任务！");
 	}
 
 	

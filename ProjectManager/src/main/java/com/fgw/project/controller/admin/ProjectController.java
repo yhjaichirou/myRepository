@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fgw.project.service.CommonService;
 import com.fgw.project.service.GroupService;
 import com.fgw.project.service.ProjectService;
 import com.fgw.project.service.TaskService;
@@ -33,6 +36,8 @@ public class ProjectController {
 	private ProjectService proService;
 	@Resource
 	private TaskService taskService;
+	@Resource
+	private CommonService comService;
 	
 	@RequestMapping("/getTzqkList/{projectId}")
 	public RetKit getTzqkList(@PathVariable Integer projectId) {
@@ -179,6 +184,23 @@ public class ProjectController {
 			return RetKit.fail("参数不正确！");
 		}
 		return taskService.fileDelete(taskId,fileId);
+	}
+	
+	@RequestMapping("/uploadFJ")
+	public RetKit deleteTask(@RequestParam("file") MultipartFile file) {
+		if(file==null) {
+			return RetKit.fail("参数不正确！");
+		}
+		return comService.uploadFile(file);
+	}
+	
+	@RequestMapping("/confirmTask")
+	public RetKit confirmTask(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不正确！");
+		}
+		return RetKit.ok();
+//		return taskService.confirmTask(param);
 	}
 	
 }

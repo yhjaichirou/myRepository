@@ -35,6 +35,8 @@ public class Task implements java.io.Serializable {
 	private Date createDate;
 	private Integer shb;
 	
+	private String comContent;
+	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -186,6 +188,14 @@ public class Task implements java.io.Serializable {
 	}
 	public void setComDate(Date comDate) {
 		this.comDate = comDate;
+	}
+
+	@Column(name = "com_content")
+	public String getComContent() {
+		return comContent;
+	}
+	public void setComContent(String comContent) {
+		this.comContent = comContent;
 	}
 	
 }

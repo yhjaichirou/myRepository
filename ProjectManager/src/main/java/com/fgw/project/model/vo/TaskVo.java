@@ -24,6 +24,7 @@ public class TaskVo {
 	private String code;
 	private Date createDate;
 	private Integer shb;
+	private String comContent;
 	
 	//外键
 	private String orgName;
@@ -253,6 +254,12 @@ public class TaskVo {
 	}
 	public void setFileInfos(List<Annex> fileInfos) {
 		this.fileInfos = fileInfos;
+	}
+	public String getComContent() {
+		return comContent;
+	}
+	public void setComContent(String comContent) {
+		this.comContent = comContent;
 	}
 	
 	
