@@ -199,8 +199,7 @@ public class ProjectController {
 		if(StrKit.isBlank(param)) {
 			return RetKit.fail("参数不正确！");
 		}
-		return RetKit.ok();
-//		return taskService.confirmTask(param);
+		return taskService.confirmTask(param);
 	}
 	
 }

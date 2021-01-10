@@ -131,6 +131,21 @@ public class TaskService {
 			}else {
 				pv.setFileInfos(new ArrayList<>());
 			}
+			String preTaskStr = pv.getPreTasks();
+			if(StrKit.notBlank(preTaskStr) && !preTaskStr.substring(1, preTaskStr.length()-1).equals(0)) {
+				List<Integer> chil_ids = JSONObject.parseArray(preTaskStr, Integer.class);
+				List<TaskVo> chilTasks = new ArrayList<>();
+				for (Integer chilId : chil_ids) {
+					Map<String,Object> childgs = taskR.getTaskById(chilId);
+					if(!childgs.isEmpty()) {
+						TaskVo child = BeanKit.changeRecordToBean(childgs, TaskVo.class);
+						child.setStartDateStr(child.getStartDate()==null?"":MDateUtil.dateToString(child.getStartDate(), MDateUtil.formatDate));
+						child.setStatusStr(TaskStatusEnum.getByValue(child.getStatus()).getText());
+						chilTasks.add(child);
+					}
+				}
+				pv.setChildTask(chilTasks);
+			}
 			pv.setStartDateStr(pv.getStartDate()==null?"":MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
 			pv.setEndDateStr(pv.getEndDate()==null?"":MDateUtil.dateToString(pv.getEndDate(), MDateUtil.formatDate));
 			pv.setPriorityStr(pv.getPriority().equals(1)?"一级":pv.getPriority().equals(2)?"二级":pv.getPriority().equals(3)?"三级":"无");

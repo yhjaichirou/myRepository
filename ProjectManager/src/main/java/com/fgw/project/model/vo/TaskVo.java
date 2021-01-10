@@ -3,6 +3,8 @@ package com.fgw.project.model.vo;
 import java.util.Date;
 import java.util.List;
 
+import com.fgw.project.model.po.Task;
+
 public class TaskVo {
 
 	private Integer id;
@@ -44,6 +46,8 @@ public class TaskVo {
 	private String step3;
 	private Integer number;
 	private List<Annex> fileInfos;
+	
+	private List<TaskVo> childTask;
 	
 	public String getShbName() {
 		return shbName;
@@ -260,6 +264,12 @@ public class TaskVo {
 	}
 	public void setComContent(String comContent) {
 		this.comContent = comContent;
+	}
+	public List<TaskVo> getChildTask() {
+		return childTask;
+	}
+	public void setChildTask(List<TaskVo> childTask) {
+		this.childTask = childTask;
 	}
 	
 	
