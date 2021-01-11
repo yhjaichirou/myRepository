@@ -23,6 +23,8 @@ public class Yj implements java.io.Serializable {
 	private Integer orgId;
 	private String noticePeople;
 	private Integer status;
+	private Integer gid;
+	
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -95,6 +97,15 @@ public class Yj implements java.io.Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	@Column(name = "gid")
+	public Integer getGid() {
+		return gid;
+	}
+
+	public void setGid(Integer gid) {
+		this.gid = gid;
 	}
 
 	

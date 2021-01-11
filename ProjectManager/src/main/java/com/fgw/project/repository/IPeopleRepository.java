@@ -34,4 +34,6 @@ public interface IPeopleRepository extends JpaRepository<People , Integer> {
 	People getById(@Param("id")Integer id);
 
 	List<People> findAllByOrgIdAndStatus(Integer orgId,Integer status);
+
+	List<People> findAllByIdIn(List<Integer> defaultPelIds);
 }

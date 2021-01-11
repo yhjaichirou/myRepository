@@ -25,12 +25,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.druid.sql.visitor.functions.Now;
 import com.alibaba.fastjson.JSONObject;
+import com.fgw.project.constant.OtherConstant;
 import com.fgw.project.constant.ProjectStatusEnum;
+import com.fgw.project.constant.YjTypeEnum;
+import com.fgw.project.model.po.Config;
+import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Project;
+import com.fgw.project.model.po.User;
 import com.fgw.project.model.po.Yj;
+import com.fgw.project.repository.IConfigRepository;
+import com.fgw.project.repository.IPeopleRepository;
 import com.fgw.project.repository.IProjectRepository;
 import com.fgw.project.repository.ITaskRepository;
+import com.fgw.project.repository.IUserRepository;
 import com.fgw.project.repository.IYjRepository;
+import com.fgw.project.service.CommonService;
+import com.fgw.project.service.YjService;
 import com.fgw.project.util.StrKit;
 import com.sun.org.apache.xerces.internal.dom.DeepNodeListImpl;
 
@@ -53,6 +63,16 @@ public class ThreadDoTask {
 	private IProjectRepository proR;
 	@Autowired
 	private ITaskRepository taskR;
+	@Autowired
+	private IConfigRepository configR;
+	@Resource
+	private YjService yjservice;
+	@Resource
+	private CommonService comService;
+	@Autowired
+	private IPeopleRepository peopleR;
+	@Autowired
+	private IUserRepository userR;
 	
 	/**
 	 * 异步 - 钉钉用户删除单位，数据同步后台清理
@@ -82,16 +102,54 @@ public class ThreadDoTask {
 	 */
 	@Transactional
 	public void targetOverdue() {
-		
-		List<Project> ps = proR.findAllByStatusNot(ProjectStatusEnum.COMPLETE.getId());
+		List<Integer> statuss = new ArrayList<>();
+		statuss.add(ProjectStatusEnum.RUNGING.getId());
+		statuss.add(ProjectStatusEnum.DELAY.getId());
+		statuss.add(ProjectStatusEnum.OVERDUE.getId());
+		statuss.add(ProjectStatusEnum.APPROVALOK.getId());
+		List<Project> ps = proR.findAllByStatusIn(statuss);//proR.findAllByStatusNot(ProjectStatusEnum.COMPLETE.getId());
 		Date now = DateUtil.date();
-		
+		Optional<Config> c_ = configR.findById(1);
+		Integer yjDaty = c_.isPresent()?c_.get().getYjDay():OtherConstant.yjDay;
 		for (Project project : ps) {
 			Date exDate = project.getExpectedDate();
 			long betweenDay = DateUtil.between(DateUtil.date(), project.getExpectedDate(), DateUnit.DAY);
 			if(now.before(exDate)) {//当前日期 小于  预计完成日期  //项目临期预警
-				if(betweenDay<30) { //小于30天时开始预警
+				if(betweenDay<yjDaty) { //小于30天时开始预警
+					String noticePeople = "",noticePeopleName="";//电话号码拼接
+					Optional<People> pel_ = peopleR.findById(project.getLeader());
+					if(pel_.isPresent()) {//牵头领导  ，  协调负责人
+						People pel = pel_.get();
+						noticePeople+=","+pel.getMobile();
+						noticePeopleName+=","+pel.getName();
+					}
+					Optional<People> cpel_ = peopleR.findById(project.getCoordinate());
+					if(cpel_.isPresent()) {
+						People pel = cpel_.get();
+						noticePeople+=","+pel.getMobile();
+						noticePeopleName+=","+pel.getName();
+					}
+					//通知创建项目的组织下的所有管理员
+					List<User> userpel = userR.findAllByOrgIdAndStatus(project.getOrgId(), 1);
+					for (User u : userpel) {
+						noticePeople+=","+u.getAccount();
+						noticePeopleName+=","+u.getName();
+					}
 					
+					Config c = comService.getConfig();
+					if(StrKit.notBlank(c.getMesDefaultPel())) {
+						List<Integer> defaultPelIds = JSONObject.parseArray(c.getMesDefaultPel(), Integer.class); // id拼接
+						List<People> pels = peopleR.findAllByIdIn(defaultPelIds);
+						for (People pel : pels) {
+							noticePeople+=","+pel.getMobile();
+							noticePeopleName+=","+pel.getName();
+						}
+					}
+					String pelNames = StrKit.isBlank(noticePeopleName)?"":noticePeopleName.substring(1);
+					String pelMobiles = StrKit.isBlank(noticePeople)?"":noticePeople.substring(1);
+					String title = "《"+project.getName()+"》"+"项目临近完成期限";
+					String stip = "项目距离预计完成期限还剩余"+betweenDay+"天，请及时处理！\\r 通知人员：" + pelNames ;
+					yjservice.addYjRecord( project.getOrgId(), project.getId(), YjTypeEnum.PROJECT.getId(), title , stip, pelMobiles);
 				}
 			}else{
 				//项目临期预警

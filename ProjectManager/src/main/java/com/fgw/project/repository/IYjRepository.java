@@ -19,5 +19,7 @@ public interface IYjRepository extends JpaRepository<Yj , Integer> {
 
 	List<Yj> findAllByOrgIdAndStatus(Integer orgId, Integer status);
 
+	List<Yj> findAllByOrgIdAndGidAndType(Integer orgId, Integer gid, Integer type);
+
 
 }

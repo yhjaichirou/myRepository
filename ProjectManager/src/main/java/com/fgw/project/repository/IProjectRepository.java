@@ -137,6 +137,8 @@ public interface IProjectRepository extends JpaRepository<Project , Integer> {
 
 	List<Project> findAllByStatusNot(Integer status);
 
+	List<Project> findAllByStatusIn(List<Integer> statuss);
+
 	
 	
 }
