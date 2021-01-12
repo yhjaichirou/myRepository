@@ -23,5 +23,7 @@ import com.fgw.project.model.po.Role;
 public interface IRoleRepository extends JpaRepository<Role	, Integer> {
 
 	List<Role> findAllByStatus(Integer status);
+
+	List<Role> findAllByIdGreaterThanEqual(Integer roleId);
 	
 }

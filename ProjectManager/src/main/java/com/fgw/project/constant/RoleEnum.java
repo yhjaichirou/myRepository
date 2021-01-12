@@ -5,21 +5,21 @@ package com.fgw.project.constant;
  * @author yhj
  * @date 2020年12月24日
  */
-public enum OrgPropertyEnum {
+public enum RoleEnum {
 
-	FGW(2,"发改委"),DEPART(3,"政府部门"),QY(4,"企业");
+	SUPERADMIN(1,"超级管理员"),ADMIN(2,"系统管理员"),DEPART(3,"政府部门"),ENTER(4,"企业");
 	
 	private Integer id;
 	private String text;
 	
-	OrgPropertyEnum(Integer id ,String text){
+	RoleEnum(Integer id ,String text){
 		this.setId(id);
 		this.setText(text);
 	}
 
 	// 遍历使用
-	public static OrgPropertyEnum getByValue(Integer id) {
-		for (OrgPropertyEnum tarEnum : values()) {
+	public static RoleEnum getByValue(Integer id) {
+		for (RoleEnum tarEnum : values()) {
 			if (tarEnum.getId().equals(id)) {
 				return tarEnum;
 			}

@@ -102,6 +102,25 @@ public class ThreadDoTask {
 	 */
 	@Transactional
 	public void targetOverdue() {
+		switch (YjTypeEnum.getByValue(1)) {
+		case PROJECT:
+			overProject();
+			break;
+		case TASK:
+			overProject();
+			break;
+		case OVERDUE:
+			overProject();
+			break;
+		case TASKOVERDUE:
+			overProject();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void overProject() {
 		List<Integer> statuss = new ArrayList<>();
 		statuss.add(ProjectStatusEnum.RUNGING.getId());
 		statuss.add(ProjectStatusEnum.DELAY.getId());

@@ -113,6 +113,19 @@ public class AdminController {
 		return userService.getUsers(orgId);
 	}
 	
+	@RequestMapping("/getRoleList/{orgId}/{roleId}")
+	public RetKit getRoleList(@PathVariable Integer orgId,@PathVariable Integer roleId) {
+		return userService.getRoleList(orgId,roleId);
+	}
+	@RequestMapping("/getOrgList/{loginOrgId}/{roleId}")
+	public RetKit getOrgList(@PathVariable Integer loginOrgId,@PathVariable Integer roleId) {
+		return userService.getOrgList(loginOrgId,roleId);
+	}
+	@RequestMapping("/getGroupList/{orgId}")
+	public RetKit getGroupList(@PathVariable Integer orgId) {
+		return userService.getGroupList(orgId);
+	}
+	
 	@RequestMapping("/addUser")
 	public RetKit addUser(@RequestBody String param) {
 		return userService.addUser(param);
@@ -127,5 +140,6 @@ public class AdminController {
 	public RetKit deleteUser(@PathVariable String userId) {
 		return userService.deleteUser(Integer.parseInt(userId));
 	}
+	
 	
 }

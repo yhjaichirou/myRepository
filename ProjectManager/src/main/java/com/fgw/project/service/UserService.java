@@ -14,12 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fgw.project.constant.OrgPropertyEnum;
+import com.fgw.project.constant.RoleEnum;
 import com.fgw.project.model.po.Group;
 import com.fgw.project.model.po.Menu;
+import com.fgw.project.model.po.Org;
 import com.fgw.project.model.po.Role;
 import com.fgw.project.model.po.User;
 import com.fgw.project.model.vo.MenuVo;
+import com.fgw.project.repository.IGroupRepository;
 import com.fgw.project.repository.IMenuRepository;
+import com.fgw.project.repository.IOrgRepository;
 import com.fgw.project.repository.IRoleRepository;
 import com.fgw.project.repository.IUserRepository;
 import com.fgw.project.util.BeanKit;
@@ -37,7 +42,10 @@ public class UserService {
 	private IMenuRepository menuR;
 	@Autowired
 	private IRoleRepository roleR;
-	
+	@Autowired
+	private IOrgRepository orgR;
+	@Autowired
+	private IGroupRepository groupR;
 
 	public User getUserInfo(Integer userId) {
 		Optional<User> user_ = userR.findById(userId);
@@ -217,6 +225,7 @@ public class UserService {
 		String userName = JSONObject.parseObject(param).getString("userName");
 		Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
 		Integer roleId = JSONObject.parseObject(param).getInteger("roleId");
+		Integer groupId = JSONObject.parseObject(param).getInteger("groupId");
 		List<User> us = userR.findAllByAccount(account); 
 		if(us.size()>0) {
 			return RetKit.fail("用户已存在！");
@@ -228,6 +237,7 @@ public class UserService {
 		r.setRoleId(roleId);
 		r.setName(userName);
 		r.setOrgId(orgId);
+		r.setGroupId(groupId);
 		userR.save(r);
 		return RetKit.okData(r.getId());
 	}
@@ -256,6 +266,42 @@ public class UserService {
 	public RetKit deleteUser(Integer userId) {
 		userR.deleteById(userId);
 		return RetKit.ok("删除成功！");
+	}
+
+
+	public RetKit getRoleList(Integer orgId,Integer roleId) {
+		List<Role> ros = roleR.findAllByIdGreaterThanEqual(roleId);
+		return RetKit.okData(ros);
+	}
+
+	public RetKit getOrgList(Integer loginOrgId,Integer roleId) {
+		Optional<Org> o_ = orgR.findById(loginOrgId);
+		List<Org> orgList = new ArrayList<>();
+		if(o_.isPresent()){
+			Org o = o_.get();
+			//如果登录的组织是  系统管理员
+			if(o.getProperty().equals(OrgPropertyEnum.FGW.getId())) {
+				if(roleId.equals(RoleEnum.ADMIN.getId())) {
+					orgList.add(o);
+				}else if(roleId.equals(RoleEnum.DEPART.getId())) {
+					List<Org> nextOrgList = orgR.findAllByStatusAndPropertyAndPid(1,roleId, 0);
+					orgList.addAll(nextOrgList);
+				}else if(roleId.equals(RoleEnum.ENTER.getId())) {
+					List<Org> nextOrgList = orgR.findAllByStatusAndPropertyAndPid(1,roleId, loginOrgId);
+					orgList.addAll(nextOrgList);
+				}
+			}else {
+				orgList.add(o);
+				List<Org> nextOrgList = orgR.findAllByStatusAndPropertyAndPid(1,roleId, loginOrgId);
+				orgList.addAll(nextOrgList);
+			}
+		}
+		return RetKit.okData(orgList);
+	}
+
+	public RetKit getGroupList(Integer orgId) {
+		List<Group> grs = groupR.findAllByOrgId(orgId);
+		return RetKit.okData(grs);
 	}
 	
 }

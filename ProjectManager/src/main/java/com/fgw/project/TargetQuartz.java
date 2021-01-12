@@ -25,13 +25,13 @@ public class TargetQuartz {
 		dotask.targetOverdue();
 	}
 	
-	/**
-	 * 每月1号 一次评星定级       
-	 */
-	@Scheduled(cron = "0 0 0 1 1/1 ? ")
-	public void doMarkLevel() {
-		log.info("----每月初评星定级一次----");
-//		dotask.diskYj();
-	}
+//	/**
+//	 * 每月1号 一次评星定级       
+//	 */
+//	@Scheduled(cron = "0 0 0 1 1/1 ? ")
+//	public void doMarkLevel() {
+//		log.info("----每月初评星定级一次----");
+////		dotask.diskYj();
+//	}
 	
 }
