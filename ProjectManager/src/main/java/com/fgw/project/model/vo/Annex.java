@@ -16,6 +16,7 @@ public class Annex {
 	private Integer taskId;
 	private String thumb;//后缀
 	private String path;
+	private String taskName;
 	
 	
 	public Integer getId() {
@@ -71,6 +72,12 @@ public class Annex {
 	}
 	public void setPath(String path) {
 		this.path = path;
+	}
+	public String getTaskName() {
+		return taskName;
+	}
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
 	}
 	
 	

@@ -17,6 +17,7 @@ public class Task implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String title;
+	private Integer pid;
 	private Integer orgId;
 	private Integer proId;
 	private Integer executOrg;
@@ -34,6 +35,8 @@ public class Task implements java.io.Serializable {
 	private String code;
 	private Date createDate;
 	private Integer shb;
+	private Integer dbCount;
+	private Date dbDate;
 	
 	private String comContent;
 	
@@ -196,6 +199,30 @@ public class Task implements java.io.Serializable {
 	}
 	public void setComContent(String comContent) {
 		this.comContent = comContent;
+	}
+	
+	@Column(name = "db_count")
+	public Integer getDbCount() {
+		return dbCount;
+	}
+	public void setDbCount(Integer dbCount) {
+		this.dbCount = dbCount;
+	}
+	
+	@Column(name = "db_date")
+	public Date getDbDate() {
+		return dbDate;
+	}
+	public void setDbDate(Date dbDate) {
+		this.dbDate = dbDate;
+	}
+	
+	@Column(name = "pid")
+	public Integer getPid() {
+		return pid;
+	}
+	public void setPid(Integer pid) {
+		this.pid = pid;
 	}
 	
 }

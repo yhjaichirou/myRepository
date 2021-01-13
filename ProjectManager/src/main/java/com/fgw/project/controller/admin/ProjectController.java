@@ -122,12 +122,25 @@ public class ProjectController {
 		return proService.deleteProject(projectId);
 	}
 	
+	@RequestMapping("/getFileList/{projectId}/{pn}/{ps}")
+	public RetKit getFileList(@PathVariable Integer projectId,@PathVariable Integer pn,@PathVariable Integer ps) {
+		if(projectId==null) {
+			return RetKit.fail("参数不正确！");
+		}
+		return proService.getFileList(projectId,pn,ps);
+	}
+	
 	
 	//任务
 	@RequestMapping("/getAllTaskList/{projectId}/{typeId}")
 	public RetKit getAllTaskList(@PathVariable Integer projectId,@PathVariable Integer typeId) {
 		return taskService.getAllTaskList(projectId,typeId);
 	}
+	@RequestMapping("/getAllCountMap/{projectId}")
+	public RetKit getAllCountMap(@PathVariable Integer projectId) {
+		return taskService.getAllCountMap(projectId);
+	}
+	
 	@RequestMapping("/getTask/{id}")
 	public RetKit getTask(@PathVariable Integer id) {
 		return taskService.getTask(id);
@@ -201,5 +214,15 @@ public class ProjectController {
 		}
 		return taskService.confirmTask(param);
 	}
+	
+	@RequestMapping("/taskDb/{taskId}")
+	public RetKit taskDb(@PathVariable Integer taskId) {
+		if(taskId==null) {
+			return RetKit.fail("参数不正确！");
+		}
+		return taskService.taskDb(taskId);
+	}
+	
+
 	
 }

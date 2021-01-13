@@ -7,7 +7,7 @@ package com.fgw.project.constant;
  */
 public enum TaskStatusEnum {
 
-	NOMACK(0,"未分配"),NOCOM(1,"未完成"),COMPLETE(2,"已完成"),DELAY(3,"已延期"),OVERDUE(4,"已逾期");
+	NOMACK(0,"未分配"),NOCOM(1,"未完成"),COMPLETE(2,"已完成"),DELAY(3,"已延期"),OVERDUE(4,"已逾期"),YESMACK(5,"分配未开始");
 	
 	private Integer id;
 	private String text;

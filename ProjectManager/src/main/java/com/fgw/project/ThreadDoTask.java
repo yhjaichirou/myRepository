@@ -168,7 +168,8 @@ public class ThreadDoTask {
 					String pelMobiles = StrKit.isBlank(noticePeople)?"":noticePeople.substring(1);
 					String title = "《"+project.getName()+"》"+"项目临近完成期限";
 					String stip = "项目距离预计完成期限还剩余"+betweenDay+"天，请及时处理！\\r 通知人员：" + pelNames ;
-					yjservice.addYjRecord( project.getOrgId(), project.getId(), YjTypeEnum.PROJECT.getId(), title , stip, pelMobiles);
+					yjservice.addYjRecord( project.getOrgId(), project.getId(), YjTypeEnum.PROJECT.getId(), title , stip, pelMobiles,pelNames);
+					comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
 				}
 			}else{
 				//项目临期预警

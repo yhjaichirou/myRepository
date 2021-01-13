@@ -57,7 +57,7 @@ public class AliyunSendMessageService {
 		}
 	}
 
-	public boolean sendMessage(String phoneNumbers,String content) {
+	public boolean sendMessage(String phoneNumbers,String title,String content) {
 
 		try {
 

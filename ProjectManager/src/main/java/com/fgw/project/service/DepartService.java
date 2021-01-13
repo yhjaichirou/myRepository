@@ -143,4 +143,65 @@ public class DepartService {
 	}
 	
 	
+	
+	public RetKit getPeopleList(Integer orgId) {
+		List<People> peoples = peopleR.findAllByOrgId(orgId);
+		return RetKit.okData(peoples);
+	}
+	public RetKit getPeople(Integer peoId) {
+		Optional<People> o_ = peopleR.findById(peoId);
+		if(o_.isPresent()) {
+			People o = o_.get();
+			return RetKit.okData(o);
+		}
+		return RetKit.fail("该人员不存在！");
+	}
+	
+	public RetKit addOrUpdateDepart(String param) {
+		JSONObject obj = JSONObject.parseObject(param);
+		Integer id = obj.getInteger("id");
+		String name = obj.getString("name");
+		String mobile = obj.getString("mobile");
+		Integer orgId = obj.getInteger("orgId");
+		String sex = obj.getString("sex");
+		String job = obj.getString("job");
+		Integer age = obj.getInteger("age");
+		String idcard = obj.getString("idcard");
+		
+		List<People> oldo = peopleR.findByNameAndMobileAndIdcard(name,mobile,idcard);
+		People pel = new People();
+		if(id !=null) {
+			Optional<People> o_ = peopleR.findById(id);
+			if(o_.isPresent()) {
+				pel = o_.get();
+				if(oldo!=null && oldo.size()>0 && !oldo.equals(pel.getName())) {
+					return RetKit.fail("人员已经存在！");
+				}
+			}
+		}else {
+			if(oldo.size()>0) {
+				return RetKit.fail("人员已经存在！");
+			}
+			pel.setOrgId(orgId);
+			pel.setStatus(1);
+		}
+		pel.setName(name);
+		pel.setMobile(mobile);
+		pel.setJob(job);
+		pel.setSex(sex);
+		pel.setAge(age);
+		pel.setIdcard(idcard);
+		peopleR.save(pel);
+		return RetKit.okData(pel.getId());
+	}
+	public RetKit deletePeople(Integer peoId) {
+		Optional<People> pel_ = peopleR.findById(peoId);
+		if(pel_.isPresent()){
+			departR.deleteById(peoId);
+			return RetKit.ok("删除成功！");
+		}
+		return RetKit.fail("删除失败，该人员不存在！");
+	}
+	
+	
 }

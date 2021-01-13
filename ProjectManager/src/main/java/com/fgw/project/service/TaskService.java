@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import com.fgw.project.constant.ProjectStatusEnum;
 import com.fgw.project.constant.TaskPriorityEnum;
 import com.fgw.project.constant.TaskStageEnum;
 import com.fgw.project.constant.TaskStatusEnum;
+import com.fgw.project.constant.YjTypeEnum;
 import com.fgw.project.model.po.Category;
 import com.fgw.project.model.po.Group;
 import com.fgw.project.model.po.Org;
@@ -27,6 +29,7 @@ import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Project;
 import com.fgw.project.model.po.Task;
 import com.fgw.project.model.vo.Annex;
+import com.fgw.project.model.vo.MenuVo;
 import com.fgw.project.model.vo.ProjectVo;
 import com.fgw.project.model.vo.TaskVo;
 import com.fgw.project.repository.ICategoryRepository;
@@ -60,6 +63,8 @@ public class TaskService {
 	private IPeopleRepository peopleR;
 	@Autowired
 	private ITaskRepository taskR;
+	@Resource
+	private CommonService comService;
 	
 	public RetKit getAllTaskList(Integer projectId,Integer typeId) {
 		Map<String,Object> rtss = new HashMap<>();
@@ -78,6 +83,14 @@ public class TaskService {
 				return tv;
 			}).collect(Collectors.toList());
 			
+			List<TaskVo> firstTasks =  cs.stream().filter((TaskVo ttt)-> ttt.getPid().equals(0)).collect(Collectors.toList());
+			for (TaskVo taskVo : firstTasks) {
+				List<TaskVo> ctasks = getTaskChild(taskVo,cs);
+				if(ctasks!=null && ctasks.size()>0) {
+					taskVo.setChildren(ctasks);
+				}
+			}
+			
 			Project p = projectR.findById(projectId).get();
 			String stage = p.getStage();
 			if(StrKit.notBlank(stage)) {
@@ -88,32 +101,91 @@ public class TaskService {
 					if(Integer.parseInt(j) == 1) {
 						gs.put("id", "1");
 						gs.put("name", "无所属阶段");
-						List<TaskVo> no = cs.stream().filter((TaskVo t )-> t.getStageId().equals(1)).collect(Collectors.toList());
+						List<TaskVo> no = firstTasks.stream().filter((TaskVo t )-> t.getStageId().equals(1)).collect(Collectors.toList());
 						gs.put("value", no);
 					}
 					if(Integer.parseInt(j) == 2) {
 						gs.put("id", "2");
 						gs.put("name", "立项阶段");
-						List<TaskVo> lx = cs.stream().filter((TaskVo t )-> t.getStageId().equals(2)).collect(Collectors.toList());
+						List<TaskVo> lx = firstTasks.stream().filter((TaskVo t )-> t.getStageId().equals(2)).collect(Collectors.toList());
 						gs.put("value", lx);
 					}
 					if(Integer.parseInt(j) == 3) {
 						gs.put("id", "3");
 						gs.put("name", "执行阶段");
-						List<TaskVo> zx = cs.stream().filter((TaskVo t )-> t.getStageId().equals(3)).collect(Collectors.toList());
+						List<TaskVo> zx = firstTasks.stream().filter((TaskVo t )-> t.getStageId().equals(3)).collect(Collectors.toList());
 						
 						gs.put("value", zx);
 					}
 					if(Integer.parseInt(j) == 4) {
 						gs.put("id", "4");
 						gs.put("name", "验收阶段");
-						List<TaskVo> ys = cs.stream().filter((TaskVo t )-> t.getStageId().equals(4)).collect(Collectors.toList());
+						List<TaskVo> ys = firstTasks.stream().filter((TaskVo t )-> t.getStageId().equals(4)).collect(Collectors.toList());
 						gs.put("value", ys);
 					}
 					tr.add(gs);
 				}
 			}
 			rtss.put("list", tr);
+			return RetKit.okData(rtss);
+		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
+			e.printStackTrace();
+			return RetKit.fail(e.getMessage());
+		}
+	}
+	private List<TaskVo> getTaskChild(TaskVo taskVo, List<TaskVo> all) {
+		List<TaskVo> childList = new ArrayList<TaskVo>();
+		for (TaskVo pb : all) {
+			if (pb.getPid().equals(taskVo.getId())) {
+				pb.setChildren(getTaskChild(pb,all));
+				childList.add(pb);
+			}
+		}
+		if (childList.size() <= 0) {
+			return null;
+		}else {
+			childList = childList.stream().sorted(Comparator.comparing(TaskVo::getStartDate)).collect(Collectors.toList());
+			return childList;
+		}
+	}
+//	private List<TaskVo> getTaskChild(TaskVo taskVo, List<TaskVo> all) {
+//		List<TaskVo> childList = new ArrayList<TaskVo>();
+//		String preTaskStr = taskVo.getPreTasks();
+//		if(StrKit.notBlank(preTaskStr) && !preTaskStr.substring(1, preTaskStr.length()-1).equals(0)) {//存在子任务
+//			List<Integer> chil_ids = JSONObject.parseArray(preTaskStr, Integer.class);
+//			if(chil_ids.size()>0) {
+//				childList = all.stream().filter((TaskVo tb)-> chil_ids.contains(tb.getId())).sorted(Comparator.comparing(TaskVo::getStartDate)).collect(Collectors.toList());
+//				for (TaskVo child : childList) {
+//					List<TaskVo> ccs = getTaskChild(child,all);
+//					if(ccs!=null && ccs.size()>0) {
+//						child.setChildren(ccs);
+//					}
+//				}
+//				taskVo.setChildren(childList);
+//				return childList;
+//			}
+//		}
+//		return null;
+//	}
+	
+	public RetKit getAllCountMap(Integer projectId) {
+		Map<String,Object> rtss = new HashMap<>();
+		List<Map<String,Object>>  cs_ = taskR.getByProId(projectId);
+		try {
+			List<TaskVo> cs = BeanKit.changeToListBean(cs_, TaskVo.class);
+			List<TaskVo> NOMACK = cs.stream().filter((TaskVo tv)->tv.getStatus().equals(TaskStatusEnum.NOMACK.getId())).collect(Collectors.toList());
+			List<TaskVo> YESMACK = cs.stream().filter((TaskVo tv)->tv.getStatus().equals(TaskStatusEnum.YESMACK.getId())).collect(Collectors.toList());
+			List<TaskVo> NOCOM = cs.stream().filter((TaskVo tv)->tv.getStatus().equals(TaskStatusEnum.NOCOM.getId())).collect(Collectors.toList());
+			List<TaskVo> COMPLETE = cs.stream().filter((TaskVo tv)->tv.getStatus().equals(TaskStatusEnum.COMPLETE.getId())).collect(Collectors.toList());
+			List<TaskVo> DELAY = cs.stream().filter((TaskVo tv)->tv.getStatus().equals(TaskStatusEnum.DELAY.getId())).collect(Collectors.toList());
+			List<TaskVo> OVERDUE = cs.stream().filter((TaskVo tv)->tv.getStatus().equals(TaskStatusEnum.OVERDUE.getId())).collect(Collectors.toList());
+			rtss.put("ALL", cs.size());
+			rtss.put("NOMACK", NOMACK.size());
+			rtss.put("YESMACK", YESMACK.size());
+			rtss.put("NOCOM", NOCOM.size());
+			rtss.put("COMPLETE", COMPLETE.size());
+			rtss.put("DELAY", DELAY.size());
+			rtss.put("OVERDUE", OVERDUE.size());
 			return RetKit.okData(rtss);
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
 			e.printStackTrace();
@@ -131,21 +203,14 @@ public class TaskService {
 			}else {
 				pv.setFileInfos(new ArrayList<>());
 			}
-			String preTaskStr = pv.getPreTasks();
-			if(StrKit.notBlank(preTaskStr) && !preTaskStr.substring(1, preTaskStr.length()-1).equals(0)) {
-				List<Integer> chil_ids = JSONObject.parseArray(preTaskStr, Integer.class);
-				List<TaskVo> chilTasks = new ArrayList<>();
-				for (Integer chilId : chil_ids) {
-					Map<String,Object> childgs = taskR.getTaskById(chilId);
-					if(!childgs.isEmpty()) {
-						TaskVo child = BeanKit.changeRecordToBean(childgs, TaskVo.class);
-						child.setStartDateStr(child.getStartDate()==null?"":MDateUtil.dateToString(child.getStartDate(), MDateUtil.formatDate));
-						child.setStatusStr(TaskStatusEnum.getByValue(child.getStatus()).getText());
-						chilTasks.add(child);
-					}
-				}
-				pv.setChildTask(chilTasks);
-			}
+			List<Map<String, Object>> childMs = taskR.getByProIdAndPid(pv.getProId(),id);
+			List<TaskVo> childs = BeanKit.changeToListBean(childMs, TaskVo.class);
+			childs = childs.stream().map((TaskVo tv)->{
+				tv.setStartDateStr(tv.getStartDate()==null?"":MDateUtil.dateToString(tv.getStartDate(), MDateUtil.formatDate));
+				tv.setStatusStr(TaskStatusEnum.getByValue(tv.getStatus()).getText());
+				return tv;
+			}).collect(Collectors.toList());
+			pv.setChildTask(childs);
 			pv.setStartDateStr(pv.getStartDate()==null?"":MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
 			pv.setEndDateStr(pv.getEndDate()==null?"":MDateUtil.dateToString(pv.getEndDate(), MDateUtil.formatDate));
 			pv.setPriorityStr(pv.getPriority().equals(1)?"一级":pv.getPriority().equals(2)?"二级":pv.getPriority().equals(3)?"三级":"无");
@@ -165,11 +230,15 @@ public class TaskService {
 		}
 		Map<String,Object> rt = new HashMap<>();
 		List<Task> cs = new ArrayList<>();
+		List<Integer> statuss = new ArrayList<>();
+		statuss.add(TaskStatusEnum.NOMACK.getId());
+		statuss.add(TaskStatusEnum.YESMACK.getId());
+		statuss.add(TaskStatusEnum.NOCOM.getId());
 		Task tne = new Task();
 		tne.setId(0);
 		tne.setTitle("无");
 		cs.add(tne);
-		cs.addAll(taskR.findByProIdAndStatus(projectId,0));
+		cs.addAll(taskR.findByProIdAndStatusIn(projectId,statuss));
 		rt.put("preTasks", cs);
 		
 		Project p = projectR.findById(projectId).get();
@@ -207,6 +276,7 @@ public class TaskService {
 	public RetKit addTask(String param) {
 		JSONObject jb = JSONObject.parseObject(param);
 		Integer id = jb.getInteger("id");
+		Integer pid = jb.getInteger("pid");
 		String title = jb.getString("title");
 		Integer orgId = jb.getInteger("orgId");
 		Integer proId = jb.getInteger("proId");
@@ -220,7 +290,7 @@ public class TaskService {
 //		Integer status = jb.getInteger("status");
 		String remark = jb.getString("remark");
 //		String annex = jb.getString("annex");
-		String preTasks = jb.getString("preTasks");
+//		String preTasks = jb.getString("preTasks");
 		
 		Task t = new Task();
 		if(id!=null) {
@@ -236,6 +306,7 @@ public class TaskService {
 			t.setCode(prefix+"-"+DateUtil.date().toDateStr()+StrKit.getRandomString(6));
 			t.setCreateDate(new Date());
 		}
+		t.setPid(pid);
 		t.setExecutOrg(executOrg);
 		t.setTitle(title);
 		t.setExecutor(executor);
@@ -244,9 +315,9 @@ public class TaskService {
 		t.setStartDate(startDate);
 		t.setEndDate(endDate);
 		t.setPriority(priority);
-		t.setStatus(executor!=null?1:0);
+		t.setStatus(executor!=null?TaskStatusEnum.YESMACK.getId():TaskStatusEnum.NOMACK.getId());
 		t.setRemark(remark);
-		t.setPreTasks(preTasks);
+//		t.setPreTasks(preTasks);
 		taskR.save(t);
 		return RetKit.okData(t.getId());
 	}
@@ -392,10 +463,32 @@ public class TaskService {
 		return RetKit.okData("完成任务！");
 	}
 
-	
-	
-	
-
+	/**
+	 *	 任务督办
+	 * @param taskId
+	 * @return
+	 */
+	public RetKit taskDb(Integer taskId) {
+		Optional<Task> t_ = taskR.findById(taskId);
+		if(t_.isPresent()) {
+			Task task = t_.get();
+			Optional<Project> pro_ = projectR.findById(task.getProId());
+			if(pro_.isPresent()) {
+				Integer dbcount = task.getDbCount()==null?0:task.getDbCount();
+				task.setDbCount(dbcount+1);
+				task.setDbDate(new Date());
+				taskR.save(task);
+				Project pro = pro_.get();
+				String stip = "项目《"+pro.getName()+"》关于任务“"+task.getTitle()+"”督办通知！请尽快完成任务！";
+				comService.sendNotice(task.getExecutorMobile(),YjTypeEnum.TASK.getText(),stip);
+				return RetKit.ok("已通知任务负责人！");
+			}
+			return RetKit.fail("项目不存在！");
+		}else {
+			return RetKit.fail("任务不存在！");
+		}
+		
+	}
 
 	
 	

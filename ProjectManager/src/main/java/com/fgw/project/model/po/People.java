@@ -21,16 +21,17 @@ public class People implements java.io.Serializable {
 	private String mobile;
 	private Integer status;
 	private Integer orgId;
-	private Integer sex;
+	private String sex;
 	private String job;
 	private Integer age;
 	private String openid;
+	private String idcard;
 	
 	@Column(name = "sex")
-	public Integer getSex() {
+	public String getSex() {
 		return sex;
 	}
-	public void setSex(Integer sex) {
+	public void setSex(String sex) {
 		this.sex = sex;
 	}
 	@Column(name = "job")
@@ -96,6 +97,14 @@ public class People implements java.io.Serializable {
 	}
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
+	}
+	
+	@Column(name = "idcard")
+	public String getIdcard() {
+		return idcard;
+	}
+	public void setIdcard(String idcard) {
+		this.idcard = idcard;
 	}
 	
 

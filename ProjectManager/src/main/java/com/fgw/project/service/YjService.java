@@ -39,7 +39,7 @@ public class YjService {
 	 * @param noticePeople
 	 * @return
 	 */
-	public RetKit addYjRecord(Integer orgId,Integer gid, Integer type, String title,String stip,String noticePeople) {
+	public RetKit addYjRecord(Integer orgId,Integer gid, Integer type, String title,String stip,String noticePeople,String noticePeopleName) {
 		List<Yj> ys = yR.findAllByOrgIdAndGidAndType(orgId,gid,type);
 		if(ys.size()>0) {
 			
@@ -48,6 +48,7 @@ public class YjService {
 			yj.setGid(gid);
 			yj.setTime(new Date());
 			yj.setNoticePeople(noticePeople);
+			yj.setNoticePeopleName(noticePeopleName);
 			yj.setOrgId(orgId);
 			yj.setStatus(1);
 			yj.setStip(stip);

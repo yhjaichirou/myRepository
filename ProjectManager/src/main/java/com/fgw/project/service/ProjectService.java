@@ -26,6 +26,7 @@ import com.fgw.project.model.po.Org;
 import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Project;
 import com.fgw.project.model.po.Task;
+import com.fgw.project.model.vo.Annex;
 import com.fgw.project.model.vo.InvestVo;
 import com.fgw.project.model.vo.ProjectVo;
 import com.fgw.project.model.vo.TaskVo;
@@ -510,6 +511,29 @@ public class ProjectService {
 			return RetKit.ok("删除成功！");
 		}
 		return RetKit.fail("提交失败，项目不存在！");
+	}
+
+	public RetKit getFileList(Integer projectId,Integer pn,Integer ps) {
+		Map<String,Object> rt = new HashMap<>();
+		List<Annex> allFiles = new ArrayList<>();
+		List<Task> tasks = taskR.findAllByProIdAndAnnexIsNotNull(projectId);
+		for (Task task : tasks) {
+			String annexS = task.getAnnex();
+			if(StrKit.notBlank(annexS)) {
+				List<Annex> annexs = JSONObject.parseArray(annexS, Annex.class);
+				for (Annex annex : annexs) {
+					annex.setTaskName(task.getTitle());
+				}
+				allFiles.addAll(annexs);
+			}
+		}
+		Integer total = allFiles.size();
+		allFiles = allFiles.stream().skip((pn-1)*ps).limit(ps).collect(Collectors.toList());
+		rt.put("pn", pn);
+		rt.put("ps", ps);
+		rt.put("total", total);
+		rt.put("list", allFiles);
+		return RetKit.okData(rt);
 	}
 
 

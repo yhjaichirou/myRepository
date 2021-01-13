@@ -2,6 +2,8 @@ package com.fgw.project.service;
 
 import java.util.Optional;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +39,8 @@ public class CommonService {
 	private String getFileUrl;
 	@Autowired
 	private IConfigRepository configR;
-	
+	@Resource
+	private AliyunSendMessageService aliService;
 
 	//上传文件
 	public RetKit uploadFile(MultipartFile file) {
@@ -58,24 +61,14 @@ public class CommonService {
 		return config_.isPresent()?config_.get():null;
 	}
 	
-	
-	public void sendNotice() {
-		DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", "<accessKeyId>", "<accessSecret>");
-        IAcsClient client = new DefaultAcsClient(profile);
-
-        CommonRequest request = new CommonRequest();
-        request.setSysMethod(MethodType.POST);
-        request.setSysDomain("dysmsapi.aliyuncs.com");
-        request.setSysVersion("2017-05-25");
-        request.setSysAction("AddSmsSign");
-        request.putQueryParameter("RegionId", "cn-hangzhou");
+	/**
+	 * 	发送通知
+	 */
+	public void sendNotice(String phoneNumbers,String title,String content) {
         try {
-            CommonResponse response = client.getCommonResponse(request);
-            System.out.println(response.getData());
-        } catch (ServerException e) {
+        	//aliService.sendMessage(phoneNumbers,title, content);
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (ClientException e) {
-            e.printStackTrace();
-        }
+        } 
 	}
 }

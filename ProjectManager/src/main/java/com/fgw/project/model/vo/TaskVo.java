@@ -3,12 +3,11 @@ package com.fgw.project.model.vo;
 import java.util.Date;
 import java.util.List;
 
-import com.fgw.project.model.po.Task;
-
 public class TaskVo {
 
 	private Integer id;
 	private String title;
+	private Integer pid;
 	private Integer orgId;
 	private Integer proId;
 	private Integer executOrg;
@@ -46,8 +45,12 @@ public class TaskVo {
 	private String step3;
 	private Integer number;
 	private List<Annex> fileInfos;
-	
 	private List<TaskVo> childTask;
+
+	
+	//满足树形table 
+	private List<TaskVo> children;
+	
 	
 	public String getShbName() {
 		return shbName;
@@ -270,6 +273,18 @@ public class TaskVo {
 	}
 	public void setChildTask(List<TaskVo> childTask) {
 		this.childTask = childTask;
+	}
+	public List<TaskVo> getChildren() {
+		return children;
+	}
+	public void setChildren(List<TaskVo> children) {
+		this.children = children;
+	}
+	public Integer getPid() {
+		return pid;
+	}
+	public void setPid(Integer pid) {
+		this.pid = pid;
 	}
 	
 	
