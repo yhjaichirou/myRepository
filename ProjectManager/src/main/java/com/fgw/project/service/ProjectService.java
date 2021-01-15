@@ -542,7 +542,7 @@ public class ProjectService {
 	 */
 	public RetKit getProjectGanttData(Integer proId) {
 		// TODO Auto-generated method stub
-		taskR.findAllByProId(proId);
+		List<Task> tasks = taskR.findAllByProId(proId);
 		
 		
 		return null;
