@@ -224,5 +224,12 @@ public class ProjectController {
 	}
 	
 
-	
+	/**
+	 *  ---------------------  甘特图  -------------------------
+	 */
+	@RequestMapping("/getProjectGanttData/{proId}")
+	public RetKit getProjectGanttData(@PathVariable Integer proId) {
+		proService.getProjectGanttData(proId);
+		return  null;
+	}
 }

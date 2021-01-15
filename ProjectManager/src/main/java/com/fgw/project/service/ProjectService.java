@@ -537,6 +537,18 @@ public class ProjectService {
 	}
 
 
+	/**
+	 *  ---------------------  甘特图  -------------------------
+	 */
+	public RetKit getProjectGanttData(Integer proId) {
+		// TODO Auto-generated method stub
+		taskR.findAllByProId(proId);
+		
+		
+		return null;
+	}
+
+
 
 
 
