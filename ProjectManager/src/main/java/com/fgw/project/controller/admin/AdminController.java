@@ -22,6 +22,7 @@ import com.fgw.project.model.vo.MenuVo;
 import com.fgw.project.service.RouterService;
 import com.fgw.project.service.UserService;
 import com.fgw.project.util.RetKit;
+import com.fgw.project.util.StrKit;
 
 /**
  * 后台接口
@@ -97,11 +98,17 @@ public class AdminController {
 	
 	@RequestMapping("/addRole")
 	public RetKit addRole(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不正确！");
+		}
 		return userService.addRole(param);
 	}
 	
 	@RequestMapping("/updateRole")
 	public RetKit updateRole(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不正确！");
+		}
 		return userService.updateRole(param);
 	}
 	

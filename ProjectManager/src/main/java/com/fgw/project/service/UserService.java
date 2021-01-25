@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fgw.project.constant.OrgPropertyEnum;
 import com.fgw.project.constant.RoleEnum;
@@ -184,11 +185,20 @@ public class UserService {
 
 
 	public RetKit updateRole(String param) {
-		Integer id = JSONObject.parseObject(param).getInteger("id");
-		String roleName = JSONObject.parseObject(param).getString("roleName");
-		String rolePrimary = JSONObject.parseObject(param).getString("rolePrimary");
-		String roleDescribe = JSONObject.parseObject(param).getString("roleDescribe");
-		String menus = JSONObject.parseObject(param).getString("menus");
+		JSONObject jb = JSONObject.parseObject(param);
+		Integer id = jb.getInteger("id");
+		String roleName = jb.getString("roleName");
+		String rolePrimary = jb.getString("rolePrimary");
+		String roleDescribe = jb.getString("roleDescribe");
+		String menusArrStr = jb.getString("menus");
+		String menus = "";
+		if(StrKit.notBlank(menusArrStr)) {
+			List<String> menusList = JSONObject.parseArray(menusArrStr, String.class);
+			for (String mm : menusList) {
+				menus +=","+ mm;
+			}
+			menus = StrKit.notBlank(menus)?menus.substring(1):menus;
+		}
 		Optional<Role> r_ = roleR.findById(id);
 		if(r_.isPresent()) {
 			Role r = r_.get();
