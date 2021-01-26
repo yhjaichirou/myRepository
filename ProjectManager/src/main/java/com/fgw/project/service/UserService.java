@@ -190,22 +190,14 @@ public class UserService {
 		String roleName = jb.getString("roleName");
 		String rolePrimary = jb.getString("rolePrimary");
 		String roleDescribe = jb.getString("roleDescribe");
-		String menusArrStr = jb.getString("menus");
-		String menus = "";
-		if(StrKit.notBlank(menusArrStr)) {
-			List<String> menusList = JSONObject.parseArray(menusArrStr, String.class);
-			for (String mm : menusList) {
-				menus +=","+ mm;
-			}
-			menus = StrKit.notBlank(menus)?menus.substring(1):menus;
-		}
+		String menusStr = jb.getString("menus");
 		Optional<Role> r_ = roleR.findById(id);
 		if(r_.isPresent()) {
 			Role r = r_.get();
 			r.setRoleName(roleName);
 			r.setRoleDescribe(roleDescribe);
 			r.setStatus(1);
-			r.setMenus(menus);
+			r.setMenus(menusStr);
 			r.setRolePrimary(rolePrimary);
 			roleR.save(r);
 			return RetKit.ok("修改成功！");
