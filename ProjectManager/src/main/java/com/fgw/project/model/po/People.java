@@ -24,9 +24,34 @@ public class People implements java.io.Serializable {
 	private String sex;
 	private String job;
 	private Integer age;
-	private String openid;
 	private String idcard;
 	
+	private String openid;
+	private String nickName;
+	private String avatarUrl;
+	private Integer gender;
+	
+	@Column(name = "nick_name")
+	public String getNickName() {
+		return nickName;
+	}
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+	@Column(name = "avatar_url")
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
+	}
+	@Column(name = "gender")
+	public Integer getGender() {
+		return gender;
+	}
+	public void setGender(Integer gender) {
+		this.gender = gender;
+	}
 	@Column(name = "sex")
 	public String getSex() {
 		return sex;

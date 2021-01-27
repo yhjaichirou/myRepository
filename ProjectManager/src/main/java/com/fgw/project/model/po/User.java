@@ -26,6 +26,7 @@ public class User implements java.io.Serializable {
 	private Integer groupId;
 	private Integer roleId;
 	
+	
 	@Column(name = "group_id")
 	public Integer getGroupId() {
 		return groupId;

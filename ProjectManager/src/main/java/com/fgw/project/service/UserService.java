@@ -305,5 +305,8 @@ public class UserService {
 		List<Group> grs = groupR.findAllByOrgId(orgId);
 		return RetKit.okData(grs);
 	}
+
+
+	
 	
 }

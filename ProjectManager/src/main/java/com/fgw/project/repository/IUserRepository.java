@@ -66,6 +66,7 @@ public interface IUserRepository extends JpaRepository<User	, Integer> {
 	List<Map<String, Object>> getAllByOrgIdAndStatus(@Param("orgId")Integer orgId);
 
 	List<User> findAllByRoleId(Integer roleId);
+
 	
 	
 }
