@@ -32,9 +32,9 @@ public class DepartController {
 		return gService.getOrgtypes();
 	}
 	
-	@RequestMapping("/getDepart/{orgId}")
+	@RequestMapping("/getDepartList/{orgId}")
 	public RetKit getDepart(@PathVariable String orgId ) {
-		return gService.getDepart(Integer.parseInt(orgId));
+		return gService.getDepartList(Integer.parseInt(orgId));
 	}
 	@RequestMapping("/addDepart")
 	public RetKit addDepart(@RequestBody String param) {

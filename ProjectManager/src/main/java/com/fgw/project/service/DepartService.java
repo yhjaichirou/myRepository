@@ -73,7 +73,7 @@ public class DepartService {
 		return childList;
 	}
 	
-	public RetKit getDepart(Integer orgId) {
+	public RetKit getDepartList(Integer orgId) {
 		Optional<Org> o_ = departR.findById(orgId);
 		List<Org> gs = new ArrayList<>();
 		if(o_.isPresent()) {
