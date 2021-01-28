@@ -1,6 +1,7 @@
 package com.fgw.project.model.vo;
 
 import java.util.Date;
+import java.util.List;
 
 public class OrgVo {
 
@@ -16,11 +17,14 @@ public class OrgVo {
 	private Integer property;
 	private Integer type;
 	
+	
+	
 	//外键
 	private String managerName;
 	private String propertyStr;
 	private String typeStr;
 	
+	private List<Integer> typeArr;
 	
 	public Integer getId() {
 		return id;
@@ -105,6 +109,12 @@ public class OrgVo {
 	}
 	public void setTypeStr(String typeStr) {
 		this.typeStr = typeStr;
+	}
+	public List<Integer> getTypeArr() {
+		return typeArr;
+	}
+	public void setTypeArr(List<Integer> typeArr) {
+		this.typeArr = typeArr;
 	}
 	
 }

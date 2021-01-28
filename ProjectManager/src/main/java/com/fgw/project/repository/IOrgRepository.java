@@ -33,5 +33,13 @@ public interface IOrgRepository extends JpaRepository<Org , Integer> {
 
 	List<Org> findAllByStatusAndPropertyAndPid(Integer status, Integer roleId, Integer currOrgId);
 
+	List<Org> findAllByPidAndName(Integer orgId, String searchContent);
+
+	List<Org> findAllByPidAndPropertyAndNameLike(Integer orgId, Integer id, String searchContent);
+
+	List<Org> findAllByPidAndNameLike(Integer orgId, String searchContent);
+
+	List<Org> findAllByStatusAndNameLike(Integer status, String searchContent);
+
 
 }

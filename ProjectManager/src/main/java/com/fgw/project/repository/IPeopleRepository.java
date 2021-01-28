@@ -50,7 +50,7 @@ public interface IPeopleRepository extends JpaRepository<People , Integer> {
 			+ " WHERE p.status=:status AND p.openid=:openid ",nativeQuery=true)
 	Map<String, Object> getByStatusAndOpenid(@Param("status")Integer status,@Param("openid")String openid );
 
-	@Query(value="SELECT p.id,p.name,p.mobile,p.status,p.org_id as orgId,p.sex,p.job,p.age,p.idcard,p.openid,u.nick_name as nickName,u.avatar_url as avatarUrl,u.gender,"
+	@Query(value="SELECT p.id,p.name,p.mobile,p.status,p.org_id as orgId,p.sex,p.job,p.age,p.idcard,p.openid,p.nick_name as nickName,p.avatar_url as avatarUrl,p.gender,"
 			+ " u.id as userId,u.name as userName,u.account,u.status as userStatus,u.role_id as roleId,u.group_id as groupId,"
 			+ " ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName "
 			+ " FROM people p  "

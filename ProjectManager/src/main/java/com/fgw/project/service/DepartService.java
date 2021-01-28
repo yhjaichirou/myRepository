@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,26 +22,53 @@ import com.fgw.project.model.po.OrgType;
 import com.fgw.project.model.po.People;
 import com.fgw.project.model.vo.IndustryVo;
 import com.fgw.project.model.vo.MenuVo;
+import com.fgw.project.model.vo.OrgVo;
 import com.fgw.project.repository.IIndustryRepository;
 import com.fgw.project.repository.IOrgRepository;
 import com.fgw.project.repository.IOrgTypeRepository;
 import com.fgw.project.repository.IPeopleRepository;
 import com.fgw.project.util.BeanKit;
 import com.fgw.project.util.RetKit;
+import com.fgw.project.util.StrKit;
 
 
 @Service
 public class DepartService {
 
 	@Autowired
+	private IOrgRepository orgR;
+	@Autowired
 	private IIndustryRepository industryR;
 	@Autowired
 	private IOrgRepository departR;
 	@Autowired
 	private IPeopleRepository peopleR;
+	@Resource
+	private CommonService comService;
+	
 
-	public RetKit getOrgtypes() {
-		List<Industry> o_ = industryR.findAll();
+	public RetKit getOrgtypes(Integer orgId) {
+		List<Industry> o_ = new ArrayList<>();
+		if(orgId != null) {
+			Org o = orgR.getById(orgId);
+			if(o.getProperty().equals(OrgPropertyEnum.FGW.getId())) {
+				o_ = industryR.findAllByStatus(1);
+			}else {
+				//获取该组织顶级行业类型
+				List<Industry> ins= industryR.findAllByStatus(1);
+				Industry ii = industryR.findById(o.getType()).get();
+				List<Integer> ids = comService.getIndustryParent(ii, ins);//oo.getType()
+				Integer parentId0 = 0;
+				if(ids ==null ||ids.size()<=0) {
+					parentId0 = o.getType();
+				}else {
+					parentId0 = ids.get(0);
+				}
+				o_.add(industryR.findById(parentId0).get());
+			}
+		}else {
+			o_ = industryR.findAllByStatus(1);
+		}
 		List<IndustryVo> ovs = BeanKit.copyBeanList(o_, IndustryVo.class);
 		List<IndustryVo> fovs = ovs.stream().filter((IndustryVo ii)->ii.getPid().equals(0)).map((IndustryVo io)->{
 			io.setLabel(io.getName());
@@ -73,20 +101,51 @@ public class DepartService {
 		return childList;
 	}
 	
-	public RetKit getDepartList(Integer orgId) {
-		Optional<Org> o_ = departR.findById(orgId);
+	public RetKit getDepartList(Integer orgId,Integer pn,Integer ps,String searchContent,Integer searchStatus) {
 		List<Org> gs = new ArrayList<>();
-		if(o_.isPresent()) {
-			Org o = o_.get();
-			if(o.getProperty() == 1) {
-				gs = departR.findAllByPid(orgId);
-			}else if(o.getProperty() == 2) {
-				gs = departR.findAllByPidAndProperty(orgId,OrgPropertyEnum.QY.getId());
+		if(orgId == null) {
+			gs = departR.findAllByStatus(1);
+		}else {
+			Optional<Org> o_ = departR.findById(orgId);
+			if(o_.isPresent()) {
+				Org o = o_.get();
+				if(o.getProperty() == OrgPropertyEnum.FGW.getId()) {//发改委
+					if(StrKit.isBlank(searchContent)) {
+						gs = departR.findAllByStatus(1);
+					}else{
+						gs = departR.findAllByStatusAndNameLike(1,searchContent);
+					}
+//					if(StrKit.isBlank(searchContent)) {
+//						gs = departR.findAllByPid(orgId);
+//					}else{
+//						gs = departR.findAllByPidAndNameLike(orgId,searchContent);
+//					}
+				}else if(o.getProperty() == OrgPropertyEnum.DEPART.getId()) {//部门
+					if(StrKit.isBlank(searchContent)) {
+						gs = departR.findAllByPidAndProperty(orgId,OrgPropertyEnum.QY.getId());
+					}else{
+						gs = departR.findAllByPidAndPropertyAndNameLike(orgId,OrgPropertyEnum.QY.getId(),searchContent);
+					}
+				}else {
+					
+				}
 			}else {
-				
+				gs = departR.findAllByStatus(1);
 			}
 		}
-		return RetKit.okData(gs);
+		List<OrgVo> ov = BeanKit.copyBeanList(gs, OrgVo.class);
+		final List<Industry> ins= industryR.findAllByStatus(1);
+		ov = ov.stream().map((OrgVo oo)->{
+			oo.setPropertyStr(OrgPropertyEnum.getByValue(oo.getProperty()).getText());
+			Industry ii = industryR.findById(oo.getType()).get();
+			List<Integer> ids = comService.getIndustryParent(ii, ins);//oo.getType()
+			ids.add(ii.getId());
+			oo.setTypeArr(ids);
+			oo.setTypeStr(ii.getName());
+			
+			return oo;
+		}).collect(Collectors.toList());
+		return RetKit.okData(ov);
 	}
 
 	public RetKit addDepart(String param) {
@@ -99,8 +158,14 @@ public class DepartService {
 		Integer level = obj.getInteger("level");
 		Integer pid = obj.getInteger("orgId");
 		Integer property = obj.getInteger("property");
-		Integer type = obj.getInteger("type");
-		
+		String typeArr = obj.getString("typeArr");
+		Integer type = 0;
+		if(StrKit.notBlank(typeArr)) {
+			List<Integer> types = JSONObject.parseArray(typeArr, Integer.class);
+			type = types.get(types.size()-1);
+		}else {
+			return RetKit.fail("请选择行业类型！");
+		}
 		Org oldo = departR.findByNameAndPropertyAndType(name,property,type);
 		Org depart = new Org();
 		if(id !=null) {
@@ -123,8 +188,8 @@ public class DepartService {
 		depart.setPosition(position);
 		depart.setManager(manager);
 		depart.setManagerMobile(managerMobile);
-		depart.setLevel(level);
-		depart.setProperty(property);
+		depart.setLevel(level==null?1:level);
+		depart.setProperty(property==null?OrgPropertyEnum.QY.getId():property);//如果为空 当前登录为部门 -只能为是企业属性
 		depart.setType(type);
 		
 		departR.save(depart);

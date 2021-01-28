@@ -27,15 +27,30 @@ public class DepartController {
 	@Resource
 	private DepartService gService;
 	
-	@RequestMapping("/getOrgtypes")
-	public RetKit getOrgtypes() {
-		return gService.getOrgtypes();
+	@RequestMapping("/getOrgtypes/{orgId}")
+	public RetKit getOrgtypes(@PathVariable Integer orgId) {
+		return gService.getOrgtypes(orgId);
 	}
 	
-	@RequestMapping("/getDepartList/{orgId}")
-	public RetKit getDepart(@PathVariable String orgId ) {
-		return gService.getDepartList(Integer.parseInt(orgId));
+//	@RequestMapping("/getDepartList/{orgId}/{pn}/{ps}/{searchContent}/{searchStatus}")
+//	public RetKit getDepartList(@PathVariable Integer orgId ,@PathVariable Integer pn ,@PathVariable Integer ps,@PathVariable String searchContent ,@PathVariable Integer searchStatus ) {
+//		if(pn==null || ps==null) {
+//			pn = 1;
+//			ps = 20;
+//		}
+//		return gService.getDepartList(orgId,pn,ps,searchContent,searchStatus);
+//	}
+	
+	@RequestMapping("/getDepartList")
+	public RetKit getDepartList2(@PathParam(value = "orgId") Integer orgId , @PathParam(value = "pn") Integer pn ,@PathParam(value = "ps") Integer ps,
+			@PathParam(value = "searchContent") String searchContent ,@PathParam(value = "searchStatus") Integer searchStatus ) {
+		if(pn==null || ps==null) {
+			pn = 1;
+			ps = 20;
+		}
+		return gService.getDepartList(orgId,pn,ps,searchContent,searchStatus);
 	}
+	
 	@RequestMapping("/addDepart")
 	public RetKit addDepart(@RequestBody String param) {
 		return gService.addDepart(param);

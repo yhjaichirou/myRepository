@@ -16,5 +16,7 @@ import com.fgw.project.model.po.Industry;
 @Repository
 public interface IIndustryRepository extends JpaRepository<Industry , Integer> {
 
+	List<Industry> findAllByStatus(Integer status);
+
 
 }

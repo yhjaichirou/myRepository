@@ -1,5 +1,7 @@
 package com.fgw.project.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -20,6 +22,7 @@ import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.fgw.project.model.po.Config;
+import com.fgw.project.model.po.Industry;
 import com.fgw.project.repository.IConfigRepository;
 import com.fgw.project.util.RetKit;
 import com.fgw.project.util.UploadFile;
@@ -60,6 +63,30 @@ public class CommonService {
 		Optional<Config> config_ = configR.findById(1);
 		return config_.isPresent()?config_.get():null;
 	}
+	
+	/**
+	 * 获取  Cascader 父类 数组格式   不包括自己  按父级顺序添加
+	 * @param thisId
+	 * @param industrys
+	 * @return
+	 */
+	public List<Integer> getIndustryParent(Industry thisIndustry,List<Industry> industrys){
+		List<Integer> ids = new ArrayList<>();
+		if(thisIndustry.getPid()!=0) {
+			for (Industry industry : industrys) {
+				if(industry.getId().equals(thisIndustry.getPid())) {
+					List<Integer> chi = getIndustryParent(industry,industrys);
+					for (Integer chiid : chi) {
+						ids.add(chiid);
+					}
+					ids.add(industry.getId());
+					return ids;
+				}
+			}
+		}
+		return ids;
+	}
+	
 	
 	/**
 	 * 	发送通知

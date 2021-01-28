@@ -184,4 +184,30 @@ public class WxController {
 		}
 		return RetKit.fail("上传内容不能为空！");
 	}
+	
+	
+	/**
+	 *  ----------------------------------业务-----------------------------------------
+	 */
+	
+	
+	@RequestMapping(value = "/getNoticeList", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public RetKit getNoticeList(Integer orgId,Integer status,Integer peopleId) {
+		if(orgId == null) {
+			return RetKit.fail("参数不正确！");
+		}
+		return apiService.getNoticeList(orgId,status, peopleId);
+	}
+	
+	@RequestMapping(value = "/getYjList", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public RetKit getYjList(Integer orgId,Integer status,Integer peopleId) {
+		if(orgId == null || peopleId ==null) {
+			return RetKit.fail("参数不正确！");
+		}
+		return apiService.getYjList(orgId,status,peopleId);
+	}
+	
+	
 }

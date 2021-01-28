@@ -1,7 +1,10 @@
 package com.fgw.project.service;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,9 +13,12 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.fgw.project.constant.URLConstant;
 import com.fgw.project.model.po.People;
+import com.fgw.project.model.po.Yj;
 import com.fgw.project.model.vo.WxUserInfo;
 import com.fgw.project.repository.IPeopleRepository;
+import com.fgw.project.repository.IYjRepository;
 import com.fgw.project.util.RetKit;
+import com.fgw.project.util.StrKit;
 import com.fgw.project.util.WxResult;
 
 import cn.hutool.http.HttpUtil;
@@ -26,6 +32,8 @@ public class ApiService {
 	private String secret;
 	@Autowired
 	private IPeopleRepository peoR;
+	@Autowired
+	private IYjRepository yR;
 
 //	@Autowired
 //	private CacheManager cacheManager;
@@ -67,10 +75,31 @@ public class ApiService {
 			return RetKit.fail("网络错误！");
 		}
 	}
+
 	
 	/**
 	 * ---------------------------------业务---------------------------------
 	 */
+	
+	public RetKit getNoticeList(Integer orgId, Integer status,Integer peopleId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public RetKit getYjList(Integer orgId, Integer status,Integer peopleId) {
+		List<Yj> ys = yR.findAllByOrgId(orgId);
+		if(status == null) {
+			ys = yR.findAllByOrgId(orgId);
+		}else {
+			ys = yR.findAllByOrgIdAndStatus(orgId,status);
+		}
+		ys = ys.stream().filter((Yj y)->(StrKit.isBlank(y.getNoticePeople())?false:Arrays.asList(y.getNoticePeople().split(",")).contains(peopleId.toString()))).collect(Collectors.toList());
+		return RetKit.okData(ys);
+	}
+
+	
+	
+	
 	
 	
 	

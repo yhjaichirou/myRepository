@@ -19,7 +19,7 @@ public class YjService {
 
 	public RetKit getYjs(Integer orgId, Integer status, String search) {
 		List<Yj> ys = yR.findAllByOrgId(orgId);
-		if(status !=null) {
+		if(status == null) {
 			ys = yR.findAllByOrgId(orgId);
 		}else {
 			ys = yR.findAllByOrgIdAndStatus(orgId,status);

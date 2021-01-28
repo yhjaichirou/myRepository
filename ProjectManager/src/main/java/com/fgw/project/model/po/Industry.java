@@ -16,6 +16,7 @@ public class Industry implements java.io.Serializable {
 	private Integer id;
 	private String name;
 	private Integer pid;
+	private Integer status;
 	
 
 	@Id
@@ -43,6 +44,15 @@ public class Industry implements java.io.Serializable {
 
 	public void setPid(Integer pid) {
 		this.pid = pid;
+	}
+
+	@Column(name = "status")
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	
