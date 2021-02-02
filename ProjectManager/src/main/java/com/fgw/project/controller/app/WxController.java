@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,7 @@ import com.fgw.project.model.vo.WxUserInfo;
 import com.fgw.project.repository.IPeopleRepository;
 import com.fgw.project.repository.IUserRepository;
 import com.fgw.project.service.ApiService;
+import com.fgw.project.service.TaskService;
 import com.fgw.project.service.UserService;
 import com.fgw.project.util.RetKit;
 import com.fgw.project.util.StrKit;
@@ -47,6 +49,8 @@ public class WxController {
 	private IUserRepository userR;
 	@Autowired
 	private IPeopleRepository peoR;
+	@Resource
+	private TaskService taskService;
 	
 	/**
 	 * 查询是否认证
@@ -209,5 +213,60 @@ public class WxController {
 		return apiService.getYjList(orgId,status,peopleId);
 	}
 	
+	/**
+	 * 项目列表
+	 * @return
+	 */
+	@RequestMapping("/getProjectList")
+	public RetKit getProjectList(Integer orgId,Integer status,Integer peopleId,String search) {
+		if(orgId == null || peopleId ==null) {
+			return RetKit.fail("参数不正确！");
+		}
+		return apiService.getProjectList(orgId,status,peopleId,search);
+	}
+	
+	/**
+	 * 项目查询
+	 * @return
+	 */
+	@RequestMapping("/getProject")
+	public RetKit getProject(Integer projectId) {
+		if(projectId == null) {
+			return RetKit.fail("参数不正确！");
+		}
+		return apiService.getProject(projectId);
+	}
+	
+	/**
+	 * 项目文件
+	 * @return
+	 */
+	@RequestMapping("/getFileList/")
+	public RetKit getFileList(Integer projectId,Integer pn, Integer ps) {
+		if(projectId==null) {
+			return RetKit.fail("参数不正确！");
+		}
+		return apiService.getFileList(projectId,pn,ps);
+	}
+	
+	
+	
+	@RequestMapping("/getAllTaskList/{projectId}/{typeId}")
+	public RetKit getAllTaskList(@PathVariable Integer projectId,@PathVariable Integer typeId) {
+		return apiService.getAllTaskList(projectId,typeId);
+	}
+	@RequestMapping("/getAllCountMap/{projectId}")
+	public RetKit getAllCountMap(@PathVariable Integer projectId) {
+		return apiService.getAllCountMap(projectId);
+	}
+	
+	@RequestMapping("/getTask/{id}")
+	public RetKit getTask(@PathVariable Integer id) {
+		return apiService.getTask(id);
+	}
+	@RequestMapping("/getExecutorList/{orgId}")
+	public RetKit getExecutorList(@PathVariable Integer orgId) {
+		return apiService.getExecutorList(orgId);
+	}
 	
 }

@@ -122,6 +122,10 @@ public class ProjectController {
 		return proService.deleteProject(projectId);
 	}
 	
+	/**
+	 * 项目文件
+	 * @return
+	 */
 	@RequestMapping("/getFileList/{projectId}/{pn}/{ps}")
 	public RetKit getFileList(@PathVariable Integer projectId,@PathVariable Integer pn,@PathVariable Integer ps) {
 		if(projectId==null) {
