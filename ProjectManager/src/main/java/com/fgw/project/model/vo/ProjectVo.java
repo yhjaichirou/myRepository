@@ -1,8 +1,11 @@
 package com.fgw.project.model.vo;
 
 import java.util.Date;
+import java.util.List;
 
-public class ProjectVo {
+import com.fgw.project.model.po.Invest;
+
+public class ProjectVo<Industry> {
 
 	private Integer id;
 	private String name;
@@ -23,6 +26,7 @@ public class ProjectVo {
 	private Date expectedDate;//预计完成时间
 	private Date startDate;//开始时间
 	private String approveCode;//项目审批监管平台代码
+	private String image;
 	
 	private Integer lxIsComapprove;
 	private Integer lxHandleLevel;
@@ -81,6 +85,9 @@ public class ProjectVo {
 	private String visibleRangeStr;
 	private String joinersStr;
 	private String statusStr;
+	
+	private List<Integer> typeArr;
+	private List<Invest> investInfos;
 	
 	public Integer getId() {
 		return id;
@@ -509,5 +516,23 @@ public class ProjectVo {
 	}
 	public void setStatusStr(String statusStr) {
 		this.statusStr = statusStr;
+	}
+	public List<Integer> getTypeArr() {
+		return typeArr;
+	}
+	public void setTypeArr(List<Integer> typeArr) {
+		this.typeArr = typeArr;
+	}
+	public List<Invest> getInvestInfos() {
+		return investInfos;
+	}
+	public void setInvestInfos(List<Invest> investInfos) {
+		this.investInfos = investInfos;
+	}
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
 	}
 }

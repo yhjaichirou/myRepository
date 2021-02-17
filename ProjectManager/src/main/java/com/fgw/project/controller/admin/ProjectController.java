@@ -92,6 +92,16 @@ public class ProjectController {
 		return proService.getJoiners(orgIds);
 	}
 	
+	/**
+	 * 	获取指定单位下的领导
+	 * @param orgId
+	 * @return
+	 */
+	@RequestMapping("/getLeadersOfOrgId/{orgId}")
+	public RetKit getLeadersOfOrgId(@PathVariable Integer orgId) {
+		return proService.getLeadersOfOrgId(orgId);
+	}
+	
 	@RequestMapping("/updateProject")
 	public RetKit updateProject(@RequestBody String param) {
 		if(StrKit.isBlank(param)) {
@@ -149,6 +159,12 @@ public class ProjectController {
 	public RetKit getTask(@PathVariable Integer id) {
 		return taskService.getTask(id);
 	}
+	
+	/**
+	 * 	获取指定单位下的人员
+	 * @param orgId
+	 * @return
+	 */
 	@RequestMapping("/getExecutorList/{orgId}")
 	public RetKit getExecutorList(@PathVariable Integer orgId) {
 		return taskService.getExecutorList(orgId);

@@ -23,10 +23,16 @@ public interface IPeopleRepository extends JpaRepository<People , Integer> {
 	List<People> findAllByOrgIdInAndStatus(List<Integer> orgIdList,Integer status);
 
 	@Query(value="SELECT "
-			+ " p.id,p.name,p.mobile,p.org_id as orgId,p.sex,p.job,p.age,p.status,p.idcard,p.openid"
+			+ " p.id,p.name,p.mobile,p.org_id as orgId,p.sex,p.job,p.age,p.status,p.idcard,p.openid,p.is_leader as isLeader"
 			+ " FROM people p "
 			+ " LEFT JOIN org o on o.id = p.org_id "
-			+ " WHERE o.property = 3 AND p.status=1 AND o.pid=:orgId ",nativeQuery=true)
+			+ " WHERE o.property = 4 AND p.status=1 ",nativeQuery=true)
+	List<Map<String, Object>> getAllPeopleOfEnterNoOrg();
+	@Query(value="SELECT "
+			+ " p.id,p.name,p.mobile,p.org_id as orgId,p.sex,p.job,p.age,p.status,p.idcard,p.openid,p.is_leader as isLeader"
+			+ " FROM people p "
+			+ " LEFT JOIN org o on o.id = p.org_id "
+			+ " WHERE o.property = 4 AND p.status=1 AND o.pid=:orgId ",nativeQuery=true)
 	List<Map<String, Object>> getAllPeopleOfEnter(@Param("orgId")Integer orgId);
 
 	@Query(value="SELECT * FROM people "
@@ -34,12 +40,13 @@ public interface IPeopleRepository extends JpaRepository<People , Integer> {
 	People getById(@Param("id")Integer id);
 
 	List<People> findAllByOrgIdAndStatus(Integer orgId,Integer status);
+	List<People> findAllByOrgIdAndStatusAndIsLeader(Integer orgId,Integer status,Integer isLeader);
 
 	List<People> findAllByIdIn(List<Integer> defaultPelIds);
 
 	List<People> findByNameAndMobileAndIdcard(String name, String mobile, String idcard);
 
-	@Query(value="SELECT p.id,p.name,p.mobile,p.status,p.org_id as orgId,p.sex,p.job,p.age,p.idcard,p.openid,p.nick_name as nickName,p.avatar_url as avatarUrl,p.gender,"
+	@Query(value="SELECT p.id,p.name,p.mobile,p.status,p.org_id as orgId,p.sex,p.job,p.age,p.idcard,p.openid,p.nick_name as nickName,p.avatar_url as avatarUrl,p.gender,p.is_leader as isLeader,"
 			+ " u.id as userId,u.name as userName,u.account,u.status as userStatus,u.role_id as roleId,u.group_id as groupId,"
 			+ " ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName "
 			+ " FROM people p  "
@@ -50,7 +57,7 @@ public interface IPeopleRepository extends JpaRepository<People , Integer> {
 			+ " WHERE p.status=:status AND p.openid=:openid ",nativeQuery=true)
 	Map<String, Object> getByStatusAndOpenid(@Param("status")Integer status,@Param("openid")String openid );
 
-	@Query(value="SELECT p.id,p.name,p.mobile,p.status,p.org_id as orgId,p.sex,p.job,p.age,p.idcard,p.openid,p.nick_name as nickName,p.avatar_url as avatarUrl,p.gender,"
+	@Query(value="SELECT p.id,p.name,p.mobile,p.status,p.org_id as orgId,p.sex,p.job,p.age,p.idcard,p.openid,p.nick_name as nickName,p.avatar_url as avatarUrl,p.gender,p.is_leader as isLeader,"
 			+ " u.id as userId,u.name as userName,u.account,u.status as userStatus,u.role_id as roleId,u.group_id as groupId,"
 			+ " ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName "
 			+ " FROM people p  "

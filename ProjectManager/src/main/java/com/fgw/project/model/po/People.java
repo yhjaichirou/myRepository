@@ -30,6 +30,7 @@ public class People implements java.io.Serializable {
 	private String nickName;
 	private String avatarUrl;
 	private Integer gender;
+	private Integer isLeader;
 	
 	@Column(name = "nick_name")
 	public String getNickName() {
@@ -124,12 +125,20 @@ public class People implements java.io.Serializable {
 		this.mobile = mobile;
 	}
 	
-	@Column(name = "idcard")
+	
 	public String getIdcard() {
 		return idcard;
 	}
 	public void setIdcard(String idcard) {
 		this.idcard = idcard;
+	}
+	
+	@Column(name = "is_leader")
+	public Integer getIsLeader() {
+		return isLeader;
+	}
+	public void setIsLeader(Integer isLeader) {
+		this.isLeader = isLeader;
 	}
 	
 
