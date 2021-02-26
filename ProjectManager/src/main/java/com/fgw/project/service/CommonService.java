@@ -87,6 +87,28 @@ public class CommonService {
 		return ids;
 	}
 	
+	/**
+	 * 获取  Cascader 父类 数组格式   不包括自己  按父级顺序添加    获取名称
+	 * @param thisId
+	 * @param industrys
+	 * @return
+	 */
+	public List<String> getIndustryParentName(Industry thisIndustry,List<Industry> industrys){
+		List<String> names = new ArrayList<>();
+		if(thisIndustry.getPid()!=0) {
+			for (Industry industry : industrys) {
+				if(industry.getId().equals(thisIndustry.getPid())) {
+					List<String> chi = getIndustryParentName(industry,industrys);
+					for (String chiid : chi) {
+						names.add(chiid);
+					}
+					names.add(industry.getName());
+					return names;
+				}
+			}
+		}
+		return names;
+	}
 	
 	/**
 	 * 	发送通知

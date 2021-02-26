@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.ProjectedPayload;
@@ -21,6 +22,7 @@ import com.fgw.project.constant.ProjectStatusEnum;
 import com.fgw.project.constant.TaskStatusEnum;
 import com.fgw.project.model.po.Category;
 import com.fgw.project.model.po.Group;
+import com.fgw.project.model.po.Industry;
 import com.fgw.project.model.po.Invest;
 import com.fgw.project.model.po.Org;
 import com.fgw.project.model.po.People;
@@ -32,6 +34,7 @@ import com.fgw.project.model.vo.ProjectVo;
 import com.fgw.project.model.vo.TaskVo;
 import com.fgw.project.repository.ICategoryRepository;
 import com.fgw.project.repository.IGroupRepository;
+import com.fgw.project.repository.IIndustryRepository;
 import com.fgw.project.repository.IInvestRepository;
 import com.fgw.project.repository.IOrgRepository;
 import com.fgw.project.repository.IPeopleRepository;
@@ -58,6 +61,8 @@ public class ProjectService {
 	@Autowired
 	private ICategoryRepository categoryR;
 	@Autowired
+	private IIndustryRepository industryR;
+	@Autowired
 	private IPeopleRepository peopleR;
 	@Autowired
 	private ITaskRepository taskR;
@@ -65,6 +70,8 @@ public class ProjectService {
 	private IShbRepository shbR;
 	@Autowired
 	private IInvestRepository investR;
+	@Resource
+	private CommonService comService;
 	
 	//投资情况
 	public RetKit getTzqkList(Integer projectId) {
@@ -546,6 +553,38 @@ public class ProjectService {
 		
 		
 		return null;
+	}
+
+	
+	
+	/**
+	 * -----------------------------报表-------------------------------- 
+	 * @return
+	 */
+	public RetKit getProjectForm(Integer pn,Integer ps,Integer orgId, Integer status, String search) {
+		List<Project> prs = new ArrayList<>();
+		if(status == null) {
+			prs = projectR.findAllByOrgId(orgId);
+		}else {
+			prs = projectR.findAllByOrgIdAndStatus(orgId, status);
+		}
+		Map<String,Object> rt = new HashMap<>();
+		Integer total = prs.size();
+		prs = prs.stream().skip((pn-1)*ps).limit(ps).collect(Collectors.toList());
+		List<ProjectVo> pvs = BeanKit.copyBeanList(prs, ProjectVo.class);
+		final List<Industry> cas = industryR.findAll();
+		pvs = pvs.stream().map((ProjectVo pv)->{
+			List<String> categoryNames = comService.getIndustryParentName(industryR.findById(pv.getIndustryCategory()).get(),cas);
+			String categoryName = categoryNames.stream().collect(Collectors.joining(">"));
+			pv.setCategoryName(categoryName);
+			pv.setDockingDateStr(pv.getDockingDate()==null?"":MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
+			return pv;
+		}).collect(Collectors.toList());
+		rt.put("pn", pn);
+		rt.put("ps", ps);
+		rt.put("total", total);
+		rt.put("list", prs);
+		return RetKit.okData(rt);
 	}
 
 
