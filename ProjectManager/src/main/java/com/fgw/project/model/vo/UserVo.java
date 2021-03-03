@@ -19,6 +19,7 @@ public class UserVo {
 	private String nickName;
 	private String avatarUrl;
 	private Integer gender;
+	private Integer isLeader;
 	
 	private Integer userId;
 	private String password;
@@ -183,6 +184,12 @@ public class UserVo {
 	}
 	public void setRoleId(Integer roleId) {
 		this.roleId = roleId;
+	}
+	public Integer getIsLeader() {
+		return isLeader;
+	}
+	public void setIsLeader(Integer isLeader) {
+		this.isLeader = isLeader;
 	}
 	
 	

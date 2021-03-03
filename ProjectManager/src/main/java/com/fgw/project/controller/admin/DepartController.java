@@ -60,8 +60,8 @@ public class DepartController {
 		return gService.addDepart(param);
 	}
 	@DeleteMapping("/deleteDepart/{departId}")
-	public RetKit deleteDepart(@PathVariable String DepartId) {
-		return gService.deleteDepart(Integer.parseInt(DepartId));
+	public RetKit deleteDepart(@PathVariable Integer departId) {
+		return gService.deleteDepart(departId);
 	}
 	
 	

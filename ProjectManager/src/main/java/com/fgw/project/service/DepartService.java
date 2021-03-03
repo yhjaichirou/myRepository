@@ -232,6 +232,7 @@ public class DepartService {
 		String job = obj.getString("job");
 		Integer age = obj.getInteger("age");
 		String idcard = obj.getString("idcard");
+		Integer isLeader = obj.getInteger("isLeader");
 		
 		List<People> oldo = peopleR.findByNameAndMobileAndIdcard(name,mobile,idcard);
 		People pel = new People();
@@ -256,6 +257,7 @@ public class DepartService {
 		pel.setSex(sex);
 		pel.setAge(age);
 		pel.setIdcard(idcard);
+		pel.setIsLeader(isLeader);
 		peopleR.save(pel);
 		return RetKit.okData(pel.getId());
 	}

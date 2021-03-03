@@ -34,6 +34,7 @@ public class Project implements java.io.Serializable {
 	private Date expectedDate;//预计完成时间
 	private Date startDate;//开始时间
 	private String approveCode;//项目审批监管平台代码
+	private String image;
 	
 	private Integer lxIsComapprove;
 	private Integer lxHandleLevel;
@@ -528,6 +529,14 @@ public class Project implements java.io.Serializable {
 	}
 	public void setTdIsSendappdepart(Integer tdIsSendappdepart) {
 		this.tdIsSendappdepart = tdIsSendappdepart;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}	
 	
 }

@@ -16,8 +16,11 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.ProjectedPayload;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fgw.project.constant.OrgPropertyEnum;
 import com.fgw.project.constant.ProjectStatusEnum;
 import com.fgw.project.constant.TaskStatusEnum;
 import com.fgw.project.model.po.Category;
@@ -72,6 +75,11 @@ public class ProjectService {
 	private IInvestRepository investR;
 	@Resource
 	private CommonService comService;
+<<<<<<< HEAD
+=======
+	@Autowired
+	private IIndustryRepository industryR;
+>>>>>>> a7f86aa78a4f4d5e16688fac2bb451dbf204df70
 	
 	//投资情况
 	public RetKit getTzqkList(Integer projectId) {
@@ -164,6 +172,14 @@ public class ProjectService {
 				}
 			}
 			pv.setJoinersStr(StrKit.notBlank(joinersStr)?joinersStr.substring(1) : joinersStr);
+			List<Industry> ins = industryR.findAllByStatus(1);
+			Industry ii = industryR.findById(pv.getIndustryCategory()).get();
+			List<Integer> ids = comService.getIndustryParent(ii, ins);//oo.getType()
+			ids.add(ii.getId());
+			pv.setTypeArr(ids);
+			
+			List<Invest> invs = investR.findAllByProId(pv.getId());
+			pv.setInvestInfos(invs);
 			return RetKit.okData(pv);
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
 			e.printStackTrace();
@@ -303,12 +319,21 @@ public class ProjectService {
 		return RetKit.okData(gs);
 	}
 
+	@Transactional
 	public RetKit addProject(String param) {
 		JSONObject jb = JSONObject.parseObject(param);
+		
 		Integer id = jb.getInteger("id");
 		String name = jb.getString("name");
 		Integer orgId = jb.getInteger("orgId");
-		Integer industryCategory = jb.getInteger("industryCategory");
+		String typeArr = jb.getString("typeArr");
+		Integer industryCategory = 0;
+		if(StrKit.notBlank(typeArr)) {
+			List<Integer> types = JSONObject.parseArray(typeArr, Integer.class);
+			industryCategory = types.get(types.size()-1);
+		}else {
+			return RetKit.fail("请选择行业类型！");
+		}
 		String content = jb.getString("name");
 		String number = jb.getString("number");
 		Integer maturity = jb.getInteger("maturity");
@@ -431,6 +456,19 @@ public class ProjectService {
 //		pro.setGroupDecript(groupDecript);
 //		pro.setOrgId(orgId);
 		projectR.save(pro);
+		
+		Integer proId = pro.getId();
+		String investInfos = jb.getString("investInfos");
+		if(proId!=null && StrKit.notBlank(invest) && StrKit.notBlank(investInfos)) {
+			List<Invest> oldInvests = investR.findAllByProId(proId);
+			investR.deleteAll(oldInvests);
+			List<Invest> investVos = JSONObject.parseArray(investInfos, Invest.class);
+			for(int i=0;i<investVos.size();i++) {
+				Invest inv = investVos.get(i);
+				inv.setProId(proId);
+				investR.save(inv);
+			}
+		}
 		return RetKit.okData(pro.getId());
 	}
 
@@ -460,17 +498,28 @@ public class ProjectService {
 		if(orgId ==null) {
 			return RetKit.fail("获取表单参数失败！");
 		}
+		Org currOrg = orgR.findById(orgId).get();
 		Map<String,Object> rt = new HashMap<>();
-		List<Category> cs = categoryR.findAllByStatus(1);
-		List<People> ps = peopleR.findAllByOrgId(orgId);
-		List<Map<String, Object>> qyList = peopleR.getAllPeopleOfEnter(orgId);
-		List<Org> orgs = orgR.findAllByStatus(1);
-		orgs = orgs.stream().filter((Org o)-> !o.getId().equals(orgId)).collect(Collectors.toList());
-		rt.put("categorys", cs);
-		rt.put("peoples", ps);
-		rt.put("orgs", orgs);
-		rt.put("qys", qyList);
-		
+		if(currOrg.getProperty().equals(OrgPropertyEnum.FGW.getId())) {
+			List<Category> cs = categoryR.findAllByStatus(1);
+			List<People> ps = peopleR.findAll();
+			List<Map<String, Object>> qyList = peopleR.getAllPeopleOfEnterNoOrg();
+			List<Org> orgs = orgR.findAllByStatus(1);
+			rt.put("categorys", cs);
+			rt.put("peoples", ps);
+			rt.put("orgs", orgs);
+			rt.put("qys", qyList);
+		}else {
+			List<Category> cs = categoryR.findAllByStatus(1);
+			List<People> ps = peopleR.findAllByOrgId(orgId);
+			List<Map<String, Object>> qyList = peopleR.getAllPeopleOfEnter(orgId);
+			List<Org> orgs = orgR.findAllByStatus(1);
+			orgs = orgs.stream().filter((Org o)-> !o.getId().equals(orgId)).collect(Collectors.toList());
+			rt.put("categorys", cs);
+			rt.put("peoples", ps);
+			rt.put("orgs", orgs);
+			rt.put("qys", qyList);
+		}
 		return RetKit.okData(rt);
 	}
 	
@@ -492,6 +541,14 @@ public class ProjectService {
 		return RetKit.okData(ps);
 	}
 
+	public RetKit getLeadersOfOrgId(Integer orgId) {
+		if(orgId == null || orgId == 0) {
+			return RetKit.fail("参数错误！");
+		}
+		List<People> ps = peopleR.findAllByOrgIdAndStatusAndIsLeader(orgId,1,1);
+		return RetKit.okData(ps);
+	}
+	
 	public RetKit authProject(Integer projectId) {
 		Optional<Project> pr_ = projectR.findById(projectId);
 		if(pr_.isPresent()) {
@@ -586,6 +643,8 @@ public class ProjectService {
 		rt.put("list", prs);
 		return RetKit.okData(rt);
 	}
+
+
 
 
 
