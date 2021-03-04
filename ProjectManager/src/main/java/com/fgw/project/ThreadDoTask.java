@@ -42,10 +42,7 @@ import com.fgw.project.repository.IYjRepository;
 import com.fgw.project.service.CommonService;
 import com.fgw.project.service.YjService;
 import com.fgw.project.util.StrKit;
-import com.sun.org.apache.xerces.internal.dom.DeepNodeListImpl;
 
-import cn.hutool.core.date.DateField;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.thread.ThreadUtil;

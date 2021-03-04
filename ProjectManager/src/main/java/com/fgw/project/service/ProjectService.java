@@ -75,11 +75,7 @@ public class ProjectService {
 	private IInvestRepository investR;
 	@Resource
 	private CommonService comService;
-<<<<<<< HEAD
-=======
-	@Autowired
-	private IIndustryRepository industryR;
->>>>>>> a7f86aa78a4f4d5e16688fac2bb451dbf204df70
+
 	
 	//投资情况
 	public RetKit getTzqkList(Integer projectId) {
