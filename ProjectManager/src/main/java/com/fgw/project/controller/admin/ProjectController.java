@@ -70,12 +70,15 @@ public class ProjectController {
 		return proService.getProjectAboutSHB(projectId);
 	}
 	
-	@RequestMapping("/clickUpdateStatus/{projectId}")
-	public RetKit clickUpdateStatus(@PathVariable String projectId) {
-		if(StrKit.isBlank(projectId)) {
+	@RequestMapping("/clickUpdateStatus")
+	public RetKit clickUpdateStatus(@RequestBody String param) {
+		JSONObject jb = JSONObject.parseObject(param);
+		Integer projectId = jb.getInteger("projectId");
+		Integer status = jb.getInteger("status");
+		if(projectId==null) {
 			return RetKit.fail("参数不正确！");
 		}
-		return proService.clickUpdateStatus(projectId);
+		return proService.clickUpdateStatus(projectId,status);
 	}
 	
 	@RequestMapping("/getAllFormParam/{orgId}")

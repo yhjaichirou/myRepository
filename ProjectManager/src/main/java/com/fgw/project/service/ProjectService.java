@@ -310,9 +310,11 @@ public class ProjectService {
 		}
 	}
 	
-	public RetKit clickUpdateStatus(String projectId) {
-		Map<String,Object> gs = projectR.getProjectById(Integer.parseInt(projectId));
-		return RetKit.okData(gs);
+	public RetKit clickUpdateStatus(Integer projectId,Integer status) {
+		Project pro = projectR.findById(projectId).get();
+		pro.setStatus(status);
+		projectR.save(pro);
+		return RetKit.ok("状态已更新！");
 	}
 
 	@Transactional
