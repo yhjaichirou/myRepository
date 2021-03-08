@@ -7,7 +7,7 @@ package com.fgw.project.constant;
  */
 public enum ProjectStatusEnum {
 
-	RUNGING(1,"进行中"),COMPLETE(2,"已完成"),DELAY(3,"已延期"),OVERDUE(4,"已逾期"),NEW(7,"新建项目"),APPROVAL(8,"审批中"),APPROVALFAIL(9,"审批失败"),APPROVALOK(10,"审批通过");
+	RUNGING(1,"进行中"),COMPLETE(2,"已完成"),DELAY(3,"已延期"),OVERDUE(4,"已逾期"),EARLY(5,"前期手续已办完"),NEW(7,"新建项目"),APPROVAL(8,"审批中"),APPROVALFAIL(9,"审批失败"),APPROVALOK(10,"审批通过");
 	
 	private Integer id;
 	private String text;

@@ -11,7 +11,7 @@ public class ProjectVo<Industry> {
 	private String name;
 	private Integer industryCategory;//产业类型
 	private String content;
-	private String number;
+	private String number;//项目编码
 	private Integer maturity;//项目成熟度
 	private Date dockingDate;//对接日期
 	private Integer leader;//牵头领导
@@ -66,6 +66,7 @@ public class ProjectVo<Industry> {
 	private Integer status;//
 	private Date completeDate;//完成时间
 	private Integer orgId;
+	private String processCondition;
 	
 	//外键
 	private String orgName;
@@ -88,6 +89,7 @@ public class ProjectVo<Industry> {
 	
 	private List<Integer> typeArr;
 	private List<Invest> investInfos;
+	private String earlyStage;
 	
 	public Integer getId() {
 		return id;
@@ -534,5 +536,17 @@ public class ProjectVo<Industry> {
 	}
 	public void setImage(String image) {
 		this.image = image;
+	}
+	public String getProcessCondition() {
+		return processCondition;
+	}
+	public void setProcessCondition(String processCondition) {
+		this.processCondition = processCondition;
+	}
+	public String getEarlyStage() {
+		return earlyStage;
+	}
+	public void setEarlyStage(String earlyStage) {
+		this.earlyStage = earlyStage;
 	}
 }

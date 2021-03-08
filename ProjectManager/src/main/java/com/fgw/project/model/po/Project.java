@@ -35,6 +35,7 @@ public class Project implements java.io.Serializable {
 	private Date startDate;//开始时间
 	private String approveCode;//项目审批监管平台代码
 	private String image;
+	private String processCondition;
 	
 	private Integer lxIsComapprove;
 	private Integer lxHandleLevel;
@@ -531,12 +532,22 @@ public class Project implements java.io.Serializable {
 		this.tdIsSendappdepart = tdIsSendappdepart;
 	}
 
+	@Column(name = "image")
 	public String getImage() {
 		return image;
 	}
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+
+	@Column(name = "process_condition")
+	public String getProcessCondition() {
+		return processCondition;
+	}
+
+	public void setProcessCondition(String processCondition) {
+		this.processCondition = processCondition;
 	}	
 	
 }

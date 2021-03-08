@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.ProjectedPayload;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fgw.project.TargetQuartz;
 import com.fgw.project.constant.OrgPropertyEnum;
 import com.fgw.project.constant.ProjectStatusEnum;
 import com.fgw.project.constant.TaskStatusEnum;
@@ -56,7 +59,7 @@ import com.fgw.project.util.StrKit;
  */
 @Service
 public class ProjectService {
-
+	private Log log = LogFactory.getLog(ProjectService.class);
 	@Autowired
 	private IProjectRepository projectR;
 	@Autowired
@@ -617,29 +620,44 @@ public class ProjectService {
 	 * @return
 	 */
 	public RetKit getProjectForm(Integer pn,Integer ps,Integer orgId, Integer status, String search) {
-		List<Project> prs = new ArrayList<>();
-		if(status == null) {
-			prs = projectR.findAllByOrgId(orgId);
+		List<Map<String,Object>> projects = new ArrayList<>();
+		if((status == null || status == 0) && StrKit.isBlank(search)) {
+			projects = projectR.getAllProject();
+		}else if((status == null || status == 0) && StrKit.notBlank(search)){
+			projects = projectR.getAllProjectOfSearch(search);
+		}else if(status != null && status != 0 && StrKit.isBlank(search)){
+			projects = projectR.getAllProjectOfStatus(status);
 		}else {
-			prs = projectR.findAllByOrgIdAndStatus(orgId, status);
+			projects = projectR.getAllProjectOfStatusAndSearch(status,search);
 		}
-		Map<String,Object> rt = new HashMap<>();
-		Integer total = prs.size();
-		prs = prs.stream().skip((pn-1)*ps).limit(ps).collect(Collectors.toList());
-		List<ProjectVo> pvs = BeanKit.copyBeanList(prs, ProjectVo.class);
-		final List<Industry> cas = industryR.findAll();
-		pvs = pvs.stream().map((ProjectVo pv)->{
-			List<String> categoryNames = comService.getIndustryParentName(industryR.findById(pv.getIndustryCategory()).get(),cas);
-			String categoryName = categoryNames.stream().collect(Collectors.joining(">"));
-			pv.setCategoryName(categoryName);
-			pv.setDockingDateStr(pv.getDockingDate()==null?"":MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
-			return pv;
-		}).collect(Collectors.toList());
-		rt.put("pn", pn);
-		rt.put("ps", ps);
-		rt.put("total", total);
-		rt.put("list", prs);
-		return RetKit.okData(rt);
+		Integer total = projects.size();
+		projects = projects.stream().skip((pn-1)*ps).limit(ps).collect(Collectors.toList());
+		try {
+			List<ProjectVo> pvs = BeanKit.changeToListBean(projects, ProjectVo.class);
+			final List<Industry> cas = industryR.findAll();
+			pvs = pvs.stream().map((ProjectVo pv)->{
+//				List<String> categoryNames = comService.getIndustryParentName(industryR.findById(pv.getIndustryCategory()).get(),cas);
+//				String categoryName = categoryNames.stream().collect(Collectors.joining(">"));
+//				pv.setCategoryName(categoryName);
+				pv.setDockingDateStr(pv.getDockingDate()==null?"":MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
+				
+				pv.setStatusStr(ProjectStatusEnum.getByValue(pv.getStatus()).getText());
+				pv.setEarlyStage(pv.getStatus().equals(ProjectStatusEnum.EARLY.getId())?"已完成":"暂无");
+				pv.setExpectedDateStr(pv.getExpectedDate()==null?"":MDateUtil.dateToString(pv.getExpectedDate(), MDateUtil.formatDate));
+				return pv;
+			}).collect(Collectors.toList());
+			Map<String,Object> rt = new HashMap<>();
+			rt.put("pn", pn);
+			rt.put("ps", ps);
+			rt.put("total", total);
+			rt.put("list", pvs);
+			return RetKit.okData(rt);
+		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
+			log.error("报表列表获取失败！"+e.getMessage());
+			e.printStackTrace();
+			return RetKit.fail("报表列表获取失败！"+e.getMessage()); 
+		}
+		
 	}
 
 
