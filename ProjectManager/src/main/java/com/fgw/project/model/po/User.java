@@ -25,6 +25,7 @@ public class User implements java.io.Serializable {
 	private String token;
 	private Integer groupId;
 	private Integer roleId;
+	private String avater;
 	
 	
 	@Column(name = "group_id")
@@ -101,6 +102,14 @@ public class User implements java.io.Serializable {
 	}
 	public void setToken(String token) {
 		this.token = token;
+	}
+	
+	@Column(name = "avater")
+	public String getAvater() {
+		return avater;
+	}
+	public void setAvater(String avater) {
+		this.avater = avater;
 	}
 
 

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -23,6 +24,7 @@ import com.fgw.project.model.po.Org;
 import com.fgw.project.model.po.Role;
 import com.fgw.project.model.po.User;
 import com.fgw.project.model.vo.MenuVo;
+import com.fgw.project.model.vo.UserVo;
 import com.fgw.project.repository.IGroupRepository;
 import com.fgw.project.repository.IMenuRepository;
 import com.fgw.project.repository.IOrgRepository;
@@ -34,9 +36,12 @@ import com.fgw.project.util.RetKit;
 import com.fgw.project.util.StrKit;
 import com.fgw.project.util.TokenUtils;
 
+import cn.hutool.core.bean.BeanUtil;
+
 @Service
 public class UserService {
-
+	@Value("${getFileUrl}")
+	private String getFileUrl;
 	@Autowired
 	private IUserRepository userR;
 	@Autowired
@@ -48,12 +53,15 @@ public class UserService {
 	@Autowired
 	private IGroupRepository groupR;
 
-	public User getUserInfo(Integer userId) {
+	public RetKit getUserInfo(Integer userId) {
 		Optional<User> user_ = userR.findById(userId);
 		if(user_.isPresent()) {
-			return user_.get();
+			UserVo uv = new UserVo();
+			BeanUtil.copyProperties(user_.get(), uv);
+			uv.setAvater(StrKit.isBlank(uv.getAvater())?"":getFileUrl+uv.getAvater());
+			return RetKit.okData(uv);
 		}
-		return null;
+		return RetKit.fail("获取失败！");
 	}
 
 
@@ -247,6 +255,7 @@ public class UserService {
 
 	public RetKit updateUser(String param) {
 		Integer id = JSONObject.parseObject(param).getInteger("id");
+		String avater = JSONObject.parseObject(param).getString("avater");
 		String account = JSONObject.parseObject(param).getString("account");
 		String password = JSONObject.parseObject(param).getString("password");
 		String userName = JSONObject.parseObject(param).getString("userName");
@@ -254,12 +263,21 @@ public class UserService {
 		Optional<User> r_ = userR.findById(id);
 		if(r_.isPresent()) {
 			User r = r_.get();
-			r.setAccount(account);
-			r.setPassword(password);
-			r.setStatus(1);
-			r.setName(userName);
+			if(StrKit.notBlank(avater)) {
+				r.setAvater(avater);
+			}
+			if(StrKit.notBlank(account)) {
+				r.setAccount(account);
+			}
+			if(StrKit.notBlank(password)) {
+				r.setPassword(password);
+			}
+			if(StrKit.notBlank(userName)) {
+				r.setName(userName);
+			}
 			userR.save(r);
-			return RetKit.ok("修改成功！");
+			r.setAvater(StrKit.notBlank(avater)?getFileUrl+avater :"");
+			return RetKit.okData(r);
 		}
 		return RetKit.fail("用户不存在！");
 	}

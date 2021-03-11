@@ -51,7 +51,7 @@ public class CommonService {
 		try {
 			uploadPath = "D:\\textUpload\\";
 			fileName = UploadFile.upload(uploadPath, file);
-			return RetKit.okData(getFileUrl + fileName);
+			return RetKit.okData(fileName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("文件上传失败！" + e.getMessage());

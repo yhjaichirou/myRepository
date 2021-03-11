@@ -65,10 +65,9 @@ public class AdminController {
 	
 	
 	
-	@RequestMapping("/getUserInfo")
-	public RetKit getUserInfo(Integer userId ) {
-		User u = userService.getUserInfo(userId);
-		return RetKit.okData(u);
+	@RequestMapping("/getUserInfo/{userId}")
+	public RetKit getUserInfo(@PathVariable Integer userId) {
+		return userService.getUserInfo(userId);
 	}
 	
 	@RequestMapping("/list")

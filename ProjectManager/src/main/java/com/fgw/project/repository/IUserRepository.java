@@ -29,7 +29,7 @@ public interface IUserRepository extends JpaRepository<User	, Integer> {
 	User findUserByName(String name);
 	
 	//系统用户登录
-	@Query(value="SELECT u.id,u.name as userName,u.account,u.status,u.org_id as orgId, u.token,u.role_id as roleId,u.group_id as groupId,"
+	@Query(value="SELECT u.id,u.name as userName,u.account,u.status,u.org_id as orgId, u.token,u.role_id as roleId,u.group_id as groupId,u.avater,"
 			+ "ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName,o.name as orgName,o.property,o.type "
 			+ " FROM admin_user u"
 			+ " LEFT JOIN admin_role ro on u.role_id = ro.id"
@@ -50,14 +50,14 @@ public interface IUserRepository extends JpaRepository<User	, Integer> {
 
 	List<User> findAllByStatus(Integer status);
 	
-	@Query(value="SELECT u.id,u.name as userName,u.account,u.status,u.org_id as orgId, u.token,u.role_id as roleId,u.group_id as groupId,"
+	@Query(value="SELECT u.id,u.name as userName,u.account,u.status,u.org_id as orgId, u.token,u.role_id as roleId,u.group_id as groupId,u.avater,"
 			+ "ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName "
 			+ " FROM admin_user u"
 			+ " LEFT JOIN admin_role ro on u.role_id = ro.id"
 			+ " LEFT JOIN org_group g on u.group_id = g.id"
 			+ " WHERE u.status=1 ",nativeQuery=true)
 	List<Map<String, Object>> getAllByStatus();
-	@Query(value="SELECT u.id,u.name as userName,u.account,u.status,u.org_id as orgId, u.token,u.role_id as roleId,u.group_id as groupId,"
+	@Query(value="SELECT u.id,u.name as userName,u.account,u.status,u.org_id as orgId, u.token,u.role_id as roleId,u.group_id as groupId,u.avater,"
 			+ "ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName "
 			+ " FROM admin_user u"
 			+ " LEFT JOIN admin_role ro on u.role_id = ro.id"
