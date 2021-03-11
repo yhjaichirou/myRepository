@@ -33,6 +33,7 @@ public class TokenInterceptor implements HandlerInterceptor{
 			throws Exception {
 		Enumeration<String> ems = request.getHeaderNames();
 		if ("OPTIONS".equals(request.getMethod())) {
+		   logger.info("用户详情获取："+request.getHeaderNames());
            return true;
         }
 		boolean isGo = true;
