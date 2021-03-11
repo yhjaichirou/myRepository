@@ -42,12 +42,15 @@ public class TokenInterceptor implements HandlerInterceptor{
 		if(url.equals("/project/admin/login") || url.equals("/project/error")) {
 			return true;
 		}
+		
 		// verify token
 		RetKit isOK = TokenUtils.verify(token);
 		if (((int)isOK.get("code")) != 200) {
 			isGo = false;
 		}
+		
 		if(!url.equals("/project/admin/userinfo")){
+			logger.info("用户详情获取："+request.getHeaderNames());
 			User user = userR.findById(Integer.parseInt(agentId));
 			if(user!=null && user.getToken().equals(token)) {
 				
