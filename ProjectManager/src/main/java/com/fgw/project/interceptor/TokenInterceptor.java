@@ -28,6 +28,7 @@ public class TokenInterceptor implements HandlerInterceptor{
 	private Log logger = LogFactory.getLog(TokenInterceptor.class);
 	@Autowired
 	private IUserRepository userR;
+	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
