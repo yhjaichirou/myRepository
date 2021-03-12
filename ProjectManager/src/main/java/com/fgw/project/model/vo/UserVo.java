@@ -14,6 +14,7 @@ public class UserVo {
 	private String job;
 	private Integer age;
 	private String idcard;
+	private String avater;
 	
 	private String openid;
 	private String nickName;
@@ -190,6 +191,12 @@ public class UserVo {
 	}
 	public void setIsLeader(Integer isLeader) {
 		this.isLeader = isLeader;
+	}
+	public String getAvater() {
+		return avater;
+	}
+	public void setAvater(String avater) {
+		this.avater = avater;
 	}
 	
 	

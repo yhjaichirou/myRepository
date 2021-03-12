@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.web.ProjectedPayload;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +61,10 @@ import com.fgw.project.util.StrKit;
 @Service
 public class ProjectService {
 	private Log log = LogFactory.getLog(ProjectService.class);
+	
+	@Value("${getFileUrl}")
+	private String getFileUrl;
+	
 	@Autowired
 	private IProjectRepository projectR;
 	@Autowired
@@ -588,6 +593,7 @@ public class ProjectService {
 				List<Annex> annexs = JSONObject.parseArray(annexS, Annex.class);
 				for (Annex annex : annexs) {
 					annex.setTaskName(task.getTitle());
+					annex.setPath(StrKit.isBlank(annex.getPath())?"":getFileUrl+annex.getPath());
 				}
 				allFiles.addAll(annexs);
 			}
