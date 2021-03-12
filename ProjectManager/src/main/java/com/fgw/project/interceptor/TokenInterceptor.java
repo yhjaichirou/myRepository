@@ -32,6 +32,7 @@ public class TokenInterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+		logger.info("请求拦截："+request.getHeader("Access-Control-Allow-Origin"));
 		Enumeration<String> ems = request.getHeaderNames();
 		if ("OPTIONS".equals(request.getMethod())) {
 		   logger.info("用户详情获取："+request.getHeaderNames());
