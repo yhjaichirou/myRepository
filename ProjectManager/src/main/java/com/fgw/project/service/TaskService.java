@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.comparator.Comparators;
 
 import com.alibaba.fastjson.JSONObject;
@@ -133,7 +134,7 @@ public class TaskService {
 			return RetKit.fail(e.getMessage());
 		}
 	}
-	private List<TaskVo> getTaskChild(TaskVo taskVo, List<TaskVo> all) {
+	public List<TaskVo> getTaskChild(TaskVo taskVo, List<TaskVo> all) {
 		List<TaskVo> childList = new ArrayList<TaskVo>();
 		for (TaskVo pb : all) {
 			if (pb.getPid().equals(taskVo.getId())) {
@@ -440,6 +441,7 @@ public class TaskService {
 		}
 	}
 
+	@Transactional
 	public RetKit confirmTask(String param) {
 		JSONObject jb = JSONObject.parseObject(param);
 		Integer id = jb.getInteger("id");
@@ -454,6 +456,7 @@ public class TaskService {
 				task.setAnnex(fileInfos);
 				task.setStatus(TaskStatusEnum.COMPLETE.getId());
 				taskR.save(task);
+//				isComParentTask(task.getPid());
 			}else {
 				return RetKit.fail("任务不存在！");
 			}
@@ -462,6 +465,24 @@ public class TaskService {
 		}
 		return RetKit.okData("完成任务！");
 	}
+//	private void isComParentTask(Integer pid) throws Exception {
+//		if(pid!=0) {
+//			Optional<Task> t_ = taskR.findById(pid);
+//			if(t_.isPresent()) {
+//				Task task = t_.get();
+//				String comContent = "自动完成";
+//				String fileInfos = "";
+//				task.setComDate(new Date());
+//				task.setComContent(comContent);
+//				task.setAnnex(fileInfos);
+//				task.setStatus(TaskStatusEnum.COMPLETE.getId());
+//				taskR.save(task);
+//				isComParentTask(task.getPid());
+//			}else {
+//				throw new RuntimeException("暂无父类任务可完成");
+//			}
+//		}
+//	}
 
 	/**
 	 *	 任务督办

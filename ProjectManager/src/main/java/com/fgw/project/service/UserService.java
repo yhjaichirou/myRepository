@@ -248,6 +248,7 @@ public class UserService {
 		r.setName(userName);
 		r.setOrgId(orgId);
 		r.setGroupId(groupId);
+		r.setIsAdmin(0);
 		userR.save(r);
 		return RetKit.okData(r.getId());
 	}

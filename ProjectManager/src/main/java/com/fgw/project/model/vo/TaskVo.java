@@ -51,7 +51,39 @@ public class TaskVo {
 	//满足树形table 
 	private List<TaskVo> children;
 	
+	// Gantt 
+	private String name;
+	private Date realStartDate;
+	private Date realEndDate;
+	private String realStartDateStr;
+	private String realEndDateStr;
 	
+	
+	
+	public Date getRealStartDate() {
+		return realStartDate;
+	}
+	public void setRealStartDate(Date realStartDate) {
+		this.realStartDate = realStartDate;
+	}
+	public Date getRealEndDate() {
+		return realEndDate;
+	}
+	public void setRealEndDate(Date realEndDate) {
+		this.realEndDate = realEndDate;
+	}
+	public String getRealStartDateStr() {
+		return realStartDateStr;
+	}
+	public void setRealStartDateStr(String realStartDateStr) {
+		this.realStartDateStr = realStartDateStr;
+	}
+	public String getRealEndDateStr() {
+		return realEndDateStr;
+	}
+	public void setRealEndDateStr(String realEndDateStr) {
+		this.realEndDateStr = realEndDateStr;
+	}
 	public String getShbName() {
 		return shbName;
 	}
@@ -285,6 +317,12 @@ public class TaskVo {
 	}
 	public void setPid(Integer pid) {
 		this.pid = pid;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	

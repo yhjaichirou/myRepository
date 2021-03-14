@@ -26,6 +26,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.fgw.project.TargetQuartz;
 import com.fgw.project.constant.OrgPropertyEnum;
 import com.fgw.project.constant.ProjectStatusEnum;
+import com.fgw.project.constant.TaskPriorityEnum;
+import com.fgw.project.constant.TaskStageEnum;
 import com.fgw.project.constant.TaskStatusEnum;
 import com.fgw.project.model.po.Category;
 import com.fgw.project.model.po.Group;
@@ -83,7 +85,8 @@ public class ProjectService {
 	private IInvestRepository investR;
 	@Resource
 	private CommonService comService;
-
+	@Resource
+	private TaskService taskService;
 	
 	//投资情况
 	public RetKit getTzqkList(Integer projectId) {
@@ -610,13 +613,49 @@ public class ProjectService {
 
 	/**
 	 *  ---------------------  甘特图  -------------------------
+	 * @param ps 
+	 * @param pn 
 	 */
-	public RetKit getProjectGanttData(Integer proId) {
-		// TODO Auto-generated method stub
-		List<Task> tasks = taskR.findAllByProId(proId);
-		
-		
-		return null;
+	public RetKit getProjectGanttData(Integer proId, Integer querystatus,Integer pn, Integer ps) {
+		List<Map<String,Object>> cs_ = new ArrayList<>();
+		if(querystatus!=null && querystatus!=10) {
+			cs_ = taskR.getGanttByProIdAndStatus(proId,querystatus);
+		}else {
+			cs_ = taskR.getGanttByProId(proId);
+		}
+		try {
+			List<TaskVo> cs = BeanKit.changeToListBean(cs_, TaskVo.class);
+			cs = cs.stream().map((TaskVo tv)->{
+				tv.setStartDateStr(tv.getStartDate()==null?"":MDateUtil.dateToString(tv.getStartDate(), MDateUtil.formatDate));
+				tv.setEndDateStr(tv.getEndDate()==null?"":MDateUtil.dateToString(tv.getEndDate(), MDateUtil.formatDate));
+				tv.setComDateStr(tv.getComDate()==null?"":MDateUtil.dateToString(tv.getComDate(), MDateUtil.formatDate));
+				tv.setRealStartDateStr(tv.getStartDate()==null?"":MDateUtil.dateToString(tv.getStartDate(), MDateUtil.formatDate));
+				tv.setRealEndDateStr(tv.getComDate()==null?"":MDateUtil.dateToString(tv.getComDate(), MDateUtil.formatDate));
+				tv.setStatusStr(TaskStatusEnum.getByValue(tv.getStatus()).getText());
+				tv.setStageStr(TaskStageEnum.getByValue(tv.getStageId()).getText());
+				tv.setPriorityStr(TaskPriorityEnum.getByValue(tv.getPriority()).getText());
+				return tv;
+			}).collect(Collectors.toList());
+			List<TaskVo> firstTasks =  cs.stream().filter((TaskVo ttt)-> ttt.getPid().equals(0)).sorted(Comparator.comparing(TaskVo::getStartDate)).collect(Collectors.toList());
+			Integer total = firstTasks.size();
+			final List<TaskVo> csv = cs;
+			firstTasks = firstTasks.stream().skip((pn-1)*ps).limit(ps).map((TaskVo tv)->{
+				List<TaskVo> ctasks = taskService.getTaskChild(tv,csv);
+				if(ctasks!=null && ctasks.size()>0) {
+					tv.setChildren(ctasks);
+				}
+				return tv;
+			}).collect(Collectors.toList());
+			Map<String,Object> rt = new HashMap<>();
+			rt.put("pn", pn);
+			rt.put("ps", ps);
+			rt.put("total", total);
+			rt.put("list", firstTasks);
+			return RetKit.okData(rt);
+		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
+			e.printStackTrace();
+			return RetKit.fail(e.getMessage());
+		}
 	}
 
 	

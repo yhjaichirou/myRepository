@@ -15,6 +15,7 @@ public class UserVo {
 	private Integer age;
 	private String idcard;
 	private String avater;
+	private Integer isAdmin;
 	
 	private String openid;
 	private String nickName;
@@ -197,6 +198,12 @@ public class UserVo {
 	}
 	public void setAvater(String avater) {
 		this.avater = avater;
+	}
+	public Integer getIsAdmin() {
+		return isAdmin;
+	}
+	public void setIsAdmin(Integer isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 	
 	

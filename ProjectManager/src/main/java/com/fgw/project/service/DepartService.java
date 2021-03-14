@@ -1,5 +1,6 @@
 package com.fgw.project.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -11,15 +12,20 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fgw.project.constant.OrgPropertyEnum;
+import com.fgw.project.interceptor.TokenInterceptor;
 import com.fgw.project.model.po.Industry;
 import com.fgw.project.model.po.Org;
 import com.fgw.project.model.po.OrgType;
 import com.fgw.project.model.po.People;
+import com.fgw.project.model.po.User;
 import com.fgw.project.model.vo.IndustryVo;
 import com.fgw.project.model.vo.MenuVo;
 import com.fgw.project.model.vo.OrgVo;
@@ -27,16 +33,20 @@ import com.fgw.project.repository.IIndustryRepository;
 import com.fgw.project.repository.IOrgRepository;
 import com.fgw.project.repository.IOrgTypeRepository;
 import com.fgw.project.repository.IPeopleRepository;
+import com.fgw.project.repository.IUserRepository;
 import com.fgw.project.util.BeanKit;
+import com.fgw.project.util.MakeMD5;
 import com.fgw.project.util.RetKit;
 import com.fgw.project.util.StrKit;
 
 
 @Service
 public class DepartService {
-
+	private Log logger = LogFactory.getLog(TokenInterceptor.class);
 	@Autowired
 	private IOrgRepository orgR;
+	@Autowired
+	private IUserRepository userR;
 	@Autowired
 	private IIndustryRepository industryR;
 	@Autowired
@@ -148,6 +158,7 @@ public class DepartService {
 		return RetKit.okData(ov);
 	}
 
+	@Transactional
 	public RetKit addDepart(String param) {
 		JSONObject obj = JSONObject.parseObject(param);
 		Integer id = obj.getInteger("id");
@@ -172,6 +183,9 @@ public class DepartService {
 			Optional<Org> o_ = departR.findById(id);
 			if(o_.isPresent()) {
 				depart = o_.get();
+				//删除旧的 管理员
+				User oldUser = userR.findByAccount(depart.getManagerMobile());
+				userR.delete(oldUser);
 				if(oldo!=null && !oldo.equals(depart.getName())) {
 					return RetKit.fail("组织已经存在！");
 				}
@@ -193,6 +207,24 @@ public class DepartService {
 		depart.setType(type);
 		
 		departR.save(depart);
+		//生成管理员
+		User user = new User();
+		user.setAccount(managerMobile);
+		user.setIsAdmin(1);
+		user.setName(manager);
+		user.setOrgId(depart.getId());
+		try {
+			user.setPassword(MakeMD5.makeMD5(new String(MakeMD5.md5DefaultSource.getBytes("UTF-8"), "UTF-8")).toLowerCase());
+			
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			logger.error("单位管理员密码生成失败！");
+			throw new RuntimeException("操作失败！");
+		}
+		user.setRoleId(property==null?OrgPropertyEnum.QY.getId():property);
+		user.setStatus(1);
+		userR.save(user);
+		
 		return RetKit.okData(depart.getId());
 	}
 

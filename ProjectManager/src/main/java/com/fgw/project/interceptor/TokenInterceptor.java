@@ -35,7 +35,6 @@ public class TokenInterceptor implements HandlerInterceptor{
 		logger.info("请求拦截："+request.getHeader("Access-Control-Allow-Origin"));
 		Enumeration<String> ems = request.getHeaderNames();
 		if ("OPTIONS".equals(request.getMethod())) {
-		   logger.info("用户详情获取："+request.getHeaderNames());
            return true;
         }
 		boolean isGo = true;
@@ -53,7 +52,6 @@ public class TokenInterceptor implements HandlerInterceptor{
 		}
 		
 		if(!url.equals("/project/admin/userinfo")){
-			logger.info("用户详情获取："+request.getHeaderNames());
 			User user = userR.findById(Integer.parseInt(agentId));
 			if(user!=null && user.getToken().equals(token)) {
 				

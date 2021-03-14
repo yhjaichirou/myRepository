@@ -250,9 +250,8 @@ public class ProjectController {
 	/**
 	 *  ---------------------  甘特图  -------------------------
 	 */
-	@RequestMapping("/getProjectGanttData/{proId}")
-	public RetKit getProjectGanttData(@PathVariable Integer proId) {
-		proService.getProjectGanttData(proId);
-		return  null;
+	@RequestMapping("/getProjectGanttData/{projectId}/{querystatus}/{pn}/{ps}")
+	public RetKit getProjectGanttData(@PathVariable Integer projectId,@PathVariable Integer querystatus,@PathVariable Integer pn,@PathVariable Integer ps) {
+		return proService.getProjectGanttData(projectId,querystatus,pn,ps);
 	}
 }

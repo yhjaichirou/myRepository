@@ -26,7 +26,7 @@ public class User implements java.io.Serializable {
 	private Integer groupId;
 	private Integer roleId;
 	private String avater;
-	
+	private Integer isAdmin;
 	
 	@Column(name = "group_id")
 	public Integer getGroupId() {
@@ -110,6 +110,14 @@ public class User implements java.io.Serializable {
 	}
 	public void setAvater(String avater) {
 		this.avater = avater;
+	}
+	
+	@Column(name = "is_admin")
+	public Integer getIsAdmin() {
+		return isAdmin;
+	}
+	public void setIsAdmin(Integer isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 
 
