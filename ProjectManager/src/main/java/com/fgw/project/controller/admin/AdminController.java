@@ -141,6 +141,10 @@ public class AdminController {
 	public RetKit updateUser(@RequestBody String param) {
 		return userService.updateUser(param);
 	}
+	@RequestMapping("/updateUserPwd")
+	public RetKit updateUserPwd(@RequestBody String param) {
+		return userService.updateUserPwd(param);
+	}
 	
 	@DeleteMapping("/deleteUser/{userId}")
 	public RetKit deleteUser(@PathVariable String userId) {

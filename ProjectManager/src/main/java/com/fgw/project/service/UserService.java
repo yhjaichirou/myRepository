@@ -32,6 +32,8 @@ import com.fgw.project.repository.IRoleRepository;
 import com.fgw.project.repository.IUserRepository;
 import com.fgw.project.util.BeanKit;
 import com.fgw.project.util.HashKit;
+import com.fgw.project.util.MDateUtil;
+import com.fgw.project.util.MakeMD5;
 import com.fgw.project.util.RetKit;
 import com.fgw.project.util.StrKit;
 import com.fgw.project.util.TokenUtils;
@@ -231,7 +233,6 @@ public class UserService {
 
 	public RetKit addUser(String param) {
 		String account = JSONObject.parseObject(param).getString("account");
-		String password = JSONObject.parseObject(param).getString("password");
 		String userName = JSONObject.parseObject(param).getString("userName");
 		Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
 		Integer roleId = JSONObject.parseObject(param).getInteger("roleId");
@@ -242,7 +243,7 @@ public class UserService {
 		}
 		User r = new User();
 		r.setAccount(account);
-		r.setPassword(password);
+		r.setPassword(MakeMD5.makeMD5(MakeMD5.md5DefaultSource));
 		r.setStatus(1);
 		r.setRoleId(roleId);
 		r.setName(userName);
@@ -250,7 +251,23 @@ public class UserService {
 		r.setGroupId(groupId);
 		r.setIsAdmin(0);
 		userR.save(r);
-		return RetKit.okData(r.getId());
+		
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", r.getId());
+		m.put("account", account);
+		m.put("userName", userName);
+		m.put("status", 1);
+		m.put("orgId", 	orgId);
+		m.put("roleId", roleId);
+		m.put("groupId", groupId);
+		m.put("isAdmin", 0);
+		Optional<Role> r_ = roleR.findById(roleId);
+		m.put("roleName", r_.isPresent()?r_.get().getRoleName() : "");
+		m.put("rolePrimary", r_.isPresent()?r_.get().getRolePrimary() : "");
+		m.put("roleDescribe", r_.isPresent()?r_.get().getRoleDescribe() : "");
+		Optional<Group> g_ = groupR.findById(groupId);
+		m.put("groupName", g_.isPresent()?g_.get().getGroupName() : "");
+		return RetKit.okData(m);
 	}
 
 
@@ -258,9 +275,10 @@ public class UserService {
 		Integer id = JSONObject.parseObject(param).getInteger("id");
 		String avater = JSONObject.parseObject(param).getString("avater");
 		String account = JSONObject.parseObject(param).getString("account");
-		String password = JSONObject.parseObject(param).getString("password");
 		String userName = JSONObject.parseObject(param).getString("userName");
 		Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
+		Integer roleId = JSONObject.parseObject(param).getInteger("roleId");
+		Integer groupId = JSONObject.parseObject(param).getInteger("groupId");
 		Optional<User> r_ = userR.findById(id);
 		if(r_.isPresent()) {
 			User r = r_.get();
@@ -270,17 +288,39 @@ public class UserService {
 			if(StrKit.notBlank(account)) {
 				r.setAccount(account);
 			}
-			if(StrKit.notBlank(password)) {
-				r.setPassword(password);
-			}
 			if(StrKit.notBlank(userName)) {
 				r.setName(userName);
+			}
+			if(roleId != null) {
+				r.setRoleId(roleId);
+			}
+			if(orgId != null) {
+				r.setRoleId(orgId);
+			}
+			if(groupId != null) {
+				r.setRoleId(groupId);
 			}
 			userR.save(r);
 			r.setAvater(StrKit.notBlank(avater)?getFileUrl+avater :"");
 			return RetKit.okData(r);
 		}
 		return RetKit.fail("用户不存在！");
+	}
+	
+	public RetKit updateUserPwd(String param) {
+		Integer id = JSONObject.parseObject(param).getInteger("id");
+		String password = JSONObject.parseObject(param).getString("password");
+		if(StrKit.isBlank(password)) {
+			return RetKit.fail("密码不能为空！");
+		}
+		Optional<User> r_ = userR.findById(id);
+		if(r_.isPresent()) {
+			User r = r_.get();
+			r.setPassword(password);
+			userR.save(r);
+			return RetKit.okData(r);
+		}
+		return RetKit.fail("修改密码成功！");
 	}
 
 
@@ -324,6 +364,9 @@ public class UserService {
 		List<Group> grs = groupR.findAllByOrgId(orgId);
 		return RetKit.okData(grs);
 	}
+
+
+	
 
 
 	
