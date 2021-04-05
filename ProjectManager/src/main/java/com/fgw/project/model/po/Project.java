@@ -31,33 +31,62 @@ public class Project implements java.io.Serializable {
 	private Integer process;//项目进展程度
 	private String remarks;//备注
 	private String invest;//投资情况
+	
+	private Integer investType;
+	private String investThisyear;//当年预计完成投资
+	private String investCom;//当年已完成投资
+	private Integer isOpen;//是否开复工
+	private Date thisyearOpentime;//当年预计开复工时间
+	private String lxType;//项目立项类型（审批、核准、备案）
+	private String buildAddress;//建设地点（旗县区）
+	
 	private Date expectedDate;//预计完成时间
 	private Date startDate;//开始时间
 	private String approveCode;//项目审批监管平台代码
 	private String image;
 	private String processCondition;
 	
-	private Integer lxIsComapprove;
+	private Integer lxIsComapprove;//立项
 	private Integer lxHandleLevel;
 	private Integer lxIsSendappdepart;
+	private Integer lxBao;//审批、转报部门意见（审批部门同意办理、审批部门不同意办理、转报部门同意转报、转报部门不同意转报）
+	private String lxBaoNoMsg;//不同意办理或不同意转报原因（文字详细表述）
+	private String ydArea;//项目整体建设用地规模（亩）
+	private String ydAreaLd;//其中涉及林地规模
+	private String ydAreaCd;//其中涉及草地规模
 	private Integer ydcardIsHascard;
 	private Integer ydcardHandleLevel;
 	private Integer ydcardIsSendappdepart;
+	private Integer ydBao;
+	private String ydBaoNoMsg;
+	
+	private String energyArea;//项目整体能耗规模（等价值）
+	private String energyWaterArea;//项目整体用水规模（立方米）
 	private Integer energyIsCensor;
 	private Integer energyHandleLevel;
 	private Integer energyIsSendappdepart;
+	private Integer energyBao;
+	private String energyBaoNoMsg;
 	private Integer lcIsBl;
 	private Integer lcHandleLevel;
 	private Integer lcIsSendappdepart;
+	private Integer lcBao;
+	private String lcBaoNoMsg;
 	private Integer tdIsBl;
 	private Integer tdHandleLevel;
 	private Integer tdIsSendappdepart;
+	private Integer tdBao;
+	private String tdBaoNoMsg;
 	private Integer envirIsBl;
 	private Integer envirHandleLevel;
 	private Integer envirIsSendappdepart;
+	private Integer envirBao;
+	private String envirBaoNoMsg;
 	private Integer sgIsBl;
 	private Integer sgHandleLevel;
 	private Integer sgIsSendappdepart;
+	private Integer sgBao;
+	private String sgBaoNoMsg;
 	private Integer xfIsBl;
 	private Integer xfHandleLevel;
 	private Integer xfIsSendappdepart;
@@ -69,6 +98,7 @@ public class Project implements java.io.Serializable {
 	private String diffAndProblem;//存在的困难和问题
 	private Integer proManager;//项目主管部门联系人
 	private String proManagerMobile;//项目主管部门联系人电话
+	private Integer proEnter;//项目主管单位
 	private Integer enterManager;
 	private String enterManagerMobile;
 	private String stage;//项目建设阶段
@@ -548,6 +578,250 @@ public class Project implements java.io.Serializable {
 
 	public void setProcessCondition(String processCondition) {
 		this.processCondition = processCondition;
-	}	
+	}
+	
+	@Column(name = "invest_type")
+	public Integer getInvestType() {
+		return investType;
+	}
+
+	public void setInvestType(Integer investType) {
+		this.investType = investType;
+	}
+
+	@Column(name = "invest_thisyear")
+	public String getInvestThisyear() {
+		return investThisyear;
+	}
+
+	public void setInvestThisyear(String investThisyear) {
+		this.investThisyear = investThisyear;
+	}
+
+	@Column(name = "invest_com")
+	public String getInvestCom() {
+		return investCom;
+	}
+
+	public void setInvestCom(String investCom) {
+		this.investCom = investCom;
+	}
+
+	@Column(name = "is_open")
+	public Integer getIsOpen() {
+		return isOpen;
+	}
+
+	public void setIsOpen(Integer isOpen) {
+		this.isOpen = isOpen;
+	}
+
+	@Column(name = "thisyear_opentime")
+	public Date getThisyearOpentime() {
+		return thisyearOpentime;
+	}
+
+	public void setThisyearOpentime(Date thisyearOpentime) {
+		this.thisyearOpentime = thisyearOpentime;
+	}
+
+	@Column(name = "lx_type")
+	public String getLxType() {
+		return lxType;
+	}
+
+	public void setLxType(String lxType) {
+		this.lxType = lxType;
+	}
+
+	@Column(name = "build_address")
+	public String getBuildAddress() {
+		return buildAddress;
+	}
+
+	public void setBuildAddress(String buildAddress) {
+		this.buildAddress = buildAddress;
+	}
+
+	@Column(name = "lx_bao")
+	public Integer getLxBao() {
+		return lxBao;
+	}
+
+	public void setLxBao(Integer lxBao) {
+		this.lxBao = lxBao;
+	}
+
+	@Column(name = "lx_bao_no_msg")
+	public String getLxBaoNoMsg() {
+		return lxBaoNoMsg;
+	}
+
+	public void setLxBaoNoMsg(String lxBaoNoMsg) {
+		this.lxBaoNoMsg = lxBaoNoMsg;
+	}
+
+	@Column(name = "yd_area")
+	public String getYdArea() {
+		return ydArea;
+	}
+
+	public void setYdArea(String ydArea) {
+		this.ydArea = ydArea;
+	}
+
+	@Column(name = "yd_area_ld")
+	public String getYdAreaLd() {
+		return ydAreaLd;
+	}
+
+	public void setYdAreaLd(String ydAreaLd) {
+		this.ydAreaLd = ydAreaLd;
+	}
+
+	@Column(name = "yd_area_cd")
+	public String getYdAreaCd() {
+		return ydAreaCd;
+	}
+
+	public void setYdAreaCd(String ydAreaCd) {
+		this.ydAreaCd = ydAreaCd;
+	}
+
+	@Column(name = "yd_bao")
+	public Integer getYdBao() {
+		return ydBao;
+	}
+
+	public void setYdBao(Integer ydBao) {
+		this.ydBao = ydBao;
+	}
+
+	@Column(name = "yd_bao_no_msg")
+	public String getYdBaoNoMsg() {
+		return ydBaoNoMsg;
+	}
+
+	public void setYdBaoNoMsg(String ydBaoNoMsg) {
+		this.ydBaoNoMsg = ydBaoNoMsg;
+	}
+
+	@Column(name = "energy_area")
+	public String getEnergyArea() {
+		return energyArea;
+	}
+
+	public void setEnergyArea(String energyArea) {
+		this.energyArea = energyArea;
+	}
+
+	@Column(name = "energy_water_area")
+	public String getEnergyWaterArea() {
+		return energyWaterArea;
+	}
+
+	public void setEnergyWaterArea(String energyWaterArea) {
+		this.energyWaterArea = energyWaterArea;
+	}
+
+	@Column(name = "energy_bao")
+	public Integer getEnergyBao() {
+		return energyBao;
+	}
+
+	public void setEnergyBao(Integer energyBao) {
+		this.energyBao = energyBao;
+	}
+
+	@Column(name = "energy_bao_no_msg")
+	public String getEnergyBaoNoMsg() {
+		return energyBaoNoMsg;
+	}
+
+	public void setEnergyBaoNoMsg(String energyBaoNoMsg) {
+		this.energyBaoNoMsg = energyBaoNoMsg;
+	}
+
+	@Column(name = "lc_bao")
+	public Integer getLcBao() {
+		return lcBao;
+	}
+
+	public void setLcBao(Integer lcBao) {
+		this.lcBao = lcBao;
+	}
+
+	@Column(name = "lc_bao_no_msg")
+	public String getLcBaoNoMsg() {
+		return lcBaoNoMsg;
+	}
+
+	public void setLcBaoNoMsg(String lcBaoNoMsg) {
+		this.lcBaoNoMsg = lcBaoNoMsg;
+	}
+
+	@Column(name = "td_bao")
+	public Integer getTdBao() {
+		return tdBao;
+	}
+
+	public void setTdBao(Integer tdBao) {
+		this.tdBao = tdBao;
+	}
+
+	@Column(name = "td_bao_no_msg")
+	public String getTdBaoNoMsg() {
+		return tdBaoNoMsg;
+	}
+
+	public void setTdBaoNoMsg(String tdBaoNoMsg) {
+		this.tdBaoNoMsg = tdBaoNoMsg;
+	}
+
+	@Column(name = "envir_bao")
+	public Integer getEnvirBao() {
+		return envirBao;
+	}
+
+	public void setEnvirBao(Integer envirBao) {
+		this.envirBao = envirBao;
+	}
+
+	@Column(name = "envir_bao_no_msg")
+	public String getEnvirBaoNoMsg() {
+		return envirBaoNoMsg;
+	}
+
+	public void setEnvirBaoNoMsg(String envirBaoNoMsg) {
+		this.envirBaoNoMsg = envirBaoNoMsg;
+	}
+
+	@Column(name = "sg_bao")
+	public Integer getSgBao() {
+		return sgBao;
+	}
+
+	public void setSgBao(Integer sgBao) {
+		this.sgBao = sgBao;
+	}
+
+	@Column(name = "sg_bao_no_msg")
+	public String getSgBaoNoMsg() {
+		return sgBaoNoMsg;
+	}
+
+	public void setSgBaoNoMsg(String sgBaoNoMsg) {
+		this.sgBaoNoMsg = sgBaoNoMsg;
+	}
+
+	@Column(name = "pro_enter")
+	public Integer getProEnter() {
+		return proEnter;
+	}
+
+	public void setProEnter(Integer proEnter) {
+		this.proEnter = proEnter;
+	}
+	
 	
 }
