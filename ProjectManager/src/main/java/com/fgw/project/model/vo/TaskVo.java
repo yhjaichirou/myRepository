@@ -26,6 +26,8 @@ public class TaskVo {
 	private Date createDate;
 	private Integer shb;
 	private String comContent;
+	private String question;
+	
 	
 	//外键
 	private String orgName;
@@ -324,8 +326,12 @@ public class TaskVo {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
+	public String getQuestion() {
+		return question;
+	}
+	public void setQuestion(String question) {
+		this.question = question;
+	}
 	
 	
 }

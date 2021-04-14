@@ -346,7 +346,7 @@ public class ProjectService {
 		String content = jb.getString("name");
 		String number = jb.getString("number");
 		Integer maturity = jb.getInteger("maturity");
-		Date dockingDate = MDateUtil.stringToDate(jb.getString("dockingDate"), MDateUtil.formatDate);
+		Date dockingDate = StrKit.notBlank(jb.getString("dockingDate"))?MDateUtil.stringToDate(jb.getString("dockingDate"), MDateUtil.formatDate):null;
 		Integer leader = jb.getInteger("leader");
 		Integer leadenter = jb.getInteger("leadenter");
 		Integer coordinate = jb.getInteger("coordinate");
@@ -356,33 +356,73 @@ public class ProjectService {
 		Integer process = jb.getInteger("process");
 		String remarks = jb.getString("remarks");
 		String invest = jb.getString("invest");//投资情况
-		Date expectedDate = MDateUtil.stringToDate(jb.getString("expectedDate"), MDateUtil.formatDate);
+		Date expectedDate = StrKit.notBlank(jb.getString("expectedDate"))?MDateUtil.stringToDate(jb.getString("expectedDate"), MDateUtil.formatDate):null;
 		String approveCode = jb.getString("approveCode");
+		
+		String investType = jb.getString("investType");//投资类型
+		String investThisyear = jb.getString("investThisyear");//当年预计完成投资
+		String investCom = jb.getString("investCom");//当年已完成投资
+		Integer isOpen = jb.getInteger("isOpen");
+		Date thisyearOpentime = StrKit.notBlank(jb.getString("thisyearOpentime"))?MDateUtil.stringToDate(jb.getString("thisyearOpentime"), MDateUtil.formatDate):null;//
+		String lxType = jb.getString("lxType");//立项类型
+		String buildAddress = jb.getString("buildAddress");//建设地点（旗县区）
+		String processCondition = jb.getString("processCondition");
 		
 		Integer lxIsComapprove = jb.getInteger("lxIsComapprove");
 		Integer lxHandleLevel = jb.getInteger("lxHandleLevel");
 		Integer lxIsSendappdepart = jb.getInteger("lxIsSendappdepart");
+		Integer lxBao = jb.getInteger("lxBao");
+		String lxBaoNoMsg = jb.getString("lxBaoNoMsg");
+		
+		String ydArea = jb.getString("ydArea");
+		String ydAreaLd = jb.getString("ydAreaLd");
+		String ydAreaCd = jb.getString("ydAreaCd");
 		Integer ydcardIsHascard = jb.getInteger("ydcardIsHascard");
 		Integer ydcardHandleLevel = jb.getInteger("ydcardHandleLevel");
 		Integer ydcardIsSendappdepart = jb.getInteger("ydcardIsSendappdepart");
+		Integer ydBao = jb.getInteger("ydBao");
+		String ydBaoNoMsg = jb.getString("ydBaoNoMsg");
+		
+		String energyArea = jb.getString("energyArea");
+		String energyWaterArea = jb.getString("energyWaterArea");
 		Integer energyHandleLevel = jb.getInteger("energyHandleLevel");
 		Integer energyIsCensor = jb.getInteger("energyIsCensor");
 		Integer energyIsSendappdepart = jb.getInteger("energyIsSendappdepart");
+		Integer energyBao = jb.getInteger("energyBao");
+		String energyBaoNoMsg = jb.getString("energyBaoNoMsg");
+		
 		Integer lcHandleLevel = jb.getInteger("lcHandleLevel");
 		Integer lcIsBl = jb.getInteger("lcIsBl");
 		Integer lcIsSendappdepart = jb.getInteger("lcIsSendappdepart");
+		Integer lcBao = jb.getInteger("lcBao");
+		String lcBaoNoMsg = jb.getString("lcBaoNoMsg");
+		
+		Integer tdHandleLevel = jb.getInteger("tdHandleLevel");
+		Integer tdIsBl = jb.getInteger("tdIsBl");
+		Integer tdIsSendappdepart = jb.getInteger("tdIsSendappdepart");
+		Integer tdBao = jb.getInteger("tdBao");
+		String tdBaoNoMsg = jb.getString("tdBaoNoMsg");
+		
 		Integer envirHandleLevel = jb.getInteger("envirHandleLevel");
 		Integer envirIsBl = jb.getInteger("envirIsBl");
 		Integer envirIsSendappdepart = jb.getInteger("envirIsSendappdepart");
+		Integer envirBao = jb.getInteger("envirBao");
+		String envirBaoNoMsg = jb.getString("envirBaoNoMsg");
+		
 		Integer sgHandleLevel = jb.getInteger("sgHandleLevel");
 		Integer sgIsBl = jb.getInteger("sgIsBl");
 		Integer sgIsSendappdepart = jb.getInteger("sgIsSendappdepart");
+		Integer sgBao = jb.getInteger("sgBao");
+		String sgBaoNoMsg = jb.getString("sgBaoNoMsg");
+		
 		Integer xfHandleLevel = jb.getInteger("xfHandleLevel");
 		Integer xfIsBl = jb.getInteger("xfIsBl");
 		Integer xfIsSendappdepart = jb.getInteger("xfIsSendappdepart");
+		
 		Integer rfHandleLevel = jb.getInteger("rfHandleLevel");
 		Integer rfIsBl = jb.getInteger("rfIsBl");
 		Integer rfIsSendappdepart = jb.getInteger("rfIsSendappdepart");
+		
 		String otherBl = jb.getString("otherBl");
 		String diffAndProblem = jb.getString("diffAndProblem");
 		Integer proManager = jb.getInteger("proManager");

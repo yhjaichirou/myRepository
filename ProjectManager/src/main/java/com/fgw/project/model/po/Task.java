@@ -39,6 +39,7 @@ public class Task implements java.io.Serializable {
 	private Date dbDate;
 	
 	private String comContent;
+	private String question;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -223,6 +224,14 @@ public class Task implements java.io.Serializable {
 	}
 	public void setPid(Integer pid) {
 		this.pid = pid;
+	}
+	
+	@Column(name = "question")
+	public String getQuestion() {
+		return question;
+	}
+	public void setQuestion(String question) {
+		this.question = question;
 	}
 	
 }

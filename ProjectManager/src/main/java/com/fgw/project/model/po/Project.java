@@ -32,19 +32,19 @@ public class Project implements java.io.Serializable {
 	private String remarks;//备注
 	private String invest;//投资情况
 	
-	private Integer investType;
+	private String investType;
 	private String investThisyear;//当年预计完成投资
 	private String investCom;//当年已完成投资
 	private Integer isOpen;//是否开复工
 	private Date thisyearOpentime;//当年预计开复工时间
 	private String lxType;//项目立项类型（审批、核准、备案）
 	private String buildAddress;//建设地点（旗县区）
+	private String processCondition;
 	
 	private Date expectedDate;//预计完成时间
 	private Date startDate;//开始时间
 	private String approveCode;//项目审批监管平台代码
 	private String image;
-	private String processCondition;
 	
 	private Integer lxIsComapprove;//立项
 	private Integer lxHandleLevel;
@@ -581,11 +581,11 @@ public class Project implements java.io.Serializable {
 	}
 	
 	@Column(name = "invest_type")
-	public Integer getInvestType() {
+	public String getInvestType() {
 		return investType;
 	}
 
-	public void setInvestType(Integer investType) {
+	public void setInvestType(String investType) {
 		this.investType = investType;
 	}
 

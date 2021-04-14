@@ -31,24 +31,48 @@ public class ProjectVo<Industry> {
 	private Integer lxIsComapprove;
 	private Integer lxHandleLevel;
 	private Integer lxIsSendappdepart;
+	private Integer lxBao;//审批、转报部门意见（审批部门同意办理、审批部门不同意办理、转报部门同意转报、转报部门不同意转报）
+	private String lxBaoNoMsg;//不同意办理或不同意转报原因（文字详细表述）
+	private String ydArea;//项目整体建设用地规模（亩）
+	private String ydAreaLd;//其中涉及林地规模
+	private String ydAreaCd;//其中涉及草地规模
 	private Integer ydcardIsHascard;
 	private Integer ydcardHandleLevel;
 	private Integer ydcardIsSendappdepart;
+	private Integer ydBao;
+	private String ydBaoNoMsg;
+	
+	private String energyArea;//项目整体能耗规模（等价值）
+	private String energyWaterArea;//项目整体用水规模（立方米）
 	private Integer energyIsCensor;
 	private Integer energyHandleLevel;
 	private Integer energyIsSendappdepart;
+	private Integer energyBao;
+	private String energyBaoNoMsg;
 	private Integer lcIsBl;
 	private Integer lcHandleLevel;
 	private Integer lcIsSendappdepart;
+	private Integer lcBao;
+	private String lcBaoNoMsg;
+	
 	private Integer tdIsBl;
 	private Integer tdHandleLevel;
 	private Integer tdIsSendappdepart;
+	private Integer tdBao;
+	private String tdBaoNoMsg;
+	
 	private Integer envirIsBl;
 	private Integer envirHandleLevel;
 	private Integer envirIsSendappdepart;
+	private Integer envirBao;
+	private String envirBaoNoMsg;
+	
 	private Integer sgIsBl;
 	private Integer sgHandleLevel;
 	private Integer sgIsSendappdepart;
+	private Integer sgBao;
+	private String sgBaoNoMsg;
+	
 	private Integer xfIsBl;
 	private Integer xfHandleLevel;
 	private Integer xfIsSendappdepart;
@@ -60,13 +84,22 @@ public class ProjectVo<Industry> {
 	private String diffAndProblem;//存在的困难和问题
 	private Integer proManager;//项目主管部门联系人
 	private String proManagerMobile;//项目主管部门联系人电话
+	private Integer proEnter;//项目主管单位
 	private Integer enterManager;
 	private String enterManagerMobile;
 	private String stage;//项目建设阶段
 	private Integer status;//
 	private Date completeDate;//完成时间
 	private Integer orgId;
-	private String processCondition;
+	
+	private String investType;
+	private String investThisyear;//当年计划完成投资
+	private String investCom;//当年已完成投资
+	private Integer isOpen;//是否开复工
+	private Date thisyearOpentime;//当年预计开复工时间
+	private String lxType;//项目立项类型（审批、核准、备案）
+	private String buildAddress;//建设地点（旗县区）
+	private String processCondition;//进展明细
 	
 	//外键
 	private String orgName;
@@ -548,5 +581,167 @@ public class ProjectVo<Industry> {
 	}
 	public void setEarlyStage(String earlyStage) {
 		this.earlyStage = earlyStage;
+	}
+	public Integer getLxBao() {
+		return lxBao;
+	}
+	public void setLxBao(Integer lxBao) {
+		this.lxBao = lxBao;
+	}
+	public String getLxBaoNoMsg() {
+		return lxBaoNoMsg;
+	}
+	public void setLxBaoNoMsg(String lxBaoNoMsg) {
+		this.lxBaoNoMsg = lxBaoNoMsg;
+	}
+	public String getYdArea() {
+		return ydArea;
+	}
+	public void setYdArea(String ydArea) {
+		this.ydArea = ydArea;
+	}
+	public String getYdAreaLd() {
+		return ydAreaLd;
+	}
+	public void setYdAreaLd(String ydAreaLd) {
+		this.ydAreaLd = ydAreaLd;
+	}
+	public String getYdAreaCd() {
+		return ydAreaCd;
+	}
+	public void setYdAreaCd(String ydAreaCd) {
+		this.ydAreaCd = ydAreaCd;
+	}
+	public Integer getYdBao() {
+		return ydBao;
+	}
+	public void setYdBao(Integer ydBao) {
+		this.ydBao = ydBao;
+	}
+	public String getYdBaoNoMsg() {
+		return ydBaoNoMsg;
+	}
+	public void setYdBaoNoMsg(String ydBaoNoMsg) {
+		this.ydBaoNoMsg = ydBaoNoMsg;
+	}
+	public String getEnergyArea() {
+		return energyArea;
+	}
+	public void setEnergyArea(String energyArea) {
+		this.energyArea = energyArea;
+	}
+	public String getEnergyWaterArea() {
+		return energyWaterArea;
+	}
+	public void setEnergyWaterArea(String energyWaterArea) {
+		this.energyWaterArea = energyWaterArea;
+	}
+	public Integer getEnergyBao() {
+		return energyBao;
+	}
+	public void setEnergyBao(Integer energyBao) {
+		this.energyBao = energyBao;
+	}
+	public String getEnergyBaoNoMsg() {
+		return energyBaoNoMsg;
+	}
+	public void setEnergyBaoNoMsg(String energyBaoNoMsg) {
+		this.energyBaoNoMsg = energyBaoNoMsg;
+	}
+	public Integer getLcBao() {
+		return lcBao;
+	}
+	public void setLcBao(Integer lcBao) {
+		this.lcBao = lcBao;
+	}
+	public String getLcBaoNoMsg() {
+		return lcBaoNoMsg;
+	}
+	public void setLcBaoNoMsg(String lcBaoNoMsg) {
+		this.lcBaoNoMsg = lcBaoNoMsg;
+	}
+	public Integer getTdBao() {
+		return tdBao;
+	}
+	public void setTdBao(Integer tdBao) {
+		this.tdBao = tdBao;
+	}
+	public String getTdBaoNoMsg() {
+		return tdBaoNoMsg;
+	}
+	public void setTdBaoNoMsg(String tdBaoNoMsg) {
+		this.tdBaoNoMsg = tdBaoNoMsg;
+	}
+	public Integer getEnvirBao() {
+		return envirBao;
+	}
+	public void setEnvirBao(Integer envirBao) {
+		this.envirBao = envirBao;
+	}
+	public String getEnvirBaoNoMsg() {
+		return envirBaoNoMsg;
+	}
+	public void setEnvirBaoNoMsg(String envirBaoNoMsg) {
+		this.envirBaoNoMsg = envirBaoNoMsg;
+	}
+	public Integer getSgBao() {
+		return sgBao;
+	}
+	public void setSgBao(Integer sgBao) {
+		this.sgBao = sgBao;
+	}
+	public String getSgBaoNoMsg() {
+		return sgBaoNoMsg;
+	}
+	public void setSgBaoNoMsg(String sgBaoNoMsg) {
+		this.sgBaoNoMsg = sgBaoNoMsg;
+	}
+	public Integer getProEnter() {
+		return proEnter;
+	}
+	public void setProEnter(Integer proEnter) {
+		this.proEnter = proEnter;
+	}
+	public String getInvestType() {
+		return investType;
+	}
+	public void setInvestType(String investType) {
+		this.investType = investType;
+	}
+	public String getInvestThisyear() {
+		return investThisyear;
+	}
+	public void setInvestThisyear(String investThisyear) {
+		this.investThisyear = investThisyear;
+	}
+	public String getInvestCom() {
+		return investCom;
+	}
+	public void setInvestCom(String investCom) {
+		this.investCom = investCom;
+	}
+	public Integer getIsOpen() {
+		return isOpen;
+	}
+	public void setIsOpen(Integer isOpen) {
+		this.isOpen = isOpen;
+	}
+	public Date getThisyearOpentime() {
+		return thisyearOpentime;
+	}
+	public void setThisyearOpentime(Date thisyearOpentime) {
+		this.thisyearOpentime = thisyearOpentime;
+	}
+	public String getLxType() {
+		return lxType;
+	}
+	public void setLxType(String lxType) {
+		this.lxType = lxType;
+	}
+	public String getBuildAddress() {
+		return buildAddress;
+	}
+	public void setBuildAddress(String buildAddress) {
+		this.buildAddress = buildAddress;
 	}
 }
