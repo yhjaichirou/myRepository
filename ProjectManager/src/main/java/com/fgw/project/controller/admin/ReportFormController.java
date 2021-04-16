@@ -32,4 +32,9 @@ public class ReportFormController {
 	public RetKit getProjectForm(@PathParam(value = "pn") Integer pn,@PathParam(value = "ps") Integer ps,@PathParam(value = "orgId") Integer orgId,@PathParam(value = "status") Integer status,@PathParam(value = "search") String search) {
 		return pService.getProjectForm(pn,ps,orgId,status,search);
 	}
+	
+	@RequestMapping("/getProjectForm2")
+	public RetKit getProjectForm2(@PathParam(value = "pn") Integer pn,@PathParam(value = "ps") Integer ps,@PathParam(value = "orgId") Integer orgId,@PathParam(value = "status") Integer status,@PathParam(value = "search") String search) {
+		return pService.getProjectForm2(pn,ps,orgId,status,search);
+	}
 }
