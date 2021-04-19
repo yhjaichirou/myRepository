@@ -36,6 +36,7 @@ public class UserVo {
 	private String rolePrimary;
 	private String roleDescribe;
 	private String groupName;
+	private String orgName;
 	
 	public String getRoleName() {
 		return roleName;
@@ -204,6 +205,12 @@ public class UserVo {
 	}
 	public void setIsAdmin(Integer isAdmin) {
 		this.isAdmin = isAdmin;
+	}
+	public String getOrgName() {
+		return orgName;
+	}
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
 	
 	

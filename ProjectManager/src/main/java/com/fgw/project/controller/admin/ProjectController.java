@@ -89,6 +89,10 @@ public class ProjectController {
 	public RetKit getAllOrgs() {
 		return proService.getAllOrgs();
 	}
+	@RequestMapping("/getAllDeparts")
+	public RetKit getAllDeparts() {
+		return proService.getAllDeparts();
+	}
 	
 	@RequestMapping("/getJoiners/{orgIds}")
 	public RetKit getJoiners(@PathVariable String orgIds) {
@@ -103,6 +107,11 @@ public class ProjectController {
 	@RequestMapping("/getLeadersOfOrgId/{orgId}")
 	public RetKit getLeadersOfOrgId(@PathVariable Integer orgId) {
 		return proService.getLeadersOfOrgId(orgId);
+	}
+	
+	@RequestMapping("/getProManagersOfProEnterId/{proEnter}")
+	public RetKit getProManagersOfProEnterId(@PathVariable Integer proEnter) {
+		return proService.getProManagersOfProEnterId(proEnter);
 	}
 	
 	@RequestMapping("/updateProject")

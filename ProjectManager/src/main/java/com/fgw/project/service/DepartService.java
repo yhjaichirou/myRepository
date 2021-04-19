@@ -184,8 +184,8 @@ public class DepartService {
 			if(o_.isPresent()) {
 				depart = o_.get();
 				//删除旧的 管理员
-				User oldUser = userR.findByAccount(depart.getManagerMobile());
-				userR.delete(oldUser);
+				List<User> oldUsers = userR.findAllByAccountAndOrgId(depart.getManagerMobile(),depart.getId());
+				userR.deleteAll(oldUsers);
 				if(oldo!=null && !oldo.equals(depart.getName())) {
 					return RetKit.fail("组织已经存在！");
 				}

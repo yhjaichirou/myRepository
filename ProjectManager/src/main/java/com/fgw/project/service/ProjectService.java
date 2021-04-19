@@ -25,6 +25,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fgw.project.TargetQuartz;
 import com.fgw.project.constant.OrgPropertyEnum;
+import com.fgw.project.constant.ProjectMaturityEnum;
 import com.fgw.project.constant.ProjectStatusEnum;
 import com.fgw.project.constant.TaskPriorityEnum;
 import com.fgw.project.constant.TaskStageEnum;
@@ -343,7 +344,8 @@ public class ProjectService {
 		}else {
 			return RetKit.fail("请选择行业类型！");
 		}
-		String content = jb.getString("name");
+		String content = jb.getString("content");
+		String submitted = jb.getString("submitted");
 		String number = jb.getString("number");
 		Integer maturity = jb.getInteger("maturity");
 		Date dockingDate = StrKit.notBlank(jb.getString("dockingDate"))?MDateUtil.stringToDate(jb.getString("dockingDate"), MDateUtil.formatDate):null;
@@ -368,60 +370,61 @@ public class ProjectService {
 		String buildAddress = jb.getString("buildAddress");//建设地点（旗县区）
 		String processCondition = jb.getString("processCondition");
 		
-		Integer lxIsComapprove = jb.getInteger("lxIsComapprove");
-		Integer lxHandleLevel = jb.getInteger("lxHandleLevel");
-		Integer lxIsSendappdepart = jb.getInteger("lxIsSendappdepart");
-		Integer lxBao = jb.getInteger("lxBao");
+		String lxIsComapprove = jb.getString("lxIsComapprove");
+		String lxHandleLevel = jb.getString("lxHandleLevel");
+		String lxIsSendappdepart = jb.getString("lxIsSendappdepart");
+		String lxBao = jb.getString("lxBao");
 		String lxBaoNoMsg = jb.getString("lxBaoNoMsg");
 		
 		String ydArea = jb.getString("ydArea");
 		String ydAreaLd = jb.getString("ydAreaLd");
 		String ydAreaCd = jb.getString("ydAreaCd");
-		Integer ydcardIsHascard = jb.getInteger("ydcardIsHascard");
-		Integer ydcardHandleLevel = jb.getInteger("ydcardHandleLevel");
-		Integer ydcardIsSendappdepart = jb.getInteger("ydcardIsSendappdepart");
-		Integer ydBao = jb.getInteger("ydBao");
+		String ydcardIsHascard = jb.getString("ydcardIsHascard");
+		String ydcardHandleLevel = jb.getString("ydcardHandleLevel");
+		String ydcardIsSendappdepart = jb.getString("ydcardIsSendappdepart");
+		String ydBao = jb.getString("ydBao");
 		String ydBaoNoMsg = jb.getString("ydBaoNoMsg");
 		
 		String energyArea = jb.getString("energyArea");
 		String energyWaterArea = jb.getString("energyWaterArea");
-		Integer energyHandleLevel = jb.getInteger("energyHandleLevel");
-		Integer energyIsCensor = jb.getInteger("energyIsCensor");
-		Integer energyIsSendappdepart = jb.getInteger("energyIsSendappdepart");
-		Integer energyBao = jb.getInteger("energyBao");
+		String energyHandleLevel = jb.getString("energyHandleLevel");
+		String energyIsCensor = jb.getString("energyIsCensor");
+		String energyIsSendappdepart = jb.getString("energyIsSendappdepart");
+		String energyBao = jb.getString("energyBao");
 		String energyBaoNoMsg = jb.getString("energyBaoNoMsg");
 		
-		Integer lcHandleLevel = jb.getInteger("lcHandleLevel");
-		Integer lcIsBl = jb.getInteger("lcIsBl");
-		Integer lcIsSendappdepart = jb.getInteger("lcIsSendappdepart");
-		Integer lcBao = jb.getInteger("lcBao");
+		String lcHandleLevel = jb.getString("lcHandleLevel");
+		String lcIsBl = jb.getString("lcIsBl");
+		String lcIsSendappdepart = jb.getString("lcIsSendappdepart");
+		String lcBao = jb.getString("lcBao");
 		String lcBaoNoMsg = jb.getString("lcBaoNoMsg");
 		
-		Integer tdHandleLevel = jb.getInteger("tdHandleLevel");
-		Integer tdIsBl = jb.getInteger("tdIsBl");
-		Integer tdIsSendappdepart = jb.getInteger("tdIsSendappdepart");
-		Integer tdBao = jb.getInteger("tdBao");
+		String tdProvide = jb.getString("tdProvide");
+		String tdHandleLevel = jb.getString("tdHandleLevel");
+		String tdIsBl = jb.getString("tdIsBl");
+		String tdIsSendappdepart = jb.getString("tdIsSendappdepart");
+		String tdBao = jb.getString("tdBao");
 		String tdBaoNoMsg = jb.getString("tdBaoNoMsg");
 		
-		Integer envirHandleLevel = jb.getInteger("envirHandleLevel");
-		Integer envirIsBl = jb.getInteger("envirIsBl");
-		Integer envirIsSendappdepart = jb.getInteger("envirIsSendappdepart");
-		Integer envirBao = jb.getInteger("envirBao");
+		String envirHandleLevel = jb.getString("envirHandleLevel");
+		String envirIsBl = jb.getString("envirIsBl");
+		String envirIsSendappdepart = jb.getString("envirIsSendappdepart");
+		String envirBao = jb.getString("envirBao");
 		String envirBaoNoMsg = jb.getString("envirBaoNoMsg");
 		
-		Integer sgHandleLevel = jb.getInteger("sgHandleLevel");
-		Integer sgIsBl = jb.getInteger("sgIsBl");
-		Integer sgIsSendappdepart = jb.getInteger("sgIsSendappdepart");
-		Integer sgBao = jb.getInteger("sgBao");
+		String sgHandleLevel = jb.getString("sgHandleLevel");
+		String sgIsBl = jb.getString("sgIsBl");
+		String sgIsSendappdepart = jb.getString("sgIsSendappdepart");
+		String sgBao = jb.getString("sgBao");
 		String sgBaoNoMsg = jb.getString("sgBaoNoMsg");
 		
-		Integer xfHandleLevel = jb.getInteger("xfHandleLevel");
-		Integer xfIsBl = jb.getInteger("xfIsBl");
-		Integer xfIsSendappdepart = jb.getInteger("xfIsSendappdepart");
+		String xfHandleLevel = jb.getString("xfHandleLevel");
+		String xfIsBl = jb.getString("xfIsBl");
+		String xfIsSendappdepart = jb.getString("xfIsSendappdepart");
 		
-		Integer rfHandleLevel = jb.getInteger("rfHandleLevel");
-		Integer rfIsBl = jb.getInteger("rfIsBl");
-		Integer rfIsSendappdepart = jb.getInteger("rfIsSendappdepart");
+		String rfHandleLevel = jb.getString("rfHandleLevel");
+		String rfIsBl = jb.getString("rfIsBl");
+		String rfIsSendappdepart = jb.getString("rfIsSendappdepart");
 		
 		String otherBl = jb.getString("otherBl");
 		String diffAndProblem = jb.getString("diffAndProblem");
@@ -442,6 +445,7 @@ public class ProjectService {
 			pro.setStartDate(new Date());
 		}
 		pro.setName(name);
+		pro.setSubmitted(submitted);
 		pro.setIndustryCategory(industryCategory);
 		pro.setContent(content);
 		pro.setNumber(number);
@@ -458,30 +462,63 @@ public class ProjectService {
 		pro.setInvest(invest);
 		pro.setExpectedDate(expectedDate);
 		pro.setApproveCode(approveCode);
+		pro.setEnergyArea(energyArea);
+		pro.setEnergyWaterArea(energyWaterArea);
+		
+		pro.setInvestType(investType);
+		pro.setInvestThisyear(investThisyear);
+		pro.setInvestCom(investCom);
+		pro.setIsOpen(isOpen);
+		pro.setThisyearOpentime(thisyearOpentime);
+		pro.setBuildAddress(buildAddress);
+		pro.setProcessCondition(processCondition);
 		
 		pro.setLxIsComapprove(lxIsComapprove);
 		pro.setLxHandleLevel(lxHandleLevel);
 		pro.setLxIsSendappdepart(lxIsSendappdepart);
+		pro.setLxType(lxType);
+		pro.setLxBao(lxBao);
+		pro.setLxBaoNoMsg(lxBaoNoMsg);
 		
 		pro.setYdcardIsHascard(ydcardIsHascard);
 		pro.setYdcardHandleLevel(ydcardHandleLevel);
 		pro.setYdcardIsSendappdepart(ydcardIsSendappdepart);
+		pro.setYdArea(ydArea);
+		pro.setYdAreaCd(ydAreaCd);
+		pro.setYdAreaLd(ydAreaLd);
+		pro.setYdBao(ydBao);
+		pro.setYdBaoNoMsg(ydBaoNoMsg);
+		
+		pro.setTdIsBl(tdIsBl);
+		pro.setTdHandleLevel(tdHandleLevel);
+		pro.setTdIsSendappdepart(tdIsSendappdepart);
+		pro.setTdBao(tdBao);
+		pro.setTdBaoNoMsg(tdBaoNoMsg);
+		pro.setTdProvide(tdProvide);
 		
 		pro.setEnergyHandleLevel(energyHandleLevel);
 		pro.setEnergyIsCensor(energyIsCensor);
 		pro.setEnergyIsSendappdepart(energyIsSendappdepart);
+		pro.setEnergyBao(energyBao);
+		pro.setEnergyBaoNoMsg(energyBaoNoMsg);
 		
 		pro.setLcHandleLevel(lcHandleLevel);
 		pro.setLcIsBl(lcIsBl);
 		pro.setLcIsSendappdepart(lcIsSendappdepart);
+		pro.setLcBao(lcBao);
+		pro.setLcBaoNoMsg(lcBaoNoMsg);
 		
 		pro.setEnvirHandleLevel(envirHandleLevel);
 		pro.setEnvirIsBl(envirIsBl);
 		pro.setEnvirIsSendappdepart(envirIsSendappdepart);
+		pro.setEnvirBao(envirBao);
+		pro.setEnvirBaoNoMsg(envirBaoNoMsg);
 		
 		pro.setSgHandleLevel(sgHandleLevel);
 		pro.setSgIsBl(sgIsBl);
 		pro.setSgIsSendappdepart(sgIsSendappdepart);
+		pro.setSgBao(sgBao);
+		pro.setSgBaoNoMsg(sgBaoNoMsg);
 		
 		pro.setXfHandleLevel(xfHandleLevel);
 		pro.setXfIsBl(xfIsBl);
@@ -576,6 +613,13 @@ public class ProjectService {
 		List<Org> orgs = orgR.findAllByStatus(1);
 		return RetKit.okData(orgs);
 	}
+	public RetKit getAllDeparts() {
+		List<Integer> pros = new ArrayList<>();
+		pros.add(2);
+		pros.add(3);
+		List<Org> orgs = orgR.findAllByStatusAndPropertyIn(1,pros);
+		return RetKit.okData(orgs);
+	}
 
 	public RetKit getJoiners(String orgIds) {
 		if(StrKit.isBlank(orgIds)) {
@@ -595,6 +639,14 @@ public class ProjectService {
 			return RetKit.fail("参数错误！");
 		}
 		List<People> ps = peopleR.findAllByOrgIdAndStatusAndIsLeader(orgId,1,1);
+		return RetKit.okData(ps);
+	}
+	
+	public RetKit getProManagersOfProEnterId(Integer orgId) {
+		if(orgId == null || orgId == 0) {
+			return RetKit.fail("参数错误！");
+		}
+		List<People> ps = peopleR.findAllByOrgIdAndStatusAndIsLeader(orgId,1,0);
 		return RetKit.okData(ps);
 	}
 	
@@ -765,11 +817,17 @@ public class ProjectService {
 //				List<String> categoryNames = comService.getIndustryParentName(industryR.findById(pv.getIndustryCategory()).get(),cas);
 //				String categoryName = categoryNames.stream().collect(Collectors.joining(">"));
 //				pv.setCategoryName(categoryName);
+				pv.setCompleteDateStr(pv.getCompleteDate()==null?"":MDateUtil.dateToString(pv.getCompleteDate(), MDateUtil.formatDate));
 				pv.setDockingDateStr(pv.getDockingDate()==null?"":MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
 				
 				pv.setStatusStr(ProjectStatusEnum.getByValue(pv.getStatus()).getText());
 				pv.setEarlyStage(pv.getStatus().equals(ProjectStatusEnum.EARLY.getId())?"已完成":"暂无");
 				pv.setExpectedDateStr(pv.getExpectedDate()==null?"":MDateUtil.dateToString(pv.getExpectedDate(), MDateUtil.formatDate));
+				pv.setMaturityStr(ProjectMaturityEnum.getByValue(pv.getMaturity()).getText());
+				
+				List<Invest> invests = investR.findAllByProId(pv.getId());
+				pv.setInvestInfos(invests);
+				
 				return pv;
 			}).collect(Collectors.toList());
 			Map<String,Object> rt = new HashMap<>();

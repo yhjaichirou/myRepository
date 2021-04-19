@@ -40,65 +40,73 @@ public class Project implements java.io.Serializable {
 	private String lxType;//项目立项类型（审批、核准、备案）
 	private String buildAddress;//建设地点（旗县区）
 	private String processCondition;
+	private String submitted;//报送地区
 	
 	private Date expectedDate;//预计完成时间
 	private Date startDate;//开始时间
 	private String approveCode;//项目审批监管平台代码
 	private String image;
 	
-	private Integer lxIsComapprove;//立项
-	private Integer lxHandleLevel;
-	private Integer lxIsSendappdepart;
-	private Integer lxBao;//审批、转报部门意见（审批部门同意办理、审批部门不同意办理、转报部门同意转报、转报部门不同意转报）
+	private String lxIsComapprove;//立项
+	private String lxHandleLevel;
+	private String lxIsSendappdepart;
+	private String lxBao;//审批、转报部门意见（审批部门同意办理、审批部门不同意办理、转报部门同意转报、转报部门不同意转报）
 	private String lxBaoNoMsg;//不同意办理或不同意转报原因（文字详细表述）
 	private String ydArea;//项目整体建设用地规模（亩）
 	private String ydAreaLd;//其中涉及林地规模
 	private String ydAreaCd;//其中涉及草地规模
-	private Integer ydcardIsHascard;
-	private Integer ydcardHandleLevel;
-	private Integer ydcardIsSendappdepart;
-	private Integer ydBao;
+	private String ydcardIsHascard;
+	private String ydcardHandleLevel;
+	private String ydcardIsSendappdepart;
+	private String ydBao;
 	private String ydBaoNoMsg;
 	
 	private String energyArea;//项目整体能耗规模（等价值）
 	private String energyWaterArea;//项目整体用水规模（立方米）
-	private Integer energyIsCensor;
-	private Integer energyHandleLevel;
-	private Integer energyIsSendappdepart;
-	private Integer energyBao;
+	private String energyIsCensor;
+	private String energyHandleLevel;
+	private String energyIsSendappdepart;
+	private String energyBao;
 	private String energyBaoNoMsg;
-	private Integer lcIsBl;
-	private Integer lcHandleLevel;
-	private Integer lcIsSendappdepart;
-	private Integer lcBao;
+	
+	private String lcIsBl;
+	private String lcHandleLevel;
+	private String lcIsSendappdepart;
+	private String lcBao;
 	private String lcBaoNoMsg;
-	private Integer tdIsBl;
-	private Integer tdHandleLevel;
-	private Integer tdIsSendappdepart;
-	private Integer tdBao;
+	
+	private String tdProvide;
+	private String tdIsBl;
+	private String tdHandleLevel;
+	private String tdIsSendappdepart;
+	private String tdBao;
 	private String tdBaoNoMsg;
-	private Integer envirIsBl;
-	private Integer envirHandleLevel;
-	private Integer envirIsSendappdepart;
-	private Integer envirBao;
+	
+	private String envirIsBl;
+	private String envirHandleLevel;
+	private String envirIsSendappdepart;
+	private String envirBao;
 	private String envirBaoNoMsg;
-	private Integer sgIsBl;
-	private Integer sgHandleLevel;
-	private Integer sgIsSendappdepart;
-	private Integer sgBao;
+	
+	private String sgIsBl;
+	private String sgHandleLevel;
+	private String sgIsSendappdepart;
+	private String sgBao;
 	private String sgBaoNoMsg;
-	private Integer xfIsBl;
-	private Integer xfHandleLevel;
-	private Integer xfIsSendappdepart;
-	private Integer rfIsBl;
-	private Integer rfHandleLevel;
-	private Integer rfIsSendappdepart;
+	
+	private String xfIsBl;
+	private String xfHandleLevel;
+	private String xfIsSendappdepart;
+	private String rfIsBl;
+	private String rfHandleLevel;
+	private String rfIsSendappdepart;
 	
 	private String otherBl;//其他需要解决的手续问题
 	private String diffAndProblem;//存在的困难和问题
 	private Integer proManager;//项目主管部门联系人
 	private String proManagerMobile;//项目主管部门联系人电话
 	private Integer proEnter;//项目主管单位
+	private String proManagerTing;//主管厅局
 	private Integer enterManager;
 	private String enterManagerMobile;
 	private String stage;//项目建设阶段
@@ -264,194 +272,194 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "lx_is_comapprove")
-	public Integer getLxIsComapprove() {
+	public String getLxIsComapprove() {
 		return lxIsComapprove;
 	}
-	public void setLxIsComapprove(Integer lxIsComapprove) {
+	public void setLxIsComapprove(String lxIsComapprove) {
 		this.lxIsComapprove = lxIsComapprove;
 	}
 
 	@Column(name = "lx_handle_level")
-	public Integer getLxHandleLevel() {
+	public String getLxHandleLevel() {
 		return lxHandleLevel;
 	}
-	public void setLxHandleLevel(Integer lxHandleLevel) {
+	public void setLxHandleLevel(String lxHandleLevel) {
 		this.lxHandleLevel = lxHandleLevel;
 	}
 
 	@Column(name = "lx_is_sendappdepart")
-	public Integer getLxIsSendappdepart() {
+	public String getLxIsSendappdepart() {
 		return lxIsSendappdepart;
 	}
-	public void setLxIsSendappdepart(Integer lxIsSendappdepart) {
+	public void setLxIsSendappdepart(String lxIsSendappdepart) {
 		this.lxIsSendappdepart = lxIsSendappdepart;
 	}
 
 	@Column(name = "ydcard_is_hascard")
-	public Integer getYdcardIsHascard() {
+	public String getYdcardIsHascard() {
 		return ydcardIsHascard;
 	}
-	public void setYdcardIsHascard(Integer ydcardIsHascard) {
+	public void setYdcardIsHascard(String ydcardIsHascard) {
 		this.ydcardIsHascard = ydcardIsHascard;
 	}
 
 	@Column(name = "ydcard_handle_level")
-	public Integer getYdcardHandleLevel() {
+	public String getYdcardHandleLevel() {
 		return ydcardHandleLevel;
 	}
-	public void setYdcardHandleLevel(Integer ydcardHandleLevel) {
+	public void setYdcardHandleLevel(String ydcardHandleLevel) {
 		this.ydcardHandleLevel = ydcardHandleLevel;
 	}
 
 	@Column(name = "ydcard_is_sendappdepart")
-	public Integer getYdcardIsSendappdepart() {
+	public String getYdcardIsSendappdepart() {
 		return ydcardIsSendappdepart;
 	}
-	public void setYdcardIsSendappdepart(Integer ydcardIsSendappdepart) {
+	public void setYdcardIsSendappdepart(String ydcardIsSendappdepart) {
 		this.ydcardIsSendappdepart = ydcardIsSendappdepart;
 	}
 
 	@Column(name = "energy_is_censor")
-	public Integer getEnergyIsCensor() {
+	public String getEnergyIsCensor() {
 		return energyIsCensor;
 	}
-	public void setEnergyIsCensor(Integer energyIsCensor) {
+	public void setEnergyIsCensor(String energyIsCensor) {
 		this.energyIsCensor = energyIsCensor;
 	}
 
 	@Column(name = "energy_handle_level")
-	public Integer getEnergyHandleLevel() {
+	public String getEnergyHandleLevel() {
 		return energyHandleLevel;
 	}
-	public void setEnergyHandleLevel(Integer energyHandleLevel) {
+	public void setEnergyHandleLevel(String energyHandleLevel) {
 		this.energyHandleLevel = energyHandleLevel;
 	}
 
 	@Column(name = "energy_is_sendappdepart")
-	public Integer getEnergyIsSendappdepart() {
+	public String getEnergyIsSendappdepart() {
 		return energyIsSendappdepart;
 	}
-	public void setEnergyIsSendappdepart(Integer energyIsSendappdepart) {
+	public void setEnergyIsSendappdepart(String energyIsSendappdepart) {
 		this.energyIsSendappdepart = energyIsSendappdepart;
 	}
 
 	@Column(name = "lc_is_bl")
-	public Integer getLcIsBl() {
+	public String getLcIsBl() {
 		return lcIsBl;
 	}
-	public void setLcIsBl(Integer lcIsBl) {
+	public void setLcIsBl(String lcIsBl) {
 		this.lcIsBl = lcIsBl;
 	}
 
 	@Column(name = "lc_handle_level")
-	public Integer getLcHandleLevel() {
+	public String getLcHandleLevel() {
 		return lcHandleLevel;
 	}
-	public void setLcHandleLevel(Integer lcHandleLevel) {
+	public void setLcHandleLevel(String lcHandleLevel) {
 		this.lcHandleLevel = lcHandleLevel;
 	}
 
 	@Column(name = "lc_is_sendappdepart")
-	public Integer getLcIsSendappdepart() {
+	public String getLcIsSendappdepart() {
 		return lcIsSendappdepart;
 	}
-	public void setLcIsSendappdepart(Integer lcIsSendappdepart) {
+	public void setLcIsSendappdepart(String lcIsSendappdepart) {
 		this.lcIsSendappdepart = lcIsSendappdepart;
 	}
 
 	@Column(name = "envir_is_bl")
-	public Integer getEnvirIsBl() {
+	public String getEnvirIsBl() {
 		return envirIsBl;
 	}
-	public void setEnvirIsBl(Integer envirIsBl) {
+	public void setEnvirIsBl(String envirIsBl) {
 		this.envirIsBl = envirIsBl;
 	}
 
 	@Column(name = "envir_handle_level")
-	public Integer getEnvirHandleLevel() {
+	public String getEnvirHandleLevel() {
 		return envirHandleLevel;
 	}
-	public void setEnvirHandleLevel(Integer envirHandleLevel) {
+	public void setEnvirHandleLevel(String envirHandleLevel) {
 		this.envirHandleLevel = envirHandleLevel;
 	}
 
 	@Column(name = "envir_is_sendappdepart")
-	public Integer getEnvirIsSendappdepart() {
+	public String getEnvirIsSendappdepart() {
 		return envirIsSendappdepart;
 	}
-	public void setEnvirIsSendappdepart(Integer envirIsSendappdepart) {
+	public void setEnvirIsSendappdepart(String envirIsSendappdepart) {
 		this.envirIsSendappdepart = envirIsSendappdepart;
 	}
 
 	@Column(name = "sg_is_bl")
-	public Integer getSgIsBl() {
+	public String getSgIsBl() {
 		return sgIsBl;
 	}
-	public void setSgIsBl(Integer sgIsBl) {
+	public void setSgIsBl(String sgIsBl) {
 		this.sgIsBl = sgIsBl;
 	}
 
 	@Column(name = "sg_handle_level")
-	public Integer getSgHandleLevel() {
+	public String getSgHandleLevel() {
 		return sgHandleLevel;
 	}
-	public void setSgHandleLevel(Integer sgHandleLevel) {
+	public void setSgHandleLevel(String sgHandleLevel) {
 		this.sgHandleLevel = sgHandleLevel;
 	}
 	
 	@Column(name = "sg_is_sendappdepart")
-	public Integer getSgIsSendappdepart() {
+	public String getSgIsSendappdepart() {
 		return sgIsSendappdepart;
 	}
-	public void setSgIsSendappdepart(Integer sgIsSendappdepart) {
+	public void setSgIsSendappdepart(String sgIsSendappdepart) {
 		this.sgIsSendappdepart = sgIsSendappdepart;
 	}
 
 	@Column(name = "xf_is_bl")
-	public Integer getXfIsBl() {
+	public String getXfIsBl() {
 		return xfIsBl;
 	}
-	public void setXfIsBl(Integer xfIsBl) {
+	public void setXfIsBl(String xfIsBl) {
 		this.xfIsBl = xfIsBl;
 	}
 
 	@Column(name = "xf_handle_level")
-	public Integer getXfHandleLevel() {
+	public String getXfHandleLevel() {
 		return xfHandleLevel;
 	}
-	public void setXfHandleLevel(Integer xfHandleLevel) {
+	public void setXfHandleLevel(String xfHandleLevel) {
 		this.xfHandleLevel = xfHandleLevel;
 	}
 
 	@Column(name = "xf_is_sendappdepart")
-	public Integer getXfIsSendappdepart() {
+	public String getXfIsSendappdepart() {
 		return xfIsSendappdepart;
 	}
-	public void setXfIsSendappdepart(Integer xfIsSendappdepart) {
+	public void setXfIsSendappdepart(String xfIsSendappdepart) {
 		this.xfIsSendappdepart = xfIsSendappdepart;
 	}
 
 	@Column(name = "rf_is_bl")
-	public Integer getRfIsBl() {
+	public String getRfIsBl() {
 		return rfIsBl;
 	}
-	public void setRfIsBl(Integer rfIsBl) {
+	public void setRfIsBl(String rfIsBl) {
 		this.rfIsBl = rfIsBl;
 	}
 
 	@Column(name = "rf_handle_level")
-	public Integer getRfHandleLevel() {
+	public String getRfHandleLevel() {
 		return rfHandleLevel;
 	}
-	public void setRfHandleLevel(Integer rfHandleLevel) {
+	public void setRfHandleLevel(String rfHandleLevel) {
 		this.rfHandleLevel = rfHandleLevel;
 	}
 
 	@Column(name = "rf_is_sendappdepart")
-	public Integer getRfIsSendappdepart() {
+	public String getRfIsSendappdepart() {
 		return rfIsSendappdepart;
 	}
-	public void setRfIsSendappdepart(Integer rfIsSendappdepart) {
+	public void setRfIsSendappdepart(String rfIsSendappdepart) {
 		this.rfIsSendappdepart = rfIsSendappdepart;
 	}
 
@@ -539,26 +547,26 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "td_is_bl")
-	public Integer getTdIsBl() {
+	public String getTdIsBl() {
 		return tdIsBl;
 	}
-	public void setTdIsBl(Integer tdIsBl) {
+	public void setTdIsBl(String tdIsBl) {
 		this.tdIsBl = tdIsBl;
 	}
 
 	@Column(name = "td_handle_level")
-	public Integer getTdHandleLevel() {
+	public String getTdHandleLevel() {
 		return tdHandleLevel;
 	}
-	public void setTdHandleLevel(Integer tdHandleLevel) {
+	public void setTdHandleLevel(String tdHandleLevel) {
 		this.tdHandleLevel = tdHandleLevel;
 	}
 
 	@Column(name = "td_is_sendappdepart")
-	public Integer getTdIsSendappdepart() {
+	public String getTdIsSendappdepart() {
 		return tdIsSendappdepart;
 	}
-	public void setTdIsSendappdepart(Integer tdIsSendappdepart) {
+	public void setTdIsSendappdepart(String tdIsSendappdepart) {
 		this.tdIsSendappdepart = tdIsSendappdepart;
 	}
 
@@ -644,11 +652,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "lx_bao")
-	public Integer getLxBao() {
+	public String getLxBao() {
 		return lxBao;
 	}
 
-	public void setLxBao(Integer lxBao) {
+	public void setLxBao(String lxBao) {
 		this.lxBao = lxBao;
 	}
 
@@ -689,11 +697,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "yd_bao")
-	public Integer getYdBao() {
+	public String getYdBao() {
 		return ydBao;
 	}
 
-	public void setYdBao(Integer ydBao) {
+	public void setYdBao(String ydBao) {
 		this.ydBao = ydBao;
 	}
 
@@ -725,11 +733,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "energy_bao")
-	public Integer getEnergyBao() {
+	public String getEnergyBao() {
 		return energyBao;
 	}
 
-	public void setEnergyBao(Integer energyBao) {
+	public void setEnergyBao(String energyBao) {
 		this.energyBao = energyBao;
 	}
 
@@ -743,11 +751,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "lc_bao")
-	public Integer getLcBao() {
+	public String getLcBao() {
 		return lcBao;
 	}
 
-	public void setLcBao(Integer lcBao) {
+	public void setLcBao(String lcBao) {
 		this.lcBao = lcBao;
 	}
 
@@ -761,11 +769,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "td_bao")
-	public Integer getTdBao() {
+	public String getTdBao() {
 		return tdBao;
 	}
 
-	public void setTdBao(Integer tdBao) {
+	public void setTdBao(String tdBao) {
 		this.tdBao = tdBao;
 	}
 
@@ -779,11 +787,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "envir_bao")
-	public Integer getEnvirBao() {
+	public String getEnvirBao() {
 		return envirBao;
 	}
 
-	public void setEnvirBao(Integer envirBao) {
+	public void setEnvirBao(String envirBao) {
 		this.envirBao = envirBao;
 	}
 
@@ -797,11 +805,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "sg_bao")
-	public Integer getSgBao() {
+	public String getSgBao() {
 		return sgBao;
 	}
 
-	public void setSgBao(Integer sgBao) {
+	public void setSgBao(String sgBao) {
 		this.sgBao = sgBao;
 	}
 
@@ -821,6 +829,33 @@ public class Project implements java.io.Serializable {
 
 	public void setProEnter(Integer proEnter) {
 		this.proEnter = proEnter;
+	}
+
+	@Column(name = "submitted")
+	public String getSubmitted() {
+		return submitted;
+	}
+
+	public void setSubmitted(String submitted) {
+		this.submitted = submitted;
+	}
+
+	@Column(name = "pro_manager_ting")
+	public String getProManagerTing() {
+		return proManagerTing;
+	}
+
+	public void setProManagerTing(String proManagerTing) {
+		this.proManagerTing = proManagerTing;
+	}
+
+	@Column(name = "td_provide")
+	public String getTdProvide() {
+		return tdProvide;
+	}
+
+	public void setTdProvide(String tdProvide) {
+		this.tdProvide = tdProvide;
 	}
 	
 	

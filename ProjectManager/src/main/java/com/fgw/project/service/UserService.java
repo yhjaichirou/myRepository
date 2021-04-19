@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,15 +62,30 @@ public class UserService {
 			UserVo uv = new UserVo();
 			BeanUtil.copyProperties(user_.get(), uv);
 			uv.setAvater(StrKit.isBlank(uv.getAvater())?"":getFileUrl+uv.getAvater());
+			Optional<Role> roe = roleR.findById(uv.getRoleId());
+			if(roe.isPresent()) {
+				uv.setRoleName(roe.get().getRoleName());
+			}
+			Optional<Org> org_ = orgR.findById(uv.getOrgId());
+			if(org_.isPresent()) {
+				uv.setOrgName(org_.get().getName());
+			}
 			return RetKit.okData(uv);
 		}
 		return RetKit.fail("获取失败！");
 	}
 
 
-	public RetKit getUser(String account,String psw) {
-		User u = userR.findByAccount(account);
-		if(u!=null) {
+	public RetKit getUser(String account,String psw,String orgId) {
+		List<User> us = new ArrayList<>();
+		if(StrKit.isBlank(orgId)) {
+			us = userR.findByAccount(account);
+		}else {
+			us = userR.findAllByAccountAndOrgId(account,Integer.parseInt(orgId));
+		}
+		
+		if(us.size() == 1) {
+			User u = us.get(0);
 			String oldpsw = u.getPassword();
 			if(psw.equals(oldpsw)) {
 				String token = TokenUtils.token(account, psw);
@@ -86,9 +102,21 @@ public class UserService {
 			}else {
 				return RetKit.fail("密码错误！");
 			}
+		}else if(us.size() > 1) {
+			List<UserVo> uvs = BeanKit.copyBeanList(us, UserVo.class);
+			for (UserVo uv : uvs) {
+				Optional<Org> _org = orgR.findById(uv.getOrgId());
+				if(_org.isPresent()) {
+					uv.setOrgName(_org.get().getName());
+				}else {
+					return RetKit.fail("获取登录部门失败！");
+				}
+			}
+			return RetKit.failData(509,"请选择登录入口！",uvs);
 		}else {
 			return RetKit.fail("用户不存在！");
 		}
+		
 	}
 
 	private List<MenuVo> coverMenuVo(List<Menu> menus,Integer roleId){
@@ -230,14 +258,15 @@ public class UserService {
 		return RetKit.okData(rs);
 	}
 
-
+	@Transactional
 	public RetKit addUser(String param) {
 		String account = JSONObject.parseObject(param).getString("account");
 		String userName = JSONObject.parseObject(param).getString("userName");
 		Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
 		Integer roleId = JSONObject.parseObject(param).getInteger("roleId");
 		Integer groupId = JSONObject.parseObject(param).getInteger("groupId");
-		List<User> us = userR.findAllByAccount(account); 
+		Integer loginRole = JSONObject.parseObject(param).getInteger("loginRole");
+		List<User> us = userR.findAllByAccountAndOrgId(account,orgId); 
 		if(us.size()>0) {
 			return RetKit.fail("用户已存在！");
 		}
@@ -248,8 +277,11 @@ public class UserService {
 		r.setRoleId(roleId);
 		r.setName(userName);
 		r.setOrgId(orgId);
-		r.setGroupId(groupId);
-		r.setIsAdmin(0);
+		if(groupId!=null) {
+			r.setGroupId(groupId);
+		}
+		boolean isSystemAdmin = loginRole==null?false: loginRole.equals(RoleEnum.ADMIN) || loginRole.equals(RoleEnum.ADMIN) ?true : false;
+		r.setIsAdmin(isSystemAdmin?1:0);
 		userR.save(r);
 		
 		Map<String, Object> m = new HashMap<>();
@@ -259,14 +291,17 @@ public class UserService {
 		m.put("status", 1);
 		m.put("orgId", 	orgId);
 		m.put("roleId", roleId);
-		m.put("groupId", groupId);
+		if(groupId!=null) {
+			m.put("groupId", groupId);
+			Optional<Group> g_ = groupR.findById(groupId);
+			m.put("groupName", g_.isPresent()?g_.get().getGroupName() : "");
+		}
 		m.put("isAdmin", 0);
 		Optional<Role> r_ = roleR.findById(roleId);
 		m.put("roleName", r_.isPresent()?r_.get().getRoleName() : "");
 		m.put("rolePrimary", r_.isPresent()?r_.get().getRolePrimary() : "");
 		m.put("roleDescribe", r_.isPresent()?r_.get().getRoleDescribe() : "");
-		Optional<Group> g_ = groupR.findById(groupId);
-		m.put("groupName", g_.isPresent()?g_.get().getGroupName() : "");
+		
 		return RetKit.okData(m);
 	}
 

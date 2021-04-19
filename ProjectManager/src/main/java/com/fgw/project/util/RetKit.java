@@ -53,6 +53,10 @@ public class RetKit extends HashMap {
 		return new RetKit().setOkData(value);
 	}
 
+	public static RetKit okMSGData(String msg,Object value) {
+		return new RetKit().setOkMsgData(msg,value);
+	}
+
 	public static RetKit ok(Object value) {
 		return new RetKit().setOk(value);
 	}
@@ -75,6 +79,10 @@ public class RetKit extends HashMap {
 
 	public static RetKit fail(Object msg) {
 		return new RetKit().setFail(msg);
+	}
+	
+	public static RetKit failData(int code,Object msg,Object data) {
+		return new RetKit().setFailData(code,msg,data);
 	}
 
 	public static RetKit fail(Object key, Object value) {
@@ -122,10 +130,26 @@ public class RetKit extends HashMap {
 		super.put(MSG, "操作成功");
 		return this;
 	}
+	
+	public RetKit setOkMsgData(String msg,Object data) {
+		super.put(DATA, data);
+		super.put(SUCCESS, true);
+		super.put(CODE, 200);
+		super.put(MSG, msg);
+		return this;
+	}
 
 	public RetKit setFail(Object msg) {
 		super.put(SUCCESS, false);
 		super.put(CODE, 501);
+		super.put(MSG, msg);
+		return this;
+	}
+	
+	public RetKit setFailData(int code ,Object msg,Object data) {
+		super.put(DATA, data);
+		super.put(SUCCESS, false);
+		super.put(CODE, code);
 		super.put(MSG, msg);
 		return this;
 	}

@@ -41,5 +41,7 @@ public interface IOrgRepository extends JpaRepository<Org , Integer> {
 
 	List<Org> findAllByStatusAndNameLike(Integer status, String searchContent);
 
+	List<Org> findAllByStatusAndPropertyIn(int i, List<Integer> pros);
+
 
 }

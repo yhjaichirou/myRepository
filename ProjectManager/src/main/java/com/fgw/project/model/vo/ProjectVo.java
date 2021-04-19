@@ -11,80 +11,94 @@ public class ProjectVo<Industry> {
 	private String name;
 	private Integer industryCategory;//产业类型
 	private String content;
-	private String number;//项目编码
+	private String number;
 	private Integer maturity;//项目成熟度
 	private Date dockingDate;//对接日期
 	private Integer leader;//牵头领导
 	private Integer leadenter;//牵头单位
 	private Integer coordinate;//协调负责人
-	private String taskPrefix;//项目划分任务前缀   项目代号
+	private String taskPrefix;//项目划分任务前缀
 	private String visibleRange;//显示范围
 	private String joiners;//项目参加人员
 	private Integer process;//项目进展程度
 	private String remarks;//备注
 	private String invest;//投资情况
+	
+	private String investType;
+	private String investThisyear;//当年预计完成投资
+	private String investCom;//当年已完成投资
+	private Integer isOpen;//是否开复工
+	private Date thisyearOpentime;//当年预计开复工时间
+	private String lxType;//项目立项类型（审批、核准、备案）
+	private String buildAddress;//建设地点（旗县区）
+	private String processCondition;
+	private String submitted;//报送地区
+	
 	private Date expectedDate;//预计完成时间
 	private Date startDate;//开始时间
 	private String approveCode;//项目审批监管平台代码
 	private String image;
 	
-	private Integer lxIsComapprove;
-	private Integer lxHandleLevel;
-	private Integer lxIsSendappdepart;
-	private Integer lxBao;//审批、转报部门意见（审批部门同意办理、审批部门不同意办理、转报部门同意转报、转报部门不同意转报）
+	private String lxIsComapprove;//立项
+	private String lxHandleLevel;
+	private String lxIsSendappdepart;
+	private String lxBao;//审批、转报部门意见（审批部门同意办理、审批部门不同意办理、转报部门同意转报、转报部门不同意转报）
 	private String lxBaoNoMsg;//不同意办理或不同意转报原因（文字详细表述）
 	private String ydArea;//项目整体建设用地规模（亩）
 	private String ydAreaLd;//其中涉及林地规模
 	private String ydAreaCd;//其中涉及草地规模
-	private Integer ydcardIsHascard;
-	private Integer ydcardHandleLevel;
-	private Integer ydcardIsSendappdepart;
-	private Integer ydBao;
+	private String ydcardIsHascard;
+	private String ydcardHandleLevel;
+	private String ydcardIsSendappdepart;
+	private String ydBao;
 	private String ydBaoNoMsg;
 	
 	private String energyArea;//项目整体能耗规模（等价值）
 	private String energyWaterArea;//项目整体用水规模（立方米）
-	private Integer energyIsCensor;
-	private Integer energyHandleLevel;
-	private Integer energyIsSendappdepart;
-	private Integer energyBao;
+	private String energyIsCensor;
+	private String energyHandleLevel;
+	private String energyIsSendappdepart;
+	private String energyBao;
 	private String energyBaoNoMsg;
-	private Integer lcIsBl;
-	private Integer lcHandleLevel;
-	private Integer lcIsSendappdepart;
-	private Integer lcBao;
+	
+	private String lcIsBl;
+	private String lcHandleLevel;
+	private String lcIsSendappdepart;
+	private String lcBao;
 	private String lcBaoNoMsg;
 	
-	private Integer tdIsBl;
-	private Integer tdHandleLevel;
-	private Integer tdIsSendappdepart;
-	private Integer tdBao;
+	private String tdProvide;
+	private String tdIsBl;
+	private String tdHandleLevel;
+	private String tdIsSendappdepart;
+	private String tdBao;
 	private String tdBaoNoMsg;
 	
-	private Integer envirIsBl;
-	private Integer envirHandleLevel;
-	private Integer envirIsSendappdepart;
-	private Integer envirBao;
+	private String envirIsBl;
+	private String envirHandleLevel;
+	private String envirIsSendappdepart;
+	private String envirBao;
 	private String envirBaoNoMsg;
 	
-	private Integer sgIsBl;
-	private Integer sgHandleLevel;
-	private Integer sgIsSendappdepart;
-	private Integer sgBao;
+	private String sgIsBl;
+	private String sgHandleLevel;
+	private String sgIsSendappdepart;
+	private String sgBao;
 	private String sgBaoNoMsg;
 	
-	private Integer xfIsBl;
-	private Integer xfHandleLevel;
-	private Integer xfIsSendappdepart;
-	private Integer rfIsBl;
-	private Integer rfHandleLevel;
-	private Integer rfIsSendappdepart;
+	private String xfIsBl;
+	private String xfHandleLevel;
+	private String xfIsSendappdepart;
+	private String rfIsBl;
+	private String rfHandleLevel;
+	private String rfIsSendappdepart;
 	
 	private String otherBl;//其他需要解决的手续问题
 	private String diffAndProblem;//存在的困难和问题
 	private Integer proManager;//项目主管部门联系人
 	private String proManagerMobile;//项目主管部门联系人电话
 	private Integer proEnter;//项目主管单位
+	private String proManagerTing;//主管厅局
 	private Integer enterManager;
 	private String enterManagerMobile;
 	private String stage;//项目建设阶段
@@ -92,14 +106,9 @@ public class ProjectVo<Industry> {
 	private Date completeDate;//完成时间
 	private Integer orgId;
 	
-	private String investType;
-	private String investThisyear;//当年计划完成投资
-	private String investCom;//当年已完成投资
-	private Integer isOpen;//是否开复工
-	private Date thisyearOpentime;//当年预计开复工时间
-	private String lxType;//项目立项类型（审批、核准、备案）
-	private String buildAddress;//建设地点（旗县区）
-	private String processCondition;//进展明细
+	
+	
+	
 	
 	//外键
 	private String orgName;
@@ -107,6 +116,7 @@ public class ProjectVo<Industry> {
 	private String categoryName;
 	private String leaderName;
 	private String coordinateName;
+	private String proEnterName;
 	private String proManagerName;
 	private String enterManagerName;
 	
@@ -238,148 +248,148 @@ public class ProjectVo<Industry> {
 	public void setApproveCode(String approveCode) {
 		this.approveCode = approveCode;
 	}
-	public Integer getLxIsComapprove() {
+	public String getLxIsComapprove() {
 		return lxIsComapprove;
 	}
-	public void setLxIsComapprove(Integer lxIsComapprove) {
+	public void setLxIsComapprove(String lxIsComapprove) {
 		this.lxIsComapprove = lxIsComapprove;
 	}
-	public Integer getLxHandleLevel() {
+	public String getLxHandleLevel() {
 		return lxHandleLevel;
 	}
-	public void setLxHandleLevel(Integer lxHandleLevel) {
+	public void setLxHandleLevel(String lxHandleLevel) {
 		this.lxHandleLevel = lxHandleLevel;
 	}
-	public Integer getLxIsSendappdepart() {
+	public String getLxIsSendappdepart() {
 		return lxIsSendappdepart;
 	}
-	public void setLxIsSendappdepart(Integer lxIsSendappdepart) {
+	public void setLxIsSendappdepart(String lxIsSendappdepart) {
 		this.lxIsSendappdepart = lxIsSendappdepart;
 	}
-	public Integer getYdcardIsHascard() {
+	public String getYdcardIsHascard() {
 		return ydcardIsHascard;
 	}
-	public void setYdcardIsHascard(Integer ydcardIsHascard) {
+	public void setYdcardIsHascard(String ydcardIsHascard) {
 		this.ydcardIsHascard = ydcardIsHascard;
 	}
-	public Integer getYdcardHandleLevel() {
+	public String getYdcardHandleLevel() {
 		return ydcardHandleLevel;
 	}
-	public void setYdcardHandleLevel(Integer ydcardHandleLevel) {
+	public void setYdcardHandleLevel(String ydcardHandleLevel) {
 		this.ydcardHandleLevel = ydcardHandleLevel;
 	}
-	public Integer getYdcardIsSendappdepart() {
+	public String getYdcardIsSendappdepart() {
 		return ydcardIsSendappdepart;
 	}
-	public void setYdcardIsSendappdepart(Integer ydcardIsSendappdepart) {
+	public void setYdcardIsSendappdepart(String ydcardIsSendappdepart) {
 		this.ydcardIsSendappdepart = ydcardIsSendappdepart;
 	}
-	public Integer getEnergyIsCensor() {
+	public String getEnergyIsCensor() {
 		return energyIsCensor;
 	}
-	public void setEnergyIsCensor(Integer energyIsCensor) {
+	public void setEnergyIsCensor(String energyIsCensor) {
 		this.energyIsCensor = energyIsCensor;
 	}
-	public Integer getEnergyHandleLevel() {
+	public String getEnergyHandleLevel() {
 		return energyHandleLevel;
 	}
-	public void setEnergyHandleLevel(Integer energyHandleLevel) {
+	public void setEnergyHandleLevel(String energyHandleLevel) {
 		this.energyHandleLevel = energyHandleLevel;
 	}
-	public Integer getEnergyIsSendappdepart() {
+	public String getEnergyIsSendappdepart() {
 		return energyIsSendappdepart;
 	}
-	public void setEnergyIsSendappdepart(Integer energyIsSendappdepart) {
+	public void setEnergyIsSendappdepart(String energyIsSendappdepart) {
 		this.energyIsSendappdepart = energyIsSendappdepart;
 	}
-	public Integer getLcIsBl() {
+	public String getLcIsBl() {
 		return lcIsBl;
 	}
-	public void setLcIsBl(Integer lcIsBl) {
+	public void setLcIsBl(String lcIsBl) {
 		this.lcIsBl = lcIsBl;
 	}
-	public Integer getLcHandleLevel() {
+	public String getLcHandleLevel() {
 		return lcHandleLevel;
 	}
-	public void setLcHandleLevel(Integer lcHandleLevel) {
+	public void setLcHandleLevel(String lcHandleLevel) {
 		this.lcHandleLevel = lcHandleLevel;
 	}
-	public Integer getLcIsSendappdepart() {
+	public String getLcIsSendappdepart() {
 		return lcIsSendappdepart;
 	}
-	public void setLcIsSendappdepart(Integer lcIsSendappdepart) {
+	public void setLcIsSendappdepart(String lcIsSendappdepart) {
 		this.lcIsSendappdepart = lcIsSendappdepart;
 	}
-	public Integer getEnvirIsBl() {
+	public String getEnvirIsBl() {
 		return envirIsBl;
 	}
-	public void setEnvirIsBl(Integer envirIsBl) {
+	public void setEnvirIsBl(String envirIsBl) {
 		this.envirIsBl = envirIsBl;
 	}
-	public Integer getEnvirHandleLevel() {
+	public String getEnvirHandleLevel() {
 		return envirHandleLevel;
 	}
-	public void setEnvirHandleLevel(Integer envirHandleLevel) {
+	public void setEnvirHandleLevel(String envirHandleLevel) {
 		this.envirHandleLevel = envirHandleLevel;
 	}
-	public Integer getEnvirIsSendappdepart() {
+	public String getEnvirIsSendappdepart() {
 		return envirIsSendappdepart;
 	}
-	public void setEnvirIsSendappdepart(Integer envirIsSendappdepart) {
+	public void setEnvirIsSendappdepart(String envirIsSendappdepart) {
 		this.envirIsSendappdepart = envirIsSendappdepart;
 	}
-	public Integer getSgIsBl() {
+	public String getSgIsBl() {
 		return sgIsBl;
 	}
-	public void setSgIsBl(Integer sgIsBl) {
+	public void setSgIsBl(String sgIsBl) {
 		this.sgIsBl = sgIsBl;
 	}
-	public Integer getSgHandleLevel() {
+	public String getSgHandleLevel() {
 		return sgHandleLevel;
 	}
-	public void setSgHandleLevel(Integer sgHandleLevel) {
+	public void setSgHandleLevel(String sgHandleLevel) {
 		this.sgHandleLevel = sgHandleLevel;
 	}
-	public Integer getSgIsSendappdepart() {
+	public String getSgIsSendappdepart() {
 		return sgIsSendappdepart;
 	}
-	public void setSgIsSendappdepart(Integer sgIsSendappdepart) {
+	public void setSgIsSendappdepart(String sgIsSendappdepart) {
 		this.sgIsSendappdepart = sgIsSendappdepart;
 	}
-	public Integer getXfIsBl() {
+	public String getXfIsBl() {
 		return xfIsBl;
 	}
-	public void setXfIsBl(Integer xfIsBl) {
+	public void setXfIsBl(String xfIsBl) {
 		this.xfIsBl = xfIsBl;
 	}
-	public Integer getXfHandleLevel() {
+	public String getXfHandleLevel() {
 		return xfHandleLevel;
 	}
-	public void setXfHandleLevel(Integer xfHandleLevel) {
+	public void setXfHandleLevel(String xfHandleLevel) {
 		this.xfHandleLevel = xfHandleLevel;
 	}
-	public Integer getXfIsSendappdepart() {
+	public String getXfIsSendappdepart() {
 		return xfIsSendappdepart;
 	}
-	public void setXfIsSendappdepart(Integer xfIsSendappdepart) {
+	public void setXfIsSendappdepart(String xfIsSendappdepart) {
 		this.xfIsSendappdepart = xfIsSendappdepart;
 	}
-	public Integer getRfIsBl() {
+	public String getRfIsBl() {
 		return rfIsBl;
 	}
-	public void setRfIsBl(Integer rfIsBl) {
+	public void setRfIsBl(String rfIsBl) {
 		this.rfIsBl = rfIsBl;
 	}
-	public Integer getRfHandleLevel() {
+	public String getRfHandleLevel() {
 		return rfHandleLevel;
 	}
-	public void setRfHandleLevel(Integer rfHandleLevel) {
+	public void setRfHandleLevel(String rfHandleLevel) {
 		this.rfHandleLevel = rfHandleLevel;
 	}
-	public Integer getRfIsSendappdepart() {
+	public String getRfIsSendappdepart() {
 		return rfIsSendappdepart;
 	}
-	public void setRfIsSendappdepart(Integer rfIsSendappdepart) {
+	public void setRfIsSendappdepart(String rfIsSendappdepart) {
 		this.rfIsSendappdepart = rfIsSendappdepart;
 	}
 	public String getOtherBl() {
@@ -480,22 +490,22 @@ public class ProjectVo<Industry> {
 	}
 	
 	
-	public Integer getTdIsBl() {
+	public String getTdIsBl() {
 		return tdIsBl;
 	}
-	public void setTdIsBl(Integer tdIsBl) {
+	public void setTdIsBl(String tdIsBl) {
 		this.tdIsBl = tdIsBl;
 	}
-	public Integer getTdHandleLevel() {
+	public String getTdHandleLevel() {
 		return tdHandleLevel;
 	}
-	public void setTdHandleLevel(Integer tdHandleLevel) {
+	public void setTdHandleLevel(String tdHandleLevel) {
 		this.tdHandleLevel = tdHandleLevel;
 	}
-	public Integer getTdIsSendappdepart() {
+	public String getTdIsSendappdepart() {
 		return tdIsSendappdepart;
 	}
-	public void setTdIsSendappdepart(Integer tdIsSendappdepart) {
+	public void setTdIsSendappdepart(String tdIsSendappdepart) {
 		this.tdIsSendappdepart = tdIsSendappdepart;
 	}
 	public String getLeaderName() {
@@ -582,10 +592,10 @@ public class ProjectVo<Industry> {
 	public void setEarlyStage(String earlyStage) {
 		this.earlyStage = earlyStage;
 	}
-	public Integer getLxBao() {
+	public String getLxBao() {
 		return lxBao;
 	}
-	public void setLxBao(Integer lxBao) {
+	public void setLxBao(String lxBao) {
 		this.lxBao = lxBao;
 	}
 	public String getLxBaoNoMsg() {
@@ -612,10 +622,10 @@ public class ProjectVo<Industry> {
 	public void setYdAreaCd(String ydAreaCd) {
 		this.ydAreaCd = ydAreaCd;
 	}
-	public Integer getYdBao() {
+	public String getYdBao() {
 		return ydBao;
 	}
-	public void setYdBao(Integer ydBao) {
+	public void setYdBao(String ydBao) {
 		this.ydBao = ydBao;
 	}
 	public String getYdBaoNoMsg() {
@@ -636,10 +646,10 @@ public class ProjectVo<Industry> {
 	public void setEnergyWaterArea(String energyWaterArea) {
 		this.energyWaterArea = energyWaterArea;
 	}
-	public Integer getEnergyBao() {
+	public String getEnergyBao() {
 		return energyBao;
 	}
-	public void setEnergyBao(Integer energyBao) {
+	public void setEnergyBao(String energyBao) {
 		this.energyBao = energyBao;
 	}
 	public String getEnergyBaoNoMsg() {
@@ -648,10 +658,10 @@ public class ProjectVo<Industry> {
 	public void setEnergyBaoNoMsg(String energyBaoNoMsg) {
 		this.energyBaoNoMsg = energyBaoNoMsg;
 	}
-	public Integer getLcBao() {
+	public String getLcBao() {
 		return lcBao;
 	}
-	public void setLcBao(Integer lcBao) {
+	public void setLcBao(String lcBao) {
 		this.lcBao = lcBao;
 	}
 	public String getLcBaoNoMsg() {
@@ -660,10 +670,10 @@ public class ProjectVo<Industry> {
 	public void setLcBaoNoMsg(String lcBaoNoMsg) {
 		this.lcBaoNoMsg = lcBaoNoMsg;
 	}
-	public Integer getTdBao() {
+	public String getTdBao() {
 		return tdBao;
 	}
-	public void setTdBao(Integer tdBao) {
+	public void setTdBao(String tdBao) {
 		this.tdBao = tdBao;
 	}
 	public String getTdBaoNoMsg() {
@@ -672,10 +682,10 @@ public class ProjectVo<Industry> {
 	public void setTdBaoNoMsg(String tdBaoNoMsg) {
 		this.tdBaoNoMsg = tdBaoNoMsg;
 	}
-	public Integer getEnvirBao() {
+	public String getEnvirBao() {
 		return envirBao;
 	}
-	public void setEnvirBao(Integer envirBao) {
+	public void setEnvirBao(String envirBao) {
 		this.envirBao = envirBao;
 	}
 	public String getEnvirBaoNoMsg() {
@@ -684,10 +694,10 @@ public class ProjectVo<Industry> {
 	public void setEnvirBaoNoMsg(String envirBaoNoMsg) {
 		this.envirBaoNoMsg = envirBaoNoMsg;
 	}
-	public Integer getSgBao() {
+	public String getSgBao() {
 		return sgBao;
 	}
-	public void setSgBao(Integer sgBao) {
+	public void setSgBao(String sgBao) {
 		this.sgBao = sgBao;
 	}
 	public String getSgBaoNoMsg() {
@@ -743,5 +753,29 @@ public class ProjectVo<Industry> {
 	}
 	public void setBuildAddress(String buildAddress) {
 		this.buildAddress = buildAddress;
+	}
+	public String getSubmitted() {
+		return submitted;
+	}
+	public void setSubmitted(String submitted) {
+		this.submitted = submitted;
+	}
+	public String getProManagerTing() {
+		return proManagerTing;
+	}
+	public void setProManagerTing(String proManagerTing) {
+		this.proManagerTing = proManagerTing;
+	}
+	public String getProEnterName() {
+		return proEnterName;
+	}
+	public void setProEnterName(String proEnterName) {
+		this.proEnterName = proEnterName;
+	}
+	public String getTdProvide() {
+		return tdProvide;
+	}
+	public void setTdProvide(String tdProvide) {
+		this.tdProvide = tdProvide;
 	}
 }

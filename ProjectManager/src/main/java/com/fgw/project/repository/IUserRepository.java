@@ -38,7 +38,7 @@ public interface IUserRepository extends JpaRepository<User	, Integer> {
 			+ " WHERE u.token=:token ",nativeQuery=true)
 	Map<String, Object> getAdminUserOfToken(@Param("token")String token);
 
-	User findByAccount(String account);
+	List<User> findByAccount(String account);
 
 	User findByToken(String token);
 
@@ -47,6 +47,8 @@ public interface IUserRepository extends JpaRepository<User	, Integer> {
 	List<User> findAllByOrgIdAndStatus(Integer orgId, Integer status);
 
 	List<User> findAllByAccount(String account);
+	
+	List<User> findAllByAccountAndOrgId(String account,Integer orgId);
 
 	List<User> findAllByStatus(Integer status);
 	

@@ -43,7 +43,8 @@ public class AdminController {
 	public RetKit login(@RequestBody String param) {
 		String account = JSONObject.parseObject(param).getString("username");
 		String psw = JSONObject.parseObject(param).getString("password");
-		return userService.getUser(account,psw);
+		String orgId = JSONObject.parseObject(param).getString("orgId");
+		return userService.getUser(account,psw,orgId);
 	}
 	@RequestMapping("/logout")
 	public RetKit logout(HttpServletRequest request) {
