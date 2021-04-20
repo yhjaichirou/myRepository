@@ -26,7 +26,12 @@ public class GroupService {
 	private IGroupRepository groupR;
 
 	public RetKit getGroup(Integer orgId) {
-		List<Group> gs = groupR.findAllByOrgId(orgId);
+		List<Group> gs = new ArrayList<>();
+		if(orgId==null || orgId==0 ) {
+			gs = groupR.findAll();
+		}else {
+			gs = groupR.findAllByOrgId(orgId);
+		}
 		return RetKit.okData(gs);
 	}
 

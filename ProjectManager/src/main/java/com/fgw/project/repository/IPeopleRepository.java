@@ -19,7 +19,7 @@ import com.fgw.project.model.po.People;
 public interface IPeopleRepository extends JpaRepository<People , Integer> {
 
 	List<People> findAllByOrgId(Integer orgId);
-
+	List<People> findAllByOrgIdAndNameContaining(Integer orgId, String search);
 	List<People> findAllByOrgIdInAndStatus(List<Integer> orgIdList,Integer status);
 
 	@Query(value="SELECT "
@@ -71,4 +71,6 @@ public interface IPeopleRepository extends JpaRepository<People , Integer> {
 	People findByMobile(String phone);
 
 	People findByOpenid(String openid);
+
+	
 }

@@ -53,21 +53,41 @@ public interface IUserRepository extends JpaRepository<User	, Integer> {
 	List<User> findAllByStatus(Integer status);
 	
 	@Query(value="SELECT u.id,u.name as userName,u.account,u.status,u.org_id as orgId, u.token,u.role_id as roleId,u.group_id as groupId,u.avater,u.is_admin as isAdmin,"
-			+ "ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName "
+			+ "ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName,o.name as orgName "
 			+ " FROM admin_user u"
 			+ " LEFT JOIN admin_role ro on u.role_id = ro.id"
 			+ " LEFT JOIN org_group g on u.group_id = g.id"
+			+ " LEFT JOIN org o on o.id = u.org_id"
 			+ " WHERE u.status=1 ",nativeQuery=true)
 	List<Map<String, Object>> getAllByStatus();
 	@Query(value="SELECT u.id,u.name as userName,u.account,u.status,u.org_id as orgId, u.token,u.role_id as roleId,u.group_id as groupId,u.avater,u.is_admin as isAdmin,"
-			+ "ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName "
+			+ "ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName,o.name as orgName "
 			+ " FROM admin_user u"
 			+ " LEFT JOIN admin_role ro on u.role_id = ro.id"
 			+ " LEFT JOIN org_group g on u.group_id = g.id"
+			+ " LEFT JOIN org o on o.id = u.org_id"
 			+ " WHERE u.status=1 AND u.org_id=:orgId ",nativeQuery=true)
 	List<Map<String, Object>> getAllByOrgIdAndStatus(@Param("orgId")Integer orgId);
 
 	List<User> findAllByRoleId(Integer roleId);
+
+	@Query(value="SELECT u.id,u.name as userName,u.account,u.status,u.org_id as orgId, u.token,u.role_id as roleId,u.group_id as groupId,u.avater,u.is_admin as isAdmin,"
+			+ "ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName,o.name as orgName "
+			+ " FROM admin_user u"
+			+ " LEFT JOIN admin_role ro on u.role_id = ro.id"
+			+ " LEFT JOIN org_group g on u.group_id = g.id"
+			+ " LEFT JOIN org o on o.id = u.org_id"
+			+ " WHERE u.status=1 AND u.org_id=:orgId AND u.name like CONCAT('%',:search,'%') ",nativeQuery=true)
+	List<Map<String, Object>> getAllByOrgIdAndStatusAndNameContaining(@Param("orgId")Integer orgId,@Param("search")String search);
+
+	@Query(value="SELECT u.id,u.name as userName,u.account,u.status,u.org_id as orgId, u.token,u.role_id as roleId,u.group_id as groupId,u.avater,u.is_admin as isAdmin,"
+			+ "ro.role_name as roleName,ro.role_primary as rolePrimary,ro.role_describe as roleDescribe,g.group_name as groupName,o.name as orgName "
+			+ " FROM admin_user u"
+			+ " LEFT JOIN admin_role ro on u.role_id = ro.id"
+			+ " LEFT JOIN org_group g on u.group_id = g.id"
+			+ " LEFT JOIN org o on o.id = u.org_id"
+			+ " WHERE u.status=1 AND u.name like CONCAT('%',:search,'%') ",nativeQuery=true)
+	List<Map<String, Object>> getAllByStatusAndNameContaining(@Param("search")String search);
 
 	
 	

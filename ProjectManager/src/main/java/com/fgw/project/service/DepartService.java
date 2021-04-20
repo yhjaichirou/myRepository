@@ -111,7 +111,17 @@ public class DepartService {
 		return childList;
 	}
 	
-	public RetKit getDepartList(Integer orgId,Integer pn,Integer ps,String searchContent,Integer searchStatus) {
+	public RetKit getDepartList(String param) {
+		JSONObject obj = JSONObject.parseObject(param);
+		Integer orgId = obj.getInteger("orgId");
+		String searchContent = obj.getString("searchContent");
+		Integer pn = obj.getInteger("pn");
+		Integer ps = obj.getInteger("ps");
+		Integer searchStatus = obj.getInteger("searchStatus");
+		if(pn==null || ps==null) {
+			pn = 1;
+			ps = 20;
+		}
 		List<Org> gs = new ArrayList<>();
 		if(orgId == null) {
 			gs = departR.findAllByStatus(1);
@@ -144,6 +154,8 @@ public class DepartService {
 			}
 		}
 		List<OrgVo> ov = BeanKit.copyBeanList(gs, OrgVo.class);
+		Integer total = gs.size();
+		ov = ov.stream().skip((pn-1)*ps).limit(ps).collect(Collectors.toList());
 		final List<Industry> ins= industryR.findAllByStatus(1);
 		ov = ov.stream().map((OrgVo oo)->{
 			oo.setPropertyStr(OrgPropertyEnum.getByValue(oo.getProperty()).getText());
@@ -155,7 +167,12 @@ public class DepartService {
 			
 			return oo;
 		}).collect(Collectors.toList());
-		return RetKit.okData(ov);
+		Map<String,Object> rt = new HashMap<>();
+		rt.put("pn", pn);
+		rt.put("ps", ps);
+		rt.put("total", total);
+		rt.put("list", ov);
+		return RetKit.okData(rt);
 	}
 
 	@Transactional
@@ -241,9 +258,32 @@ public class DepartService {
 	
 	
 	
-	public RetKit getPeopleList(Integer orgId) {
-		List<People> peoples = peopleR.findAllByOrgId(orgId);
-		return RetKit.okData(peoples);
+	public RetKit getPeopleList(String param) {
+		JSONObject obj = JSONObject.parseObject(param);
+		Integer orgId = obj.getInteger("orgId");
+		String search = obj.getString("search");
+		Integer pn = obj.getInteger("pn");
+		Integer ps = obj.getInteger("ps");
+		if(pn==null || ps==null) {
+			pn = 1;
+			ps = 20;
+		}
+		List<People> peoples = new ArrayList<>();
+		if(orgId == null || orgId == 0) {
+			peoples = peopleR.findAll();
+		}else if(orgId != null && orgId != 0 && StrKit.notBlank(search)) {
+			peoples = peopleR.findAllByOrgIdAndNameContaining(orgId,search);
+		}else if(orgId != null && orgId != 0 && StrKit.isBlank(search)) {
+			peoples = peopleR.findAllByOrgId(orgId);
+		}
+		Integer total = peoples.size();
+		peoples = peoples.stream().skip((pn-1)*ps).limit(ps).collect(Collectors.toList());
+		Map<String,Object> rt = new HashMap<>();
+		rt.put("pn", pn);
+		rt.put("ps", ps);
+		rt.put("total", total);
+		rt.put("list", peoples);
+		return RetKit.okData(rt);
 	}
 	public RetKit getPeople(Integer peoId) {
 		Optional<People> o_ = peopleR.findById(peoId);
@@ -272,8 +312,10 @@ public class DepartService {
 			Optional<People> o_ = peopleR.findById(id);
 			if(o_.isPresent()) {
 				pel = o_.get();
-				if(oldo!=null && oldo.size()>0 && !oldo.equals(pel.getName())) {
-					return RetKit.fail("人员已经存在！");
+				if(!name.equals(pel.getName())) {
+					if(oldo!=null && oldo.size()>0) {
+						return RetKit.fail("人员已经存在！");
+					}
 				}
 			}
 		}else {

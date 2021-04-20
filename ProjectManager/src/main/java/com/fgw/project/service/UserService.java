@@ -22,6 +22,7 @@ import com.fgw.project.constant.RoleEnum;
 import com.fgw.project.model.po.Group;
 import com.fgw.project.model.po.Menu;
 import com.fgw.project.model.po.Org;
+import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Role;
 import com.fgw.project.model.po.User;
 import com.fgw.project.model.vo.MenuVo;
@@ -244,18 +245,38 @@ public class UserService {
 	}
 
 
-	public RetKit getUsers(String orgIdstr) {
-		if(StrKit.isBlank(orgIdstr)) {
-			return RetKit.fail("参数不正确！");
+	public RetKit getUsers(String param) {
+		JSONObject obj = JSONObject.parseObject(param);
+		Integer orgId = obj.getInteger("orgId");
+		String search = obj.getString("search");
+		Integer pn = obj.getInteger("pn");
+		Integer ps = obj.getInteger("ps");
+		if(pn==null || ps==null) {
+			pn = 1;
+			ps = 20;
 		}
-		Integer orgId = Integer.parseInt(orgIdstr);
 		List<Map<String, Object>> rs = new ArrayList<>();
-		if (orgId == 0) {
-			rs = userR.getAllByStatus();
+		if(StrKit.notBlank(search)) {
+			if(orgId == null || orgId == 0 || orgId == 1) {
+				rs = userR.getAllByStatusAndNameContaining(search);
+			}else if(orgId != null && orgId != 0 && orgId != 1){
+				rs = userR.getAllByOrgIdAndStatusAndNameContaining(orgId,search);
+			}
 		}else {
-			rs = userR.getAllByOrgIdAndStatus(orgId);
+			if(orgId == null || orgId == 0 || orgId == 1) {
+				rs = userR.getAllByStatus();
+			}else if(orgId != null && orgId != 0 && orgId != 1){
+				rs = userR.getAllByOrgIdAndStatus(orgId);
+			}
 		}
-		return RetKit.okData(rs);
+		Integer total = rs.size();
+		rs = rs.stream().skip((pn-1)*ps).limit(ps).collect(Collectors.toList());
+		Map<String,Object> rt = new HashMap<>();
+		rt.put("pn", pn);
+		rt.put("ps", ps);
+		rt.put("total", total);
+		rt.put("list", rs);
+		return RetKit.okData(rt);
 	}
 
 	@Transactional

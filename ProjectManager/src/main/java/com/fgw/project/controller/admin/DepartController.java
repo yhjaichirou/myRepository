@@ -42,13 +42,11 @@ public class DepartController {
 //	}
 	
 	@RequestMapping("/getDepartList")
-	public RetKit getDepartList2(@PathParam(value = "orgId") Integer orgId , @PathParam(value = "pn") Integer pn ,@PathParam(value = "ps") Integer ps,
-			@PathParam(value = "searchContent") String searchContent ,@PathParam(value = "searchStatus") Integer searchStatus ) {
-		if(pn==null || ps==null) {
-			pn = 1;
-			ps = 20;
+	public RetKit getDepartList2(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不能为空！");
 		}
-		return gService.getDepartList(orgId,pn,ps,searchContent,searchStatus);
+		return gService.getDepartList(param);
 	}
 	
 	@RequestMapping("/addDepart")
@@ -67,9 +65,12 @@ public class DepartController {
 	
 	
 	//成员管理
-	@RequestMapping("/getPeopleList/{orgId}")
-	public RetKit getPeopleList(@PathVariable Integer orgId) {
-		return gService.getPeopleList(orgId);
+	@RequestMapping("/getPeopleList")
+	public RetKit getPeopleList(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不能为空！");
+		}
+		return gService.getPeopleList(param);
 	}
 	
 	@RequestMapping("/getPeople/{peoId}")

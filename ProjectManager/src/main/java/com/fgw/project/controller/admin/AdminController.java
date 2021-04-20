@@ -116,8 +116,11 @@ public class AdminController {
 	 * 用户管理
 	 */
 	@RequestMapping("/getUsers")
-	public RetKit getUsers(@PathParam(value = "orgId") String orgId ) {
-		return userService.getUsers(orgId);
+	public RetKit getUsers(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不能为空！");
+		}
+		return userService.getUsers(param);
 	}
 	
 	@RequestMapping("/getRoleList/{orgId}/{roleId}")
