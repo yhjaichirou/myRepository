@@ -28,6 +28,8 @@ public interface IMenuRepository extends JpaRepository<Menu	, Integer> {
 //	int deleteUsers(@Param("dingUserid") String dingUserid);
 
 	List<Menu> findAllByStatus(Integer status);
+
+	List<Menu> findAllByPidAndStatus(Integer pid, Integer status);
 	
 //	User findUserByName(String name);
 //	

@@ -35,7 +35,7 @@ public class Project implements java.io.Serializable {
 	private String investType;
 	private String investThisyear;//当年预计完成投资
 	private String investCom;//当年已完成投资
-	private Integer isOpen;//是否开复工
+	private String isOpen;//是否开复工
 	private Date thisyearOpentime;//当年预计开复工时间
 	private String lxType;//项目立项类型（审批、核准、备案）
 	private String buildAddress;//建设地点（旗县区）
@@ -55,6 +55,8 @@ public class Project implements java.io.Serializable {
 	private String ydArea;//项目整体建设用地规模（亩）
 	private String ydAreaLd;//其中涉及林地规模
 	private String ydAreaCd;//其中涉及草地规模
+	private String ydAreaCy;//其中涉及草原用地
+	
 	private String ydcardIsHascard;
 	private String ydcardHandleLevel;
 	private String ydcardIsSendappdepart;
@@ -616,11 +618,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "is_open")
-	public Integer getIsOpen() {
+	public String getIsOpen() {
 		return isOpen;
 	}
 
-	public void setIsOpen(Integer isOpen) {
+	public void setIsOpen(String isOpen) {
 		this.isOpen = isOpen;
 	}
 
@@ -856,6 +858,15 @@ public class Project implements java.io.Serializable {
 
 	public void setTdProvide(String tdProvide) {
 		this.tdProvide = tdProvide;
+	}
+
+	@Column(name = "yd_area_cy")
+	public String getYdAreaCy() {
+		return ydAreaCy;
+	}
+
+	public void setYdAreaCy(String ydAreaCy) {
+		this.ydAreaCy = ydAreaCy;
 	}
 	
 	

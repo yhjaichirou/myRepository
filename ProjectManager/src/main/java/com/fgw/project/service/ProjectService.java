@@ -364,7 +364,7 @@ public class ProjectService {
 		String investType = jb.getString("investType");//投资类型
 		String investThisyear = jb.getString("investThisyear");//当年预计完成投资
 		String investCom = jb.getString("investCom");//当年已完成投资
-		Integer isOpen = jb.getInteger("isOpen");
+		String isOpen = jb.getString("isOpen");
 		Date thisyearOpentime = StrKit.notBlank(jb.getString("thisyearOpentime"))?MDateUtil.stringToDate(jb.getString("thisyearOpentime"), MDateUtil.formatDate):null;//
 		String lxType = jb.getString("lxType");//立项类型
 		String buildAddress = jb.getString("buildAddress");//建设地点（旗县区）
@@ -379,6 +379,8 @@ public class ProjectService {
 		String ydArea = jb.getString("ydArea");
 		String ydAreaLd = jb.getString("ydAreaLd");
 		String ydAreaCd = jb.getString("ydAreaCd");
+		String ydAreaCy = jb.getString("ydAreaCy");
+		
 		String ydcardIsHascard = jb.getString("ydcardIsHascard");
 		String ydcardHandleLevel = jb.getString("ydcardHandleLevel");
 		String ydcardIsSendappdepart = jb.getString("ydcardIsSendappdepart");
@@ -486,6 +488,8 @@ public class ProjectService {
 		pro.setYdArea(ydArea);
 		pro.setYdAreaCd(ydAreaCd);
 		pro.setYdAreaLd(ydAreaLd);
+		pro.setYdAreaCy(ydAreaCy);
+		
 		pro.setYdBao(ydBao);
 		pro.setYdBaoNoMsg(ydBaoNoMsg);
 		

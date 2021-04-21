@@ -203,6 +203,46 @@ public class UserService {
 	public RetKit getRoles() {
 //		Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
 		List<Role> rs = roleR.findAllByStatus(1);
+		//筛查 有子类的父类ID 不添加到menus中
+//		rs = rs.stream().map((Role r)->{
+//			if(StrKit.notBlank(r.getMenus())) {
+//				String newmenus = "";
+//				String om = r.getMenus();
+//				List<Integer> newImenus = new ArrayList<>();
+//				List<String> mnus = Arrays.asList(om.split(","));
+//				outloopA:for (String m : mnus) {
+//					Optional<Menu> _menu = menuR.findById(Integer.parseInt(m));
+//					if(_menu.isPresent()) {
+//						Menu menu = _menu.get();
+//						if(menu.getPid().equals(0)) {//父类
+//							//判断是否有子ID存在与列表中，如果有，不添加父类ID
+//							List<Menu> childMenus = menuR.findAllByPidAndStatus(menu.getId(),1);
+//							boolean noHas = true;
+//							outloopB:for (Menu cm : childMenus) {
+//								if(newImenus.contains(cm.getId())) {
+//									noHas = false;
+//									break outloopB;
+//								}
+//							}
+//							if(noHas) {
+//								newImenus.add(menu.getId());
+//							}
+//						}else {
+//							//子类判断其 父类是否已经存在与列表中，
+//							if(newImenus.contains(menu.getPid())) {
+//								newImenus.remove(menu.getPid());
+//							}
+//							newImenus.add(menu.getId());
+//						}
+//					}
+//				}
+//				for (Integer newId : newImenus) {
+//					newmenus += ","+newId;
+//				}
+//				r.setMenus(StrKit.notBlank(newmenus)?newmenus.substring(1):"");
+//			}
+//			return r;
+//		}).collect(Collectors.toList());
 		return RetKit.okData(rs);
 	}
 

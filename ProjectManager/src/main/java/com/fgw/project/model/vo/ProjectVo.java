@@ -27,7 +27,7 @@ public class ProjectVo<Industry> {
 	private String investType;
 	private String investThisyear;//当年预计完成投资
 	private String investCom;//当年已完成投资
-	private Integer isOpen;//是否开复工
+	private String isOpen;//是否开复工
 	private Date thisyearOpentime;//当年预计开复工时间
 	private String lxType;//项目立项类型（审批、核准、备案）
 	private String buildAddress;//建设地点（旗县区）
@@ -47,6 +47,7 @@ public class ProjectVo<Industry> {
 	private String ydArea;//项目整体建设用地规模（亩）
 	private String ydAreaLd;//其中涉及林地规模
 	private String ydAreaCd;//其中涉及草地规模
+	private String ydAreaCy;//其中涉及草原用地
 	private String ydcardIsHascard;
 	private String ydcardHandleLevel;
 	private String ydcardIsSendappdepart;
@@ -730,10 +731,10 @@ public class ProjectVo<Industry> {
 	public void setInvestCom(String investCom) {
 		this.investCom = investCom;
 	}
-	public Integer getIsOpen() {
+	public String getIsOpen() {
 		return isOpen;
 	}
-	public void setIsOpen(Integer isOpen) {
+	public void setIsOpen(String isOpen) {
 		this.isOpen = isOpen;
 	}
 	public Date getThisyearOpentime() {
@@ -777,5 +778,11 @@ public class ProjectVo<Industry> {
 	}
 	public void setTdProvide(String tdProvide) {
 		this.tdProvide = tdProvide;
+	}
+	public String getYdAreaCy() {
+		return ydAreaCy;
+	}
+	public void setYdAreaCy(String ydAreaCy) {
+		this.ydAreaCy = ydAreaCy;
 	}
 }
