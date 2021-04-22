@@ -34,6 +34,7 @@ public class Task implements java.io.Serializable {
 	private Date comDate;
 	private String code;
 	private Date createDate;
+	private String isShb;
 	private Integer shb;
 	private Integer dbCount;
 	private Date dbDate;
@@ -232,6 +233,14 @@ public class Task implements java.io.Serializable {
 	}
 	public void setQuestion(String question) {
 		this.question = question;
+	}
+	
+	@Column(name = "is_shb")
+	public String getIsShb() {
+		return isShb;
+	}
+	public void setIsShb(String isShb) {
+		this.isShb = isShb;
 	}
 	
 }

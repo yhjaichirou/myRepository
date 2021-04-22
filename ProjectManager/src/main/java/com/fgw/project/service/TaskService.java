@@ -28,6 +28,7 @@ import com.fgw.project.model.po.Group;
 import com.fgw.project.model.po.Org;
 import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Project;
+import com.fgw.project.model.po.Shb;
 import com.fgw.project.model.po.Task;
 import com.fgw.project.model.vo.Annex;
 import com.fgw.project.model.vo.MenuVo;
@@ -38,6 +39,7 @@ import com.fgw.project.repository.IGroupRepository;
 import com.fgw.project.repository.IOrgRepository;
 import com.fgw.project.repository.IPeopleRepository;
 import com.fgw.project.repository.IProjectRepository;
+import com.fgw.project.repository.IShbRepository;
 import com.fgw.project.repository.ITaskRepository;
 import com.fgw.project.util.BeanKit;
 import com.fgw.project.util.MDateUtil;
@@ -63,6 +65,8 @@ public class TaskService {
 	@Autowired
 	private IPeopleRepository peopleR;
 	@Autowired
+	private IShbRepository shbR;
+	@Autowired
 	private ITaskRepository taskR;
 	@Resource
 	private CommonService comService;
@@ -81,6 +85,20 @@ public class TaskService {
 			cs.stream().map((TaskVo tv)->{
 				tv.setStartDateStr(tv.getStartDate()==null?"":MDateUtil.dateToString(tv.getStartDate(), MDateUtil.formatDate));
 				tv.setStatusStr(TaskStatusEnum.getByValue(tv.getStatus()).getText());
+				boolean isE = true;
+				
+				Date now = new Date();
+				//当前时间大于开始日期无法修改
+				if(now.after(tv.getStartDate())) {
+					isE = false;
+				}
+				tv.setEdit(isE);
+				boolean isD = true;
+				List<Task> chilTask = taskR.findAllByPid(tv.getId());
+				if(now.after(tv.getStartDate()) || tv.getStatus() > TaskStatusEnum.NOMACK.getId() || chilTask.size()>0) {
+					isD = false;
+				}
+				tv.setDel(isD);
 				return tv;
 			}).collect(Collectors.toList());
 			
@@ -271,6 +289,8 @@ public class TaskService {
 		}else {
 			rt.put("stages", new ArrayList<>());
 		}
+		List<Shb> shbList = shbR.findAll();
+		rt.put("shbList", shbList);
 		return RetKit.okData(rt);
 	}
 
@@ -288,6 +308,8 @@ public class TaskService {
 		Date startDate = MDateUtil.stringToDate(jb.getString("startDate"), MDateUtil.formatDate);
 		Date endDate = MDateUtil.stringToDate(jb.getString("endDate"), MDateUtil.formatDate);
 		Integer priority = jb.getInteger("priority");
+		String isShb = jb.getString("isShb");
+		Integer shb = jb.getInteger("shb");
 //		Integer status = jb.getInteger("status");
 		String remark = jb.getString("remark");
 //		String annex = jb.getString("annex");
@@ -307,7 +329,7 @@ public class TaskService {
 			t.setCode(prefix+"-"+DateUtil.date().toDateStr()+StrKit.getRandomString(6));
 			t.setCreateDate(new Date());
 		}
-		t.setPid(pid);
+		t.setPid(pid==null?0:pid);
 		t.setExecutOrg(executOrg);
 		t.setTitle(title);
 		t.setExecutor(executor);
@@ -318,6 +340,8 @@ public class TaskService {
 		t.setPriority(priority);
 		t.setStatus(executor!=null?TaskStatusEnum.YESMACK.getId():TaskStatusEnum.NOMACK.getId());
 		t.setRemark(remark);
+		t.setShb(shb);
+		t.setIsShb(isShb);
 //		t.setPreTasks(preTasks);
 		taskR.save(t);
 		return RetKit.okData(t.getId());

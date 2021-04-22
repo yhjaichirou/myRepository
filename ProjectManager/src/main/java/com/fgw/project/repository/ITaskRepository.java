@@ -31,7 +31,7 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 
 	@Query(value="SELECT "
 			+ " t.id,t.pid,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,t.com_content as comContent,t.question,"
-			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.is_shb as isShb,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
 			+ " o.name as executOrgName , p.name as executorName,pro.name as projectName ,shb.name as shbName,shb.step1,shb.step2,shb.step3,shb.step4,shb.step5,shb.number "
 			+ " FROM task t "
 			+ " LEFT JOIN org o on o.id = t.execut_org "
@@ -43,7 +43,7 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 	
 	@Query(value="SELECT "
 			+ " t.id,t.pid,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,t.com_content as comContent,t.question,"
-			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.is_shb as isShb,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
 			+ " o.name as executOrgName , p.name as executorName,pro.name as projectName ,shb.name as shbName,shb.step1,shb.step2,shb.step3,shb.step4,shb.step5,shb.number  "
 			+ " FROM task t "
 			+ " LEFT JOIN org o on o.id = t.execut_org "
@@ -55,7 +55,7 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 
 	@Query(value="SELECT "
 			+ " t.id,t.pid,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,t.com_content as comContent,t.question,"
-			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.is_shb as isShb,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
 			+ " o.name as executOrgName , p.name as executorName,pro.name as projectName ,shb.name as shbName,shb.step1,shb.step2,shb.step3,shb.step4,shb.step5,shb.number  "
 			+ " FROM task t "
 			+ " LEFT JOIN org o on o.id = t.execut_org "
@@ -67,7 +67,7 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 	
 	@Query(value="SELECT "
 			+ " t.id,t.pid,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,t.com_content as comContent,t.question,"
-			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.is_shb as isShb,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
 			+ " o.name as executOrgName , p.name as executorName,pro.name as projectName ,shb.name as shbName,shb.step1,shb.step2,shb.step3,shb.step4,shb.step5,shb.number  "
 			+ " FROM task t "
 			+ " LEFT JOIN org o on o.id = t.execut_org "
@@ -79,7 +79,7 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 
 	@Query(value="SELECT "
 			+ " t.id,t.pid,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,t.com_content as comContent,t.question,"
-			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.is_shb as isShb,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
 			+ " o.name as executOrgName , p.name as executorName,pro.name as projectName ,shb.name as shbName,shb.step1,shb.step2,shb.step3,shb.step4,shb.step5,shb.number  "
 			+ " FROM task t "
 			+ " LEFT JOIN org o on o.id = t.execut_org "
@@ -91,7 +91,7 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 	
 	@Query(value="SELECT "
 			+ " t.id,t.pid,t.pro_id as proId,t.title,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,t.com_content as comContent,t.question,"
-			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.is_shb as isShb,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
 			+ " o.name as executOrgName , p.name as executorName,pro.name as projectName ,shb.name as shbName,shb.step1,shb.step2,shb.step3,shb.step4,shb.step5,shb.number  "
 			+ " FROM task t "
 			+ " LEFT JOIN org o on o.id = t.execut_org "
@@ -112,7 +112,7 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 	 */
 	@Query(value="SELECT "
 			+ " t.id,t.pid,t.pro_id as proId,t.title as name,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,t.com_content as comContent,t.question,"
-			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.is_shb as isShb,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
 			+ " o.name as executOrgName , p.name as executorName,pro.name as projectName ,shb.name as shbName,shb.step1,shb.step2,shb.step3,shb.step4,shb.step5,shb.number  "
 			+ " FROM task t "
 			+ " LEFT JOIN org o on o.id = t.execut_org "
@@ -124,7 +124,7 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 	
 	@Query(value="SELECT "
 			+ " t.id,t.pid,t.pro_id as proId,t.title as name,t.org_id as orgId,t.executor,t.executor_mobile as executorMobile,t.stage_id as stageId,t.start_date as startDate,t.com_content as comContent,t.question,"
-			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
+			+ " t.end_date as endDate,t.priority,t.status,t.remark,t.annex,t.pre_tasks as preTasks,	t.execut_org as executOrg,t.com_date as comDate,t.code,t.create_date as createDate,t.is_shb as isShb,t.shb,t.db_count as dbCount , t.db_date as dbDate ,"
 			+ " o.name as executOrgName , p.name as executorName,pro.name as projectName ,shb.name as shbName,shb.step1,shb.step2,shb.step3,shb.step4,shb.step5,shb.number  "
 			+ " FROM task t "
 			+ " LEFT JOIN org o on o.id = t.execut_org "
@@ -133,5 +133,7 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 			+ " LEFT JOIN shb shb on shb.id = t.shb "
 			+ " WHERE t.pro_id=:proId ",nativeQuery=true)
 	List<Map<String, Object>> getGanttByProId(@Param("proId")Integer projectId);
+
+	List<Task> findAllByPid(Integer id);
 	
 }

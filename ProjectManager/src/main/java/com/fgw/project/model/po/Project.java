@@ -57,7 +57,7 @@ public class Project implements java.io.Serializable {
 	private String ydAreaCd;//其中涉及草地规模
 	private String ydAreaCy;//其中涉及草原用地
 	
-	private String ydcardIsHascard;
+	private String ydcardIsHascard; //用地预审和规划选址意见书
 	private String ydcardHandleLevel;
 	private String ydcardIsSendappdepart;
 	private String ydBao;

@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fgw.project.repository.IShbOptionRepository;
 import com.fgw.project.service.CommonService;
 import com.fgw.project.service.GroupService;
 import com.fgw.project.service.ProjectService;
@@ -38,6 +40,8 @@ public class ProjectController {
 	private TaskService taskService;
 	@Resource
 	private CommonService comService;
+	@Autowired
+	private IShbOptionRepository shbOptionR;
 	
 	@RequestMapping("/getTzqkList/{projectId}")
 	public RetKit getTzqkList(@PathVariable Integer projectId) {
@@ -50,8 +54,18 @@ public class ProjectController {
 	}
 	
 	@RequestMapping("/getAllProject")
-	public RetKit getPorjects(@PathParam(value = "orgId") Integer orgId,@PathParam(value = "status") String status,@PathParam(value = "search") String search) {
-		return proService.getAllProject(orgId,status,search);
+	public RetKit getPorjects(@PathParam(value = "roleId") Integer roleId,@PathParam(value = "orgId") Integer orgId,@PathParam(value = "status") String status,@PathParam(value = "search") String search) {
+		return proService.getAllProject(roleId,orgId,status,search);
+	}
+	
+	@RequestMapping("/getAllProjectTask")
+	public RetKit getAllProjectTask(@PathParam(value = "pn") Integer pn,@PathParam(value = "ps") Integer ps,
+			@PathParam(value = "roleId") Integer roleId,@PathParam(value = "orgId") Integer orgId,@PathParam(value = "status") String status,@PathParam(value = "search") String search) {
+		if(pn==null || ps==null) {
+			pn = 1;
+			ps = 20;
+		}
+		return proService.getAllProjectTask(pn,ps,roleId,orgId,status,search);
 	}
 	
 	@RequestMapping("/getProject/{projectId}")
@@ -60,6 +74,11 @@ public class ProjectController {
 			return RetKit.fail("参数不正确！");
 		}
 		return proService.getProject(projectId);
+	}
+	
+	@RequestMapping("/getSHBOption")
+	public RetKit getSHBOption() {
+		return RetKit.okData(shbOptionR.findAll());
 	}
 	
 	@RequestMapping("/getProjectAboutSHB/{projectId}")
@@ -120,6 +139,13 @@ public class ProjectController {
 			return RetKit.fail("参数不正确！");
 		}
 		return proService.addProject(param);
+	}
+	@RequestMapping("/updateProjectSHB")
+	public RetKit updateProjectSHB(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不正确！");
+		}
+		return proService.updateProjectSHB(param);
 	}
 	@RequestMapping("/addProject")
 	public RetKit addProject(@RequestBody String param) {

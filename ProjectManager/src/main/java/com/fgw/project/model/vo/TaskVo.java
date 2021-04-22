@@ -24,6 +24,7 @@ public class TaskVo {
 	private Date comDate;
 	private String code;
 	private Date createDate;
+	private String isShb;
 	private Integer shb;
 	private String comContent;
 	private String question;
@@ -48,6 +49,9 @@ public class TaskVo {
 	private Integer number;
 	private List<Annex> fileInfos;
 	private List<TaskVo> childTask;
+	
+	private boolean isEdit;
+	private boolean isDel;
 
 	
 	//满足树形table 
@@ -59,7 +63,6 @@ public class TaskVo {
 	private Date realEndDate;
 	private String realStartDateStr;
 	private String realEndDateStr;
-	
 	
 	
 	public Date getRealStartDate() {
@@ -331,6 +334,24 @@ public class TaskVo {
 	}
 	public void setQuestion(String question) {
 		this.question = question;
+	}
+	public String getIsShb() {
+		return isShb;
+	}
+	public void setIsShb(String isShb) {
+		this.isShb = isShb;
+	}
+	public boolean isEdit() {
+		return isEdit;
+	}
+	public void setEdit(boolean isEdit) {
+		this.isEdit = isEdit;
+	}
+	public boolean isDel() {
+		return isDel;
+	}
+	public void setDel(boolean isDel) {
+		this.isDel = isDel;
 	}
 	
 	
