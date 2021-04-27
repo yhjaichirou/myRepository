@@ -27,10 +27,12 @@ import com.alibaba.druid.sql.visitor.functions.Now;
 import com.alibaba.fastjson.JSONObject;
 import com.fgw.project.constant.OtherConstant;
 import com.fgw.project.constant.ProjectStatusEnum;
+import com.fgw.project.constant.TaskStatusEnum;
 import com.fgw.project.constant.YjTypeEnum;
 import com.fgw.project.model.po.Config;
 import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Project;
+import com.fgw.project.model.po.Task;
 import com.fgw.project.model.po.User;
 import com.fgw.project.model.po.Yj;
 import com.fgw.project.repository.IConfigRepository;
@@ -41,6 +43,7 @@ import com.fgw.project.repository.IUserRepository;
 import com.fgw.project.repository.IYjRepository;
 import com.fgw.project.service.CommonService;
 import com.fgw.project.service.YjService;
+import com.fgw.project.util.MDateUtil;
 import com.fgw.project.util.StrKit;
 
 import cn.hutool.core.date.DateUnit;
@@ -101,30 +104,105 @@ public class ThreadDoTask {
 	public void targetOverdue() {
 		switch (YjTypeEnum.getByValue(1)) {
 		case PROJECT:
-			overProject();
+			nearProject();
 			break;
-		case TASK:
-			overProject();
+		case TASK: //任务临期提醒
+			nearTask();
 			break;
 		case OVERDUE:
 			overProject();
 			break;
-		case TASKOVERDUE:
-			overProject();
+		case TASKOVERDUE://任务超期修改状态
+			overTask();
 			break;
 		default:
 			break;
 		}
 	}
 	
-	public void overProject() {
+	public void nearTask() {
+		List<Integer> statuss = new ArrayList<>();
+		statuss.add(TaskStatusEnum.NOCOM.getId());
+		statuss.add(TaskStatusEnum.DELAY.getId());
+		List<Task> ts = taskR.findAllByStatusIn(statuss);
+		Date now = new Date();
+		for (Task task : ts) {
+			if(task.getStatus().equals(TaskStatusEnum.NOCOM.getId())) { //未完成任务
+				if(now.before(task.getStartDate())) {//未超出 开始时间
+					long neardays = DateUtil.between(now, task.getStartDate(), DateUnit.DAY);
+					if(neardays<=1) {
+						Optional<People> peo_ = peopleR.findById(task.getExecutor());
+						People peo = null;
+						if(peo_.isPresent()) {
+							peo = peo_.get();
+						}
+						yjservice.addYjRecord(task.getOrgId(), task.getId(), YjTypeEnum.TASK.getId(), YjTypeEnum.TASK.getText(), "《"+task.getTitle()+"》" + YjTypeEnum.TASK.getSkip() + " "+MDateUtil.dateToString(now, null), task.getExecutorMobile(), peo==null?task.getExecutorMobile() : peo.getName());
+						//通知
+//						comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
+					}
+				}else {//逾期
+					task.setStatus(TaskStatusEnum.OVERDUE.getId());
+					taskR.save(task);
+					//通知
+//					comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
+				}
+			}else if(task.getStatus().equals(TaskStatusEnum.DELAY.getId())){//逾期任务
+				if(now.before(task.getDelayDate())) {//未超出 开始时间
+					long neardays = DateUtil.between(now, task.getStartDate(), DateUnit.DAY);
+					if(neardays<=1) {
+						Optional<People> peo_ = peopleR.findById(task.getExecutor());
+						People peo = null;
+						if(peo_.isPresent()) {
+							peo = peo_.get();
+						}
+						yjservice.addYjRecord(task.getOrgId(), task.getId(), YjTypeEnum.TASK.getId(), YjTypeEnum.TASK.getText(), "《"+task.getTitle()+"》" + YjTypeEnum.TASK.getSkip() + " "+MDateUtil.dateToString(now, null), task.getExecutorMobile(), peo==null?task.getExecutorMobile() : peo.getName());
+						//通知
+//						comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
+					}
+				}else {//逾期
+					task.setStatus(TaskStatusEnum.OVERDUE.getId());
+					taskR.save(task);
+					//通知
+//					comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
+				}
+			}
+		}
+	}
+	
+	public void overTask() {
+		List<Integer> statuss = new ArrayList<>();
+		statuss.add(TaskStatusEnum.YESMACK.getId());
+		statuss.add(TaskStatusEnum.NOCOM.getId());
+		statuss.add(TaskStatusEnum.DELAY.getId());
+		List<Task> ts = taskR.findAllByStatusIn(statuss);
+		Date now = new Date();
+		for (Task task : ts) {
+			if(now.after(task.getStartDate()) && now.before(task.getEndDate())) {//超出 开始时间 小于结束时间
+				task.setStatus(TaskStatusEnum.NOCOM.getId());
+				taskR.save(task);
+				//通知
+//				comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
+			}else if(now.after(task.getDelayDate()) ) {//超出结束时间
+				task.setStatus(TaskStatusEnum.OVERDUE.getId());
+				taskR.save(task);
+				//通知
+//				comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
+			}else if(now.after(task.getEndDate()) ) {//超出结束时间
+				task.setStatus(TaskStatusEnum.OVERDUE.getId());
+				taskR.save(task);
+				//通知
+//				comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
+			}
+		}
+	}
+	
+	public void nearProject() {
 		List<Integer> statuss = new ArrayList<>();
 		statuss.add(ProjectStatusEnum.RUNGING.getId());
 		statuss.add(ProjectStatusEnum.DELAY.getId());
-		statuss.add(ProjectStatusEnum.OVERDUE.getId());
-		statuss.add(ProjectStatusEnum.APPROVALOK.getId());
-		List<Project> ps = proR.findAllByStatusIn(statuss);//proR.findAllByStatusNot(ProjectStatusEnum.COMPLETE.getId());
-		Date now = DateUtil.date();
+		List<Project> ps = proR.findAllByStatusIn(statuss);
+		
+		Date now = new Date();
 		Optional<Config> c_ = configR.findById(1);
 		Integer yjDaty = c_.isPresent()?c_.get().getYjDay():OtherConstant.yjDay;
 		for (Project project : ps) {
@@ -163,9 +241,8 @@ public class ThreadDoTask {
 					}
 					String pelNames = StrKit.isBlank(noticePeopleName)?"":noticePeopleName.substring(1);
 					String pelMobiles = StrKit.isBlank(noticePeople)?"":noticePeople.substring(1);
-					String title = "《"+project.getName()+"》"+"项目临近完成期限";
 					String stip = "项目距离预计完成期限还剩余"+betweenDay+"天，请及时处理！\\r 通知人员：" + pelNames ;
-					yjservice.addYjRecord( project.getOrgId(), project.getId(), YjTypeEnum.PROJECT.getId(), title , stip, pelMobiles,pelNames);
+					yjservice.addYjRecord( project.getOrgId(), project.getId(), YjTypeEnum.PROJECT.getId(), YjTypeEnum.TASK.getText() , "《"+project.getName()+"》" + stip + " "+MDateUtil.dateToString(now, null), pelMobiles,pelNames);
 					comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
 				}
 			}else{
@@ -173,6 +250,33 @@ public class ThreadDoTask {
 				if(betweenDay>0) { //小于30天时开始预警
 					
 				}
+			}
+		}
+	}
+	
+	public void overProject() {
+		List<Integer> statuss = new ArrayList<>();
+		statuss.add(ProjectStatusEnum.APPROVALOK.getId());
+		statuss.add(ProjectStatusEnum.RUNGING.getId());
+		statuss.add(ProjectStatusEnum.DELAY.getId());
+		List<Project> ps = proR.findAllByStatusIn(statuss);//proR.findAllByStatusNot(ProjectStatusEnum.COMPLETE.getId());
+		Date now = DateUtil.date();
+		for (Project project : ps) {
+			if(now.after(project.getStartDate()) && now.before(project.getCompleteDate())) {//超出 开始时间 小于结束时间
+				project.setStatus(ProjectStatusEnum.RUNGING.getId());
+				proR.save(project);
+				//通知
+//				comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
+			}else if(now.after(project.getDelayDate()) ) {//超出延期时间
+				project.setStatus(ProjectStatusEnum.OVERDUE.getId());
+				proR.save(project);
+				//通知
+//				comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
+			}else if(now.after(project.getCompleteDate()) ) {//超出结束时间
+				project.setStatus(ProjectStatusEnum.OVERDUE.getId());
+				proR.save(project);
+				//通知
+//				comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
 			}
 		}
 	}

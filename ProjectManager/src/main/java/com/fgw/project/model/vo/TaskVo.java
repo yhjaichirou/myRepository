@@ -28,7 +28,7 @@ public class TaskVo {
 	private Integer shb;
 	private String comContent;
 	private String question;
-	
+	private Date delayDate;
 	
 	//外键
 	private String orgName;
@@ -37,6 +37,7 @@ public class TaskVo {
 	private String stageStr;
 	private String priorityStr;
 	private String startDateStr;
+	private String delayDateStr;
 	private String endDateStr;
 	private String comDateStr;
 	private String statusStr;
@@ -352,6 +353,18 @@ public class TaskVo {
 	}
 	public void setDel(boolean isDel) {
 		this.isDel = isDel;
+	}
+	public Date getDelayDate() {
+		return delayDate;
+	}
+	public void setDelayDate(Date delayDate) {
+		this.delayDate = delayDate;
+	}
+	public String getDelayDateStr() {
+		return delayDateStr;
+	}
+	public void setDelayDateStr(String delayDateStr) {
+		this.delayDateStr = delayDateStr;
 	}
 	
 	

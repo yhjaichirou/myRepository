@@ -170,6 +170,14 @@ public class ProjectController {
 		return proService.deleteProject(projectId);
 	}
 	
+	@RequestMapping("/clickShenhe")
+	public RetKit clickShenhe(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不正确！");
+		}
+		return proService.clickShenhe(param);
+	}
+	
 	/**
 	 * 项目文件
 	 * @return

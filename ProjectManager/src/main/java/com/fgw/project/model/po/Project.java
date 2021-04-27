@@ -44,6 +44,7 @@ public class Project implements java.io.Serializable {
 	
 	private Date expectedDate;//预计完成时间
 	private Date startDate;//开始时间
+	private Date delayDate;
 	private String approveCode;//项目审批监管平台代码
 	private String image;
 	
@@ -115,7 +116,7 @@ public class Project implements java.io.Serializable {
 	private Integer status;//
 	private Date completeDate;//完成时间
 	private Integer orgId;
-	
+	private String nopass;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -867,6 +868,24 @@ public class Project implements java.io.Serializable {
 
 	public void setYdAreaCy(String ydAreaCy) {
 		this.ydAreaCy = ydAreaCy;
+	}
+
+	@Column(name = "nopass")
+	public String getNopass() {
+		return nopass;
+	}
+
+	public void setNopass(String nopass) {
+		this.nopass = nopass;
+	}
+
+	@Column(name = "delay_date")
+	public Date getDelayDate() {
+		return delayDate;
+	}
+
+	public void setDelayDate(Date delayDate) {
+		this.delayDate = delayDate;
 	}
 	
 	

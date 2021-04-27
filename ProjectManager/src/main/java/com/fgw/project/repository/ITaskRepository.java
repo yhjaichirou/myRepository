@@ -135,5 +135,9 @@ public interface ITaskRepository extends JpaRepository<Task , Integer> {
 	List<Map<String, Object>> getGanttByProId(@Param("proId")Integer projectId);
 
 	List<Task> findAllByPid(Integer id);
+
+	List<Task> findAllByProIdAndStatus(Integer proId, Integer status);
+
+	List<Task> findAllByStatusIn(List<Integer> statuss);
 	
 }

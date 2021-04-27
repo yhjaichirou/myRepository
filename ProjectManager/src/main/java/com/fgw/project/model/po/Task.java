@@ -38,6 +38,7 @@ public class Task implements java.io.Serializable {
 	private Integer shb;
 	private Integer dbCount;
 	private Date dbDate;
+	private Date delayDate;
 	
 	private String comContent;
 	private String question;
@@ -241,6 +242,14 @@ public class Task implements java.io.Serializable {
 	}
 	public void setIsShb(String isShb) {
 		this.isShb = isShb;
+	}
+	
+	@Column(name = "delay_date")
+	public Date getDelayDate() {
+		return delayDate;
+	}
+	public void setDelayDate(Date delayDate) {
+		this.delayDate = delayDate;
 	}
 	
 }

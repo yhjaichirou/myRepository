@@ -190,8 +190,10 @@ public class ProjectService {
 				break;
 			case 2://查询我的负责的项目
 				nstatus = 1;
+				break;
 			case 3://查询已完成的项目
 				nstatus = 2;
+				break;
 			case 4://待审核的
 				nstatus = 8;
 				break;
@@ -201,7 +203,7 @@ public class ProjectService {
 			if(nstatus == 0) {
 				whereSql.append(" AND p.status <> 7 " );
 			}else {
-				whereSql.append(" AND p.status ="+status );
+				whereSql.append(" AND p.status ="+nstatus );
 			}
 		}else {
 			whereSql.append(" AND p.status <> 7 " );
@@ -911,6 +913,47 @@ public class ProjectService {
 			}
 			projectR.deleteById(projectId);
 			return RetKit.ok("删除成功！");
+		}
+		return RetKit.fail("提交失败，项目不存在！");
+	}
+	/**
+	 * 审核
+	 * @param param
+	 * @return
+	 */
+	public RetKit clickShenhe(String param) {
+		JSONObject jb = JSONObject.parseObject(param);
+		Integer roleId = jb.getInteger("roleId");
+		Integer status = jb.getInteger("status");
+		Integer projectId = jb.getInteger("projectId");
+		String nopass = jb.getString("nopass");
+		if(roleId!=RoleEnum.ADMIN.getId()) {
+			return RetKit.fail("该用户无审批权限！");
+		}
+		Optional<Project> pr_ = projectR.findById(projectId);
+		if(pr_.isPresent()) {
+			Project p = pr_.get();
+			p.setStatus(status);
+			if(status == 9) {
+				p.setNopass(nopass);
+				projectR.save(p);
+				return RetKit.ok("审核失败！");
+			}else if(status == 10) {
+				projectR.save(p);
+				//审核成功，需要将所有任务设置开始
+				List<Task> tasks = taskR.findAllByProIdAndStatus(p.getId(),TaskStatusEnum.YESMACK.getId());
+				Date now = new Date();
+				for (Task task : tasks) {
+					if(now.after(task.getStartDate()) && now.before(task.getEndDate())) {//超出 开始时间 小于结束时间
+						task.setStatus(TaskStatusEnum.NOCOM.getId());
+						taskR.save(task);
+					}else if(now.after(task.getEndDate()) ) {//超出结束时间
+						task.setStatus(TaskStatusEnum.OVERDUE.getId());
+						taskR.save(task);
+					}
+				}
+				return RetKit.ok("审核成功！");
+			}
 		}
 		return RetKit.fail("提交失败，项目不存在！");
 	}

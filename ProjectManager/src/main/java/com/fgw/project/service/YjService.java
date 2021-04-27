@@ -33,7 +33,7 @@ public class YjService {
 	 * 
 	 * @param orgId
 	 * @param gid   项目 或者 任务id 
-	 * @param type
+	 * @param type 1项目 2任务
 	 * @param title
 	 * @param stip
 	 * @param noticePeople
@@ -42,7 +42,17 @@ public class YjService {
 	public RetKit addYjRecord(Integer orgId,Integer gid, Integer type, String title,String stip,String noticePeople,String noticePeopleName) {
 		List<Yj> ys = yR.findAllByOrgIdAndGidAndType(orgId,gid,type);
 		if(ys.size()>0) {
-			
+			Yj yj = ys.get(0);
+			yj.setGid(gid);
+			yj.setTime(new Date());
+			yj.setNoticePeople(noticePeople);
+			yj.setNoticePeopleName(noticePeopleName);
+			yj.setOrgId(orgId);
+			yj.setStatus(1);
+			yj.setStip(stip);
+			yj.setTitle(title);
+			yj.setType(type);
+			yR.save(yj);
 		}else {
 			Yj yj = new Yj();
 			yj.setGid(gid);

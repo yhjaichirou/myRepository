@@ -473,13 +473,130 @@ public class TaskService {
 			Optional<Task> t_ = taskR.findById(id);
 			if(t_.isPresent()) {
 				Task task = t_.get();
-				String comContent = jb.getString("comContent");
-				String fileInfos = jb.getString("fileInfos");
-				task.setComDate(new Date());
-				task.setComContent(comContent);
-				task.setAnnex(fileInfos);
-				task.setStatus(TaskStatusEnum.COMPLETE.getId());
-				taskR.save(task);
+				Optional<Project> pro_ = projectR.findById(task.getProId());
+				if(pro_.isPresent()) {
+					String comContent = jb.getString("comContent");
+					String fileInfos = jb.getString("fileInfos");
+					Integer shb = jb.getInteger("shb");
+					task.setComDate(new Date());
+					task.setComContent(comContent);
+					task.setAnnex(fileInfos);
+					task.setStatus(TaskStatusEnum.COMPLETE.getId());
+					taskR.save(task);
+					
+					if(StrKit.notBlank(task.getIsShb()) && task.getIsShb().equals("是")) {
+						Project pro = pro_.get();
+						switch (shb) {
+						case 1:
+							String lxIsComapprove = jb.getString("lxIsComapprove");
+							String lxHandleLevel = jb.getString("lxHandleLevel");
+							String lxIsSendappdepart = jb.getString("lxIsSendappdepart");
+							String lxBao = jb.getString("lxBao");
+							String lxBaoNoMsg = jb.getString("lxBaoNoMsg");
+							pro.setLxIsComapprove(lxIsComapprove);
+							pro.setLxHandleLevel(lxHandleLevel);
+							pro.setLxIsSendappdepart(lxIsSendappdepart);
+							pro.setLxBao(lxBao);
+							pro.setLxBaoNoMsg(lxBaoNoMsg);
+							break;
+						case 2:
+							String ydcardIsHascard = jb.getString("ydcardIsHascard");
+							String ydcardHandleLevel = jb.getString("ydcardHandleLevel");
+							String ydcardIsSendappdepart = jb.getString("ydcardIsSendappdepart");
+							String ydBao = jb.getString("ydBao");
+							String ydBaoNoMsg = jb.getString("ydBaoNoMsg");
+							pro.setYdcardIsHascard(ydcardIsHascard);
+							pro.setYdcardHandleLevel(ydcardHandleLevel);
+							pro.setYdcardIsSendappdepart(ydcardIsSendappdepart);
+							pro.setYdBao(ydBao);
+							pro.setYdBaoNoMsg(ydBaoNoMsg);	
+							break;
+						case 3:
+							String energyHandleLevel = jb.getString("energyHandleLevel");
+							String energyIsCensor = jb.getString("energyIsCensor");
+							String energyIsSendappdepart = jb.getString("energyIsSendappdepart");
+							String energyBao = jb.getString("energyBao");
+							String energyBaoNoMsg = jb.getString("energyBaoNoMsg");
+							pro.setEnergyHandleLevel(energyHandleLevel);
+							pro.setEnergyIsCensor(energyIsCensor);
+							pro.setEnergyIsSendappdepart(energyIsSendappdepart);
+							pro.setEnergyBao(energyBao);
+							pro.setEnergyBaoNoMsg(energyBaoNoMsg);
+							break;
+						case 4:
+							String lcHandleLevel = jb.getString("lcHandleLevel");
+							String lcIsBl = jb.getString("lcIsBl");
+							String lcIsSendappdepart = jb.getString("lcIsSendappdepart");
+							String lcBao = jb.getString("lcBao");
+							String lcBaoNoMsg = jb.getString("lcBaoNoMsg");
+							pro.setLcHandleLevel(lcHandleLevel);
+							pro.setLcIsBl(lcIsBl);
+							pro.setLcIsSendappdepart(lcIsSendappdepart);
+							pro.setLcBao(lcBao);
+							pro.setLcBaoNoMsg(lcBaoNoMsg);
+							break;
+						case 5:
+							String tdProvide = jb.getString("tdProvide");
+							String tdHandleLevel = jb.getString("tdHandleLevel");
+							String tdIsBl = jb.getString("tdIsBl");
+							String tdIsSendappdepart = jb.getString("tdIsSendappdepart");
+							String tdBao = jb.getString("tdBao");
+							String tdBaoNoMsg = jb.getString("tdBaoNoMsg");
+							pro.setTdIsBl(tdIsBl);
+							pro.setTdHandleLevel(tdHandleLevel);
+							pro.setTdIsSendappdepart(tdIsSendappdepart);
+							pro.setTdBao(tdBao);
+							pro.setTdBaoNoMsg(tdBaoNoMsg);
+							pro.setTdProvide(tdProvide);
+							break;
+						case 6:
+							String envirHandleLevel = jb.getString("envirHandleLevel");
+							String envirIsBl = jb.getString("envirIsBl");
+							String envirIsSendappdepart = jb.getString("envirIsSendappdepart");
+							String envirBao = jb.getString("envirBao");
+							String envirBaoNoMsg = jb.getString("envirBaoNoMsg");
+							pro.setEnvirHandleLevel(envirHandleLevel);
+							pro.setEnvirIsBl(envirIsBl);
+							pro.setEnvirIsSendappdepart(envirIsSendappdepart);
+							pro.setEnvirBao(envirBao);
+							pro.setEnvirBaoNoMsg(envirBaoNoMsg);
+							break;
+						case 7:
+							String sgHandleLevel = jb.getString("sgHandleLevel");
+							String sgIsBl = jb.getString("sgIsBl");
+							String sgIsSendappdepart = jb.getString("sgIsSendappdepart");
+							String sgBao = jb.getString("sgBao");
+							String sgBaoNoMsg = jb.getString("sgBaoNoMsg");
+							pro.setSgHandleLevel(sgHandleLevel);
+							pro.setSgIsBl(sgIsBl);
+							pro.setSgIsSendappdepart(sgIsSendappdepart);
+							pro.setSgBao(sgBao);
+							pro.setSgBaoNoMsg(sgBaoNoMsg);
+							break;
+						case 8:
+							String xfHandleLevel = jb.getString("xfHandleLevel");
+							String xfIsBl = jb.getString("xfIsBl");
+							String xfIsSendappdepart = jb.getString("xfIsSendappdepart");
+							pro.setXfHandleLevel(xfHandleLevel);
+							pro.setXfIsBl(xfIsBl);
+							pro.setXfIsSendappdepart(xfIsSendappdepart);
+							break;
+						case 9:
+							String rfHandleLevel = jb.getString("rfHandleLevel");
+							String rfIsBl = jb.getString("rfIsBl");
+							String rfIsSendappdepart = jb.getString("rfIsSendappdepart");
+							pro.setRfHandleLevel(rfHandleLevel);
+							pro.setRfIsBl(rfIsBl);
+							pro.setRfIsSendappdepart(rfIsSendappdepart);
+							break;
+						default:
+							break;
+						}
+						projectR.save(pro);
+					}
+				}else {
+					return RetKit.fail("项目异常！");
+				}
 //				isComParentTask(task.getPid());
 			}else {
 				return RetKit.fail("任务不存在！");
@@ -489,6 +606,9 @@ public class TaskService {
 		}
 		return RetKit.okData("完成任务！");
 	}
+	
+	
+	
 //	private void isComParentTask(Integer pid) throws Exception {
 //		if(pid!=0) {
 //			Optional<Task> t_ = taskR.findById(pid);
