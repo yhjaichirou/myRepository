@@ -78,7 +78,7 @@ public class ProjectController {
 	
 	@RequestMapping("/getSHBOption")
 	public RetKit getSHBOption() {
-		return RetKit.okData(shbOptionR.findAll());
+		return RetKit.okData(shbOptionR.findAllByStatus(1));
 	}
 	
 	@RequestMapping("/getProjectAboutSHB/{projectId}")

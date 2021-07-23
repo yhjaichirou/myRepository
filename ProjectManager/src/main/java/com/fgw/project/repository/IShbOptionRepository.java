@@ -16,5 +16,7 @@ import com.fgw.project.model.po.ShbOption;
 @Repository
 public interface IShbOptionRepository extends JpaRepository<ShbOption , Integer> {
 
+	List<ShbOption> findAllByStatus(Integer status);
+
 
 }

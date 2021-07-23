@@ -22,7 +22,7 @@ import com.fgw.project.util.RetKit;
 
 /**
  * 短信发送
- * @author yhj
+ * @author yhj   --- 废弃
  * @date 2021年1月11日
  */
 @Service

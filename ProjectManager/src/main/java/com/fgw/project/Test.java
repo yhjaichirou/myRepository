@@ -5,6 +5,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
+import com.fgw.project.util.msg.MD5;
+
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 
@@ -12,11 +14,13 @@ public class Test {
 	
 	
 	public static void main(String[] args) {
-		String dateStr1 = "2021-01-01 22:33:23";
-		Date date1 = DateUtil.parse(dateStr1);
-		String dateStr2 = "2021-01-04 23:33:23";
-		Date date2 = DateUtil.parse(dateStr2);
-		System.out.println(date1.after(date2));
+//		String dateStr1 = "2021-01-01 22:33:23";
+//		Date date1 = DateUtil.parse(dateStr1);
+//		String dateStr2 = "2021-01-04 23:33:23";
+//		Date date2 = DateUtil.parse(dateStr2);
+//		System.out.println(date1.after(date2));
+		
+		System.out.println(MD5.getMD5("100853156757717456315226529290[公文接口异常]异常个数:1,系统：市政府-公文交换管理平台，编号：59200f6741528278fbb5"));
 		
 //		boolean s = date2.before(date1);
 //		//相差一个月，31天
@@ -39,8 +43,6 @@ public class Test {
 //			e.printStackTrace();
 //		}
 //		System.out.println(md5str);
-		
-		
 	}
 	
 	

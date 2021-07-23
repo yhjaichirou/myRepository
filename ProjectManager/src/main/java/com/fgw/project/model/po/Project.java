@@ -106,8 +106,10 @@ public class Project implements java.io.Serializable {
 	
 	private String otherBl;//其他需要解决的手续问题
 	private String diffAndProblem;//存在的困难和问题
-	private Integer proManager;//项目主管部门联系人
+	private String proManager;//项目主管部门联系人
 	private String proManagerMobile;//项目主管部门联系人电话
+	private String proManager2;//项目主管部门联系人
+	private String proManagerMobile2;//项目主管部门联系人电话
 	private Integer proEnter;//项目主管单位
 	private String proManagerTing;//主管厅局
 	private Integer enterManager;
@@ -483,11 +485,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@Column(name = "pro_manager")
-	public Integer getProManager() {
+	public String getProManager() {
 		return proManager;
 	}
 
-	public void setProManager(Integer proManager) {
+	public void setProManager(String proManager) {
 		this.proManager = proManager;
 	}
 
@@ -886,6 +888,25 @@ public class Project implements java.io.Serializable {
 
 	public void setDelayDate(Date delayDate) {
 		this.delayDate = delayDate;
+	}
+
+
+	@Column(name = "pro_manager2")
+	public String getProManager2() {
+		return proManager2;
+	}
+
+	public void setProManager2(String proManager2) {
+		this.proManager2 = proManager2;
+	}
+
+	@Column(name = "pro_manager_mobile2")
+	public String getProManagerMobile2() {
+		return proManagerMobile2;
+	}
+
+	public void setProManagerMobile2(String proManagerMobile2) {
+		this.proManagerMobile2 = proManagerMobile2;
 	}
 	
 	

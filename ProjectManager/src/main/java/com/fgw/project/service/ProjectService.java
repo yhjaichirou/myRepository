@@ -547,8 +547,10 @@ public class ProjectService {
 		
 		String otherBl = jb.getString("otherBl");
 		String diffAndProblem = jb.getString("diffAndProblem");
-		Integer proManager = jb.getInteger("proManager");
+		String proManager = jb.getString("proManager");
 		String proManagerMobile = jb.getString("proManagerMobile");
+		String proManager2 = jb.getString("proManager2");
+		String proManagerMobile2 = jb.getString("proManagerMobile2");
 		Integer enterManager = jb.getInteger("enterManager");
 		String enterManagerMobile = jb.getString("enterManagerMobile");
 		String stage = jb.getString("stage");
@@ -652,6 +654,8 @@ public class ProjectService {
 		pro.setDiffAndProblem(diffAndProblem);
 		pro.setProManager(proManager);
 		pro.setProManagerMobile(proManagerMobile);
+		pro.setProManager2(proManager2);
+		pro.setProManagerMobile2(proManagerMobile2);
 		pro.setEnterManager(enterManager);
 		pro.setEnterManagerMobile(enterManagerMobile);
 		pro.setStage(stage);

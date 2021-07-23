@@ -19,6 +19,7 @@ public class ShbOption implements java.io.Serializable {
 	private Integer id;
 	private Integer step;
 	private String option;
+	private Integer status;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -48,6 +49,15 @@ public class ShbOption implements java.io.Serializable {
 
 	public void setOption(String option) {
 		this.option = option;
+	}
+
+	@Column(name = "status")
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	
 }
