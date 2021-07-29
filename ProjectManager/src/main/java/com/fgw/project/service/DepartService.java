@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fgw.project.constant.OrgPropertyEnum;
@@ -56,7 +57,21 @@ public class DepartService {
 	@Resource
 	private CommonService comService;
 	
-
+	public RetKit getUpOrgs(Integer cpropery) {
+		List<Integer> pros = new ArrayList<>();
+		if(cpropery == 2) {
+			pros.add(1);
+		}else if(cpropery == 3) {
+			pros.add(1);
+			pros.add(2);
+		}else if(cpropery == 4) {
+			pros.add(1);
+			pros.add(2);
+			pros.add(3);
+		}
+		List<Org> orgs = orgR.findAllByStatusAndPropertyIn(1, pros);
+		return RetKit.okData(orgs);
+	}
 	public RetKit getOrgtypes(Integer orgId) {
 		List<Industry> o_ = new ArrayList<>();
 		List<Industry> all = industryR.findAllByStatus(1);
@@ -103,6 +118,7 @@ public class DepartService {
 		}).collect(Collectors.toList());
 		return RetKit.okData(rtAll);
 	}
+	
 	public List<IndustryVo> getOrgtypeChilds(Integer id ,List<IndustryVo> all){
 		List<IndustryVo> childList = new ArrayList<>();
 		for (IndustryVo pb : all) {
@@ -176,7 +192,6 @@ public class DepartService {
 			ids.add(ii.getId());
 			oo.setTypeArr(ids);
 			oo.setTypeStr(ii.getName());
-			
 			return oo;
 		}).collect(Collectors.toList());
 		Map<String,Object> rt = new HashMap<>();
@@ -187,6 +202,61 @@ public class DepartService {
 		return RetKit.okData(rt);
 	}
 
+	
+	@Transactional(rollbackFor = Exception.class)
+	public RetKit importXls(String param) {
+		try {
+			if(StrKit.isBlank(param)) {
+				return RetKit.fail("导入失败，参数不能为空！");
+			}
+			JSONObject obj = JSONObject.parseObject(param);
+			Integer orgId = obj.getInteger("orgId");
+			String data = obj.getString("data");
+			if(orgId==null) {
+				return RetKit.fail("导入失败，所属组织不能为空！");
+			}
+			if(StrKit.isBlank(data)) {
+				return RetKit.fail("导入失败，导入数据不能为空！");
+			}
+			List<Org> orgs = JSONObject.parseArray(data,Org.class);
+			
+			for (Org org : orgs) {
+				List<Org> oldos = departR.findByNameAndProperty(org.getName(),org.getProperty());
+				if(oldos.size()>0) {
+					continue;
+				}
+				org.setCapacityValue(100);
+				org.setStatus(1);
+				org.setLevel(1);
+				org.setType(0);
+				org.setOrgId(orgId);
+				departR.save(org);
+				
+				//生成管理员
+				User user = new User();
+				user.setAccount(org.getManagerMobile());
+				user.setIsAdmin(1);
+				user.setName(org.getManager());
+				user.setOrgId(org.getId());
+				try {
+					user.setPassword(MakeMD5.makeMD5(new String(MakeMD5.md5DefaultSource.getBytes("UTF-8"), "UTF-8")).toLowerCase());
+					
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+					logger.error("单位管理员密码生成失败！");
+					throw new RuntimeException("操作失败！");
+				}
+				user.setRoleId(org.getProperty()==null?OrgPropertyEnum.QY.getId():org.getProperty());
+				user.setStatus(1);
+				userR.save(user);
+			}
+			return RetKit.ok("导入成功！");
+		} catch (Exception e) {
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();// 手动回滚
+			return RetKit.fail("导入失败！"+e.getMessage());
+		}
+	}
+	
 	@Transactional
 	public RetKit addDepart(String param) {
 		JSONObject obj = JSONObject.parseObject(param);
@@ -196,7 +266,8 @@ public class DepartService {
 		String manager = obj.getString("manager");
 		String managerMobile = obj.getString("managerMobile");
 		Integer level = obj.getInteger("level");
-		Integer pid = obj.getInteger("orgId");
+		Integer pid = obj.getInteger("pid");
+		Integer orgId = obj.getInteger("orgId");
 		Integer property = obj.getInteger("property");
 		String typeArr = obj.getString("typeArr");
 		Integer type = 0;
@@ -215,7 +286,7 @@ public class DepartService {
 				//删除旧的 管理员
 				List<User> oldUsers = userR.findAllByAccountAndOrgId(depart.getManagerMobile(),depart.getId());
 				userR.deleteAll(oldUsers);
-				if(oldo!=null && !oldo.equals(depart.getName())) {
+				if(oldo!=null && !oldo.getName().equals(depart.getName())) {
 					return RetKit.fail("组织已经存在！");
 				}
 			}
@@ -223,10 +294,11 @@ public class DepartService {
 			if(oldo!=null) {
 				return RetKit.fail("组织已经存在！");
 			}
-			depart.setPid(pid);
+			depart.setOrgId(orgId);
 			depart.setCapacityValue(100);
 			depart.setStatus(1);
 		}
+		depart.setPid(pid==null?0:pid);
 		depart.setName(name);
 		depart.setPosition(position);
 		depart.setManager(manager);

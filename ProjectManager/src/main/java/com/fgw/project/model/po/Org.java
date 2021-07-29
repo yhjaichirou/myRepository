@@ -24,6 +24,7 @@ public class Org implements java.io.Serializable {
 	private Integer pid;
 	private Integer property;
 	private Integer type;
+	private Integer orgId;//录入信息的单位
 	
 	@Column(name = "name")
 	public String getName() {
@@ -124,6 +125,15 @@ public class Org implements java.io.Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	@Column(name = "org_id")
+	public Integer getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Integer orgId) {
+		this.orgId = orgId;
 	}
 
 }

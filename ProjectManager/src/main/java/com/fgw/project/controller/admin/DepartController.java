@@ -32,6 +32,11 @@ public class DepartController {
 		return gService.getOrgtypes(orgId);
 	}
 	
+	@RequestMapping("/getUpOrgs/{cpropery}")
+	public RetKit getUpOrgs(@PathVariable Integer cpropery) {
+		return gService.getUpOrgs(cpropery);
+	}
+	
 //	@RequestMapping("/getDepartList/{orgId}/{pn}/{ps}/{searchContent}/{searchStatus}")
 //	public RetKit getDepartList(@PathVariable Integer orgId ,@PathVariable Integer pn ,@PathVariable Integer ps,@PathVariable String searchContent ,@PathVariable Integer searchStatus ) {
 //		if(pn==null || ps==null) {
@@ -47,6 +52,11 @@ public class DepartController {
 			return RetKit.fail("参数不能为空！");
 		}
 		return gService.getDepartList(param);
+	}
+	
+	@RequestMapping("/importXls")
+	public RetKit importXls(@RequestBody String param) {
+		return gService.importXls(param);
 	}
 	
 	@RequestMapping("/addDepart")

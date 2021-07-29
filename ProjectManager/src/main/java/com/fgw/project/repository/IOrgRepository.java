@@ -28,6 +28,8 @@ public interface IOrgRepository extends JpaRepository<Org , Integer> {
 	List<Org> findAllByPidAndProperty(Integer orgId, Integer property);
 
 	List<Org> findAllByPid(Integer orgId);
+	
+	List<Org> findByNameAndProperty(String name, Integer property);
 
 	Org findByNameAndPropertyAndType(String name, Integer property, Integer type);
 
