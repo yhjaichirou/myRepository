@@ -77,36 +77,28 @@ public class DepartService {
 		List<Industry> all = industryR.findAllByStatus(1);
 		List<IndustryVo> allv = BeanKit.copyBeanList(all, IndustryVo.class);
 		List<IndustryVo> rtAll = new ArrayList<>();
-		if(orgId != null && orgId!=0) {
-			Org o = orgR.getById(orgId);
-			if(o.getProperty().equals(OrgPropertyEnum.FGW.getId())) {
-				o_ = industryR.findAllByStatus(1);
-				rtAll = BeanKit.copyBeanList(o_, IndustryVo.class);
-				rtAll = rtAll.stream().filter((IndustryVo ii)->ii.getPid().equals(0)).collect(Collectors.toList());
-			}else {
-				//获取该组织顶级行业类型
-//				List<Industry> ins= industryR.findAllByStatus(1);
-//				Industry ii = industryR.findById(o.getType()).get();
-//				List<Integer> ids = comService.getIndustryParent(ii, ins);//oo.getType()
-//				Integer parentId0 = 0;
-//				if(ids ==null ||ids.size()<=0) {
-//					parentId0 = o.getType();
-//				}else {
-//					parentId0 = ids.get(0);
+//		if(orgId != null && orgId!=0) {
+//			Org o = orgR.getById(orgId);
+//			if(o.getProperty().equals(OrgPropertyEnum.FGW.getId())) {
+//				o_ = industryR.findAllByStatus(1);
+//				rtAll = BeanKit.copyBeanList(o_, IndustryVo.class);
+//				rtAll = rtAll.stream().filter((IndustryVo ii)->ii.getPid().equals(0)).collect(Collectors.toList());
+//			}else {
+//				
+//				Optional<Industry> _ii = industryR.findById(o.getType());
+//				if(_ii.isPresent()) {
+//					o_.add(_ii.get());
 //				}
-//				o_.add(industryR.findById(parentId0).get());
-				
-				Optional<Industry> _ii = industryR.findById(o.getType());
-				if(_ii.isPresent()) {
-					o_.add(_ii.get());
-				}
-				rtAll = BeanKit.copyBeanList(o_, IndustryVo.class);
-			}
-		}else {
-			o_ = industryR.findAllByStatus(1);
-			rtAll = BeanKit.copyBeanList(o_, IndustryVo.class);
-			rtAll = rtAll.stream().filter((IndustryVo ii)->ii.getPid().equals(0)).collect(Collectors.toList());
-		}
+//				rtAll = BeanKit.copyBeanList(o_, IndustryVo.class);
+//			}
+//		}else {
+//			o_ = industryR.findAllByStatus(1);
+//			rtAll = BeanKit.copyBeanList(o_, IndustryVo.class);
+//			rtAll = rtAll.stream().filter((IndustryVo ii)->ii.getPid().equals(0)).collect(Collectors.toList());
+//		}
+		o_ = industryR.findAllByStatus(1);
+		rtAll = BeanKit.copyBeanList(o_, IndustryVo.class);
+		rtAll = rtAll.stream().filter((IndustryVo ii)->ii.getPid().equals(0)).collect(Collectors.toList());
 		rtAll = rtAll.stream().map((IndustryVo io)->{
 			io.setLabel(io.getName());
 			io.setValue(io.getId());
