@@ -25,7 +25,8 @@ public interface IOrgRepository extends JpaRepository<Org , Integer> {
 	Org getById(@Param("id")Integer id);
 
 
-	List<Org> findAllByPidAndProperty(Integer orgId, Integer property);
+	List<Org> findAllByStatusAndPidAndProperty(Integer status, Integer orgId, Integer property);
+	List<Org> findAllByStatusAndPidAndPropertyIn(Integer status, Integer orgId, List<Integer> pros);
 
 	List<Org> findAllByPid(Integer orgId);
 	
@@ -37,7 +38,8 @@ public interface IOrgRepository extends JpaRepository<Org , Integer> {
 
 	List<Org> findAllByPidAndName(Integer orgId, String searchContent);
 
-	List<Org> findAllByPidAndPropertyAndNameLike(Integer orgId, Integer id, String searchContent);
+	List<Org> findAllByStatusAndPidAndPropertyAndNameLike(Integer status, Integer orgId, Integer id, String searchContent);
+	List<Org> findAllByStatusAndPidAndPropertyInAndNameLike(Integer status, Integer orgId, List<Integer> pros, String searchContent);
 
 	List<Org> findAllByPidAndNameLike(Integer orgId, String searchContent);
 

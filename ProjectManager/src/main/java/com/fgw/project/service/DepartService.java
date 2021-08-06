@@ -149,22 +149,32 @@ public class DepartService {
 			Optional<Org> o_ = departR.findById(orgId);
 			if(o_.isPresent()) {
 				Org o = o_.get();
-				if(o.getProperty() == OrgPropertyEnum.FGW.getId()) {//发改委
+				if(o.getProperty() == OrgPropertyEnum.FGWC.getId() ) {//发改委
 					if(StrKit.isBlank(searchContent)) {
 						gs = departR.findAllByStatus(1);
 					}else{
 						gs = departR.findAllByStatusAndNameLike(1,searchContent);
 					}
+					gs = gs.stream().sorted(Comparator.comparing(Org::getProperty)).collect(Collectors.toList());
 //					if(StrKit.isBlank(searchContent)) {
 //						gs = departR.findAllByPid(orgId);
 //					}else{
 //						gs = departR.findAllByPidAndNameLike(orgId,searchContent);
 //					}
+				}else if( o.getProperty() == OrgPropertyEnum.FGW.getId()){
+					List<Integer> pers = new ArrayList<>();
+					pers.add(OrgPropertyEnum.DEPART.getId());
+					pers.add(OrgPropertyEnum.QY.getId());
+					if(StrKit.isBlank(searchContent)) {
+						gs = departR.findAllByStatusAndPidAndPropertyIn(1,orgId,pers);
+					}else{
+						gs = departR.findAllByStatusAndPidAndPropertyInAndNameLike(1,orgId,pers,searchContent);
+					}
 				}else if(o.getProperty() == OrgPropertyEnum.DEPART.getId()) {//部门
 					if(StrKit.isBlank(searchContent)) {
-						gs = departR.findAllByPidAndProperty(orgId,OrgPropertyEnum.QY.getId());
+						gs = departR.findAllByStatusAndPidAndProperty(1,orgId,OrgPropertyEnum.QY.getId());
 					}else{
-						gs = departR.findAllByPidAndPropertyAndNameLike(orgId,OrgPropertyEnum.QY.getId(),searchContent);
+						gs = departR.findAllByStatusAndPidAndPropertyAndNameLike(1,orgId,OrgPropertyEnum.QY.getId(),searchContent);
 					}
 				}else {
 					
@@ -179,11 +189,15 @@ public class DepartService {
 		final List<Industry> ins= industryR.findAllByStatus(1);
 		ov = ov.stream().map((OrgVo oo)->{
 			oo.setPropertyStr(OrgPropertyEnum.getByValue(oo.getProperty()).getText());
-			Industry ii = industryR.findById(oo.getType()).get();
-			List<Integer> ids = comService.getIndustryParent(ii, ins);//oo.getType()
-			ids.add(ii.getId());
-			oo.setTypeArr(ids);
-			oo.setTypeStr(ii.getName());
+			if(oo.getType()!=0) {
+				Industry ii = industryR.findById(oo.getType()).get();
+				List<Integer> ids = comService.getIndustryParent(ii, ins);//oo.getType()
+				ids.add(ii.getId());
+				oo.setTypeArr(ids);
+				oo.setTypeStr(ii.getName());
+			}else {
+				oo.setTypeStr("");
+			}
 			return oo;
 		}).collect(Collectors.toList());
 		Map<String,Object> rt = new HashMap<>();
@@ -211,10 +225,12 @@ public class DepartService {
 				return RetKit.fail("导入失败，导入数据不能为空！");
 			}
 			List<Org> orgs = JSONObject.parseArray(data,Org.class);
-			
+			String resultMsg = "已经存在！",hasMsg="";
+			Integer allC = orgs.size() ,successC = 0;
 			for (Org org : orgs) {
 				List<Org> oldos = departR.findByNameAndProperty(org.getName(),org.getProperty());
 				if(oldos.size()>0) {
+					hasMsg+="、"+org.getName();
 					continue;
 				}
 				org.setCapacityValue(100);
@@ -232,17 +248,20 @@ public class DepartService {
 				user.setOrgId(org.getId());
 				try {
 					user.setPassword(MakeMD5.makeMD5(new String(MakeMD5.md5DefaultSource.getBytes("UTF-8"), "UTF-8")).toLowerCase());
-					
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 					logger.error("单位管理员密码生成失败！");
-					throw new RuntimeException("操作失败！");
+					throw new RuntimeException("导入失败！");
 				}
 				user.setRoleId(org.getProperty()==null?OrgPropertyEnum.QY.getId():org.getProperty());
 				user.setStatus(1);
 				userR.save(user);
+				successC+=1;
 			}
-			return RetKit.ok("导入成功！");
+			if(StrKit.notBlank(hasMsg)) {
+				hasMsg.substring(1);
+			}
+			return RetKit.ok("导入成功！总计导入"+allC+"个，成功导入"+successC+"个。“" + hasMsg+"”"+ resultMsg);
 		} catch (Exception e) {
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();// 手动回滚
 			return RetKit.fail("导入失败！"+e.getMessage());
