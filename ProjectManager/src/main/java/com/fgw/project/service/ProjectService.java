@@ -128,11 +128,18 @@ public class ProjectService {
 		return RetKit.okData(rt);
 	}
 	
-	
-	
-
-	public RetKit getAllProject(Integer roleId,Integer orgId,String status,String search) {
-		
+	public RetKit getAllProject(String param) {
+		JSONObject obj = JSONObject.parseObject(param);
+		Integer roleId = obj.getInteger("roleId");
+		Integer orgId = obj.getInteger("orgId");
+		String search = obj.getString("search");
+		String status = obj.getString("status");
+		Integer pn = obj.getInteger("pn");
+		Integer ps = obj.getInteger("ps");
+		if(pn==null || ps==null) {
+			pn = 1;
+			ps = 20;
+		}
 		List<Map<String,Object>> gs = new ArrayList<>();
 		if(roleId != null && roleId.equals(RoleEnum.ADMIN.getId())) {
 			if(StrKit.notBlank(status) && (Integer.parseInt(status))!=0 && StrKit.notBlank(search)) {
@@ -155,9 +162,10 @@ public class ProjectService {
 				gs = projectR.getAllProjectOfOrgId(orgId);
 			}
 		}
-		
 		try {
 			List<ProjectVo> pvs = BeanKit.changeToListBean(gs, ProjectVo.class);
+			Integer total = pvs.size();
+			pvs = pvs.stream().skip((pn-1)*ps).limit(ps).collect(Collectors.toList());
 			pvs = pvs.stream().map((ProjectVo pv)->{
 				pv.setCompleteDateStr(pv.getCompleteDate()==null?"":MDateUtil.dateToString(pv.getCompleteDate(), MDateUtil.formatDate));
 				pv.setDockingDateStr(pv.getDockingDate()==null?"":MDateUtil.dateToString(pv.getDockingDate(), MDateUtil.formatDate));
@@ -166,9 +174,13 @@ public class ProjectService {
 				pv.setStatusStr(ProjectStatusEnum.getByValue(pv.getStatus()).getText());
 				return pv;
 			}).sorted(Comparator.comparing(ProjectVo::getStartDate)).collect(Collectors.toList());
-			return RetKit.okData(pvs);
+			Map<String,Object> rt = new HashMap<>();
+			rt.put("pn", pn);
+			rt.put("ps", ps);
+			rt.put("total", total);
+			rt.put("list", pvs);
+			return RetKit.okData(rt);
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return RetKit.fail("获取失败！");

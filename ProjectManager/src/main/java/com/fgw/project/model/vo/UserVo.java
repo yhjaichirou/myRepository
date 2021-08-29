@@ -16,6 +16,8 @@ public class UserVo {
 	private String idcard;
 	private String avater;
 	private Integer isAdmin;
+	private Integer createOrgId;
+	private Integer createUserId;
 	
 	private String openid;
 	private String nickName;
@@ -211,6 +213,18 @@ public class UserVo {
 	}
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+	public Integer getCreateOrgId() {
+		return createOrgId;
+	}
+	public void setCreateOrgId(Integer createOrgId) {
+		this.createOrgId = createOrgId;
+	}
+	public Integer getCreateUserId() {
+		return createUserId;
+	}
+	public void setCreateUserId(Integer createUserId) {
+		this.createUserId = createUserId;
 	}
 	
 	

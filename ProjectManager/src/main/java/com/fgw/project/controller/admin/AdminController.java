@@ -1,13 +1,8 @@
 package com.fgw.project.controller.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
 
-import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.fgw.project.model.po.Menu;
-import com.fgw.project.model.po.User;
-import com.fgw.project.model.vo.MenuVo;
 import com.fgw.project.service.RouterService;
 import com.fgw.project.service.UserService;
 import com.fgw.project.util.RetKit;
@@ -92,8 +84,11 @@ public class AdminController {
 	}
 	
 	@RequestMapping("/getRoles")
-	public RetKit getRoles() {
-		return userService.getRoles();
+	public RetKit getRoles(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
+			return RetKit.fail("参数不能为空！");
+		}
+		return userService.getRoles(param);
 	}
 	
 	@RequestMapping("/addRole")

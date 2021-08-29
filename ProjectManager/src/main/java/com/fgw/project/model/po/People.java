@@ -30,7 +30,7 @@ public class People implements java.io.Serializable {
 	private String nickName;
 	private String avatarUrl;
 	private Integer gender;
-	private Integer isLeader;
+	private String isLeader;
 	
 	@Column(name = "nick_name")
 	public String getNickName() {
@@ -134,10 +134,10 @@ public class People implements java.io.Serializable {
 	}
 	
 	@Column(name = "is_leader")
-	public Integer getIsLeader() {
+	public String getIsLeader() {
 		return isLeader;
 	}
-	public void setIsLeader(Integer isLeader) {
+	public void setIsLeader(String isLeader) {
 		this.isLeader = isLeader;
 	}
 	

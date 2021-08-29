@@ -71,6 +71,8 @@ public interface IPeopleRepository extends JpaRepository<People , Integer> {
 	People findByMobile(String phone);
 
 	People findByOpenid(String openid);
+	
+	List<People> findByMobileAndOrgId(String mobile, Integer orgId);
 
 	
 }

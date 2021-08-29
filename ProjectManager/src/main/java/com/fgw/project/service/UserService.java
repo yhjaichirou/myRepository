@@ -200,7 +200,10 @@ public class UserService {
 	}
 
 
-	public RetKit getRoles() {
+	public RetKit getRoles(String param) {
+		JSONObject obj = JSONObject.parseObject(param);
+		Integer pn = obj.getInteger("pn");
+		Integer ps = obj.getInteger("ps");
 //		Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
 		List<Role> rs = roleR.findAllByStatus(1);
 		//筛查 有子类的父类ID 不添加到menus中
@@ -243,7 +246,15 @@ public class UserService {
 //			}
 //			return r;
 //		}).collect(Collectors.toList());
-		return RetKit.okData(rs);
+		
+		Integer total = rs.size();
+		rs = rs.stream().skip((pn-1)*ps).limit(ps).collect(Collectors.toList());
+		Map<String,Object> rt = new HashMap<>();
+		rt.put("pn", pn);
+		rt.put("ps", ps);
+		rt.put("total", total);
+		rt.put("list", rs);
+		return RetKit.okData(rt);
 	}
 
 
@@ -325,9 +336,10 @@ public class UserService {
 		String userName = JSONObject.parseObject(param).getString("userName");
 		Integer orgId = JSONObject.parseObject(param).getInteger("orgId");
 		Integer roleId = JSONObject.parseObject(param).getInteger("roleId");
+		Integer loginUserId = JSONObject.parseObject(param).getInteger("userId");
 		Integer groupId = JSONObject.parseObject(param).getInteger("groupId");
 		Integer loginRole = JSONObject.parseObject(param).getInteger("loginRole");
-		List<User> us = userR.findAllByAccountAndOrgId(account,orgId); 
+		List<User> us = userR.findAllByAccountAndOrgId(account,orgId);
 		if(us.size()>0) {
 			return RetKit.fail("用户已存在！");
 		}
@@ -338,10 +350,22 @@ public class UserService {
 		r.setRoleId(roleId);
 		r.setName(userName);
 		r.setOrgId(orgId);
+		if(loginUserId!=null ) {
+			Optional<User> u_ = userR.findById(loginUserId);
+			if(u_.isPresent()) {
+				r.setCreateUserId(loginUserId);
+				r.setCreateOrgId(loginUserId);
+			}else {
+				return RetKit.fail("登录身份异常！");
+			}
+		}else {
+			r.setCreateUserId(0);
+			r.setCreateOrgId(0);
+		}
 		if(groupId!=null) {
 			r.setGroupId(groupId);
 		}
-		boolean isSystemAdmin = loginRole==null?false: loginRole.equals(RoleEnum.ADMIN) || loginRole.equals(RoleEnum.ADMIN) ?true : false;
+		boolean isSystemAdmin = loginRole==null?false: loginRole.equals(RoleEnum.SUPERADMIN) || loginRole.equals(RoleEnum.ADMIN) ?true : false;
 		r.setIsAdmin(isSystemAdmin?1:0);
 		userR.save(r);
 		
@@ -391,10 +415,10 @@ public class UserService {
 				r.setRoleId(roleId);
 			}
 			if(orgId != null) {
-				r.setRoleId(orgId);
+				r.setOrgId(orgId);
 			}
 			if(groupId != null) {
-				r.setRoleId(groupId);
+				r.setGroupId(groupId);
 			}
 			userR.save(r);
 			r.setAvater(StrKit.notBlank(avater)?getFileUrl+avater :"");
@@ -437,9 +461,11 @@ public class UserService {
 		if(o_.isPresent()){
 			Org o = o_.get();
 			//如果登录的组织是  系统管理员
-			if(o.getProperty().equals(OrgPropertyEnum.FGW.getId())) {
+			if(o.getProperty().equals(OrgPropertyEnum.FGWC.getId()) ||  o.getProperty().equals(OrgPropertyEnum.FGW.getId())) {
 				if(roleId.equals(RoleEnum.ADMIN.getId())) {
 					orgList.add(o);
+					List<Org> nextOrgList = orgR.findAllByStatusAndProperty(1,roleId);
+					orgList.addAll(nextOrgList);
 				}else if(roleId.equals(RoleEnum.DEPART.getId())) {
 					List<Org> nextOrgList = orgR.findAllByStatusAndPropertyAndPid(1,roleId, 0);
 					orgList.addAll(nextOrgList);

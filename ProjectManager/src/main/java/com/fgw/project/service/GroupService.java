@@ -25,14 +25,25 @@ public class GroupService {
 	@Autowired
 	private IGroupRepository groupR;
 
-	public RetKit getGroup(Integer orgId) {
+	public RetKit getGroup(String param) {
+		JSONObject obj = JSONObject.parseObject(param);
+		Integer orgId = obj.getInteger("orgId");
+		Integer pn = obj.getInteger("pn");
+		Integer ps = obj.getInteger("ps");
 		List<Group> gs = new ArrayList<>();
 		if(orgId==null || orgId==0 ) {
 			gs = groupR.findAll();
 		}else {
 			gs = groupR.findAllByOrgId(orgId);
 		}
-		return RetKit.okData(gs);
+		Integer total = gs.size();
+		gs = gs.stream().skip((pn-1)*ps).limit(ps).collect(Collectors.toList());
+		Map<String,Object> rt = new HashMap<>();
+		rt.put("pn", pn);
+		rt.put("ps", ps);
+		rt.put("total", total);
+		rt.put("list", gs);
+		return RetKit.okData(rt);
 	}
 
 	public RetKit addGroup(String param) {

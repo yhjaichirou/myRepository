@@ -1,7 +1,6 @@
 package com.fgw.project.controller.admin;
 
 import javax.annotation.Resource;
-import javax.websocket.server.PathParam;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -81,6 +80,11 @@ public class DepartController {
 			return RetKit.fail("参数不能为空！");
 		}
 		return gService.getPeopleList(param);
+	}
+	
+	@RequestMapping("/importPelXls")
+	public RetKit importPelXls(@RequestBody String param) {
+		return gService.importPelXls(param);
 	}
 	
 	@RequestMapping("/getPeople/{peoId}")

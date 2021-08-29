@@ -27,6 +27,9 @@ public class User implements java.io.Serializable {
 	private Integer roleId;
 	private String avater;
 	private Integer isAdmin;
+	private Integer createOrgId;
+	private Integer createUserId;
+	
 	
 	@Column(name = "group_id")
 	public Integer getGroupId() {
@@ -118,6 +121,22 @@ public class User implements java.io.Serializable {
 	}
 	public void setIsAdmin(Integer isAdmin) {
 		this.isAdmin = isAdmin;
+	}
+	
+	@Column(name = "create_org_id")
+	public Integer getCreateOrgId() {
+		return createOrgId;
+	}
+	public void setCreateOrgId(Integer createOrgId) {
+		this.createOrgId = createOrgId;
+	}
+	
+	@Column(name = "create_user_id")
+	public Integer getCreateUserId() {
+		return createUserId;
+	}
+	public void setCreateUserId(Integer createUserId) {
+		this.createUserId = createUserId;
 	}
 
 

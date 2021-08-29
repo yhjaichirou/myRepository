@@ -2,7 +2,6 @@ package com.fgw.project.service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -24,21 +23,20 @@ import com.fgw.project.constant.OrgPropertyEnum;
 import com.fgw.project.interceptor.TokenInterceptor;
 import com.fgw.project.model.po.Industry;
 import com.fgw.project.model.po.Org;
-import com.fgw.project.model.po.OrgType;
 import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.User;
 import com.fgw.project.model.vo.IndustryVo;
-import com.fgw.project.model.vo.MenuVo;
 import com.fgw.project.model.vo.OrgVo;
 import com.fgw.project.repository.IIndustryRepository;
 import com.fgw.project.repository.IOrgRepository;
-import com.fgw.project.repository.IOrgTypeRepository;
 import com.fgw.project.repository.IPeopleRepository;
 import com.fgw.project.repository.IUserRepository;
 import com.fgw.project.util.BeanKit;
 import com.fgw.project.util.MakeMD5;
 import com.fgw.project.util.RetKit;
 import com.fgw.project.util.StrKit;
+
+import cn.hutool.core.date.DateUtil;
 
 
 @Service
@@ -153,7 +151,7 @@ public class DepartService {
 					if(StrKit.isBlank(searchContent)) {
 						gs = departR.findAllByStatus(1);
 					}else{
-						gs = departR.findAllByStatusAndNameLike(1,searchContent);
+						gs = departR.findAllByStatusAndNameContaining(1,searchContent);
 					}
 					gs = gs.stream().sorted(Comparator.comparing(Org::getProperty)).collect(Collectors.toList());
 //					if(StrKit.isBlank(searchContent)) {
@@ -168,13 +166,13 @@ public class DepartService {
 					if(StrKit.isBlank(searchContent)) {
 						gs = departR.findAllByStatusAndPidAndPropertyIn(1,orgId,pers);
 					}else{
-						gs = departR.findAllByStatusAndPidAndPropertyInAndNameLike(1,orgId,pers,searchContent);
+						gs = departR.findAllByStatusAndPidAndPropertyInAndNameContaining(1,orgId,pers,searchContent);
 					}
 				}else if(o.getProperty() == OrgPropertyEnum.DEPART.getId()) {//部门
 					if(StrKit.isBlank(searchContent)) {
 						gs = departR.findAllByStatusAndPidAndProperty(1,orgId,OrgPropertyEnum.QY.getId());
 					}else{
-						gs = departR.findAllByStatusAndPidAndPropertyAndNameLike(1,orgId,OrgPropertyEnum.QY.getId(),searchContent);
+						gs = departR.findAllByStatusAndPidAndPropertyAndNameContaining(1,orgId,OrgPropertyEnum.QY.getId(),searchContent);
 					}
 				}else {
 					
@@ -216,16 +214,17 @@ public class DepartService {
 				return RetKit.fail("导入失败，参数不能为空！");
 			}
 			JSONObject obj = JSONObject.parseObject(param);
-			Integer orgId = obj.getInteger("orgId");
+			Integer loginOrgId = obj.getInteger("loginOrgId");
+			Integer loginUserId = obj.getInteger("loginUserId");
 			String data = obj.getString("data");
-			if(orgId==null) {
+			if(loginOrgId==null) {
 				return RetKit.fail("导入失败，所属组织不能为空！");
 			}
 			if(StrKit.isBlank(data)) {
 				return RetKit.fail("导入失败，导入数据不能为空！");
 			}
 			List<Org> orgs = JSONObject.parseArray(data,Org.class);
-			String resultMsg = "已经存在！",hasMsg="";
+			String resultMsg = "",hasMsg="";
 			Integer allC = orgs.size() ,successC = 0;
 			for (Org org : orgs) {
 				List<Org> oldos = departR.findByNameAndProperty(org.getName(),org.getProperty());
@@ -237,7 +236,8 @@ public class DepartService {
 				org.setStatus(1);
 				org.setLevel(1);
 				org.setType(0);
-				org.setOrgId(orgId);
+				org.setPid(loginOrgId);
+				org.setOrgId(loginOrgId);
 				departR.save(org);
 				
 				//生成管理员
@@ -251,17 +251,21 @@ public class DepartService {
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 					logger.error("单位管理员密码生成失败！");
-					throw new RuntimeException("导入失败！");
+					throw new RuntimeException("单位管理员密码生成失败！");
 				}
 				user.setRoleId(org.getProperty()==null?OrgPropertyEnum.QY.getId():org.getProperty());
 				user.setStatus(1);
+				user.setCreateOrgId(loginOrgId);
+				user.setCreateUserId(loginUserId);
 				userR.save(user);
 				successC+=1;
 			}
 			if(StrKit.notBlank(hasMsg)) {
+				resultMsg = "已经存在！";
 				hasMsg.substring(1);
+				resultMsg = "“" + hasMsg+"”"+ resultMsg;
 			}
-			return RetKit.ok("导入成功！总计导入"+allC+"个，成功导入"+successC+"个。“" + hasMsg+"”"+ resultMsg);
+			return RetKit.ok("导入成功！总计导入"+allC+"个，成功导入"+successC+"个。"+ resultMsg);
 		} catch (Exception e) {
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();// 手动回滚
 			return RetKit.fail("导入失败！"+e.getMessage());
@@ -281,12 +285,14 @@ public class DepartService {
 		Integer orgId = obj.getInteger("orgId");
 		Integer property = obj.getInteger("property");
 		String typeArr = obj.getString("typeArr");
+		Integer loginOrgId = obj.getInteger("loginOrgId");
+		Integer loginUserId = obj.getInteger("loginUserId");
 		Integer type = 0;
 		if(StrKit.notBlank(typeArr)) {
 			List<Integer> types = JSONObject.parseArray(typeArr, Integer.class);
-			type = types.get(types.size()-1);
-		}else {
-			return RetKit.fail("请选择行业类型！");
+			if(types.size()>0) {
+				type = types.get(types.size()-1);
+			}
 		}
 		Org oldo = departR.findByNameAndPropertyAndType(name,property,type);
 		Org depart = new Org();
@@ -331,10 +337,12 @@ public class DepartService {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			logger.error("单位管理员密码生成失败！");
-			throw new RuntimeException("操作失败！");
+			throw new RuntimeException("单位管理员密码生成失败！");
 		}
-		user.setRoleId(property==null?OrgPropertyEnum.QY.getId():property);
+		user.setRoleId(property==null?OrgPropertyEnum.QY.getId():property==1?2:property);
 		user.setStatus(1);
+		user.setCreateOrgId(loginOrgId);
+		user.setCreateUserId(loginUserId);
 		userR.save(user);
 		
 		return RetKit.okData(depart.getId());
@@ -389,6 +397,53 @@ public class DepartService {
 		return RetKit.fail("该人员不存在！");
 	}
 	
+	@Transactional(rollbackFor = Exception.class)
+	public RetKit importPelXls(String param) {
+		try {
+			if(StrKit.isBlank(param)) {
+				return RetKit.fail("导入失败，参数不能为空！");
+			}
+			JSONObject obj = JSONObject.parseObject(param);
+			Integer loginOrgId = obj.getInteger("loginOrgId");
+			Integer loginUserId = obj.getInteger("loginUserId");
+			String data = obj.getString("data");
+			if(loginOrgId==null) {
+				return RetKit.fail("导入失败，所属组织不能为空！");
+			}
+			if(StrKit.isBlank(data)) {
+				return RetKit.fail("导入失败，导入数据不能为空！");
+			}
+			List<People> pels = JSONObject.parseArray(data,People.class);
+			String resultMsg = "",hasMsg="";
+			Integer allC = pels.size() ,successC = 0;
+			for (People pel : pels) {
+				List<People> oldos = peopleR.findByMobileAndOrgId(pel.getMobile(),loginOrgId);
+				if(oldos.size()>0) {
+					hasMsg+="、"+oldos.get(0).getName();
+					continue;
+				}
+				if(StrKit.notBlank(pel.getIdcard())) {
+					String idc = pel.getIdcard();
+					pel.setSex((Integer.parseInt(idc.substring(16, 17))) % 2 == 0 ? "女" : "男");
+					pel.setAge(DateUtil.ageOfNow(idc.substring(6, 10) + "-" + idc.substring(10, 12) + "-" + idc.substring(12, 14)));
+					pel.setIdcard(idc);
+				}
+				pel.setOrgId(loginOrgId);
+				peopleR.save(pel);
+				successC+=1;
+			}
+			if(StrKit.notBlank(hasMsg)) {
+				resultMsg = "已经存在！";
+				hasMsg.substring(1);
+				resultMsg = "“" + hasMsg+"”"+ resultMsg;
+			}
+			return RetKit.ok("导入成功！总计导入"+allC+"个，成功导入"+successC+"个。"+resultMsg);
+		} catch (Exception e) {
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();// 手动回滚
+			return RetKit.fail("导入失败！"+e.getMessage());
+		}
+	}
+	
 	public RetKit addOrUpdateDepart(String param) {
 		JSONObject obj = JSONObject.parseObject(param);
 		Integer id = obj.getInteger("id");
@@ -399,7 +454,7 @@ public class DepartService {
 		String job = obj.getString("job");
 		Integer age = obj.getInteger("age");
 		String idcard = obj.getString("idcard");
-		Integer isLeader = obj.getInteger("isLeader");
+		String isLeader = obj.getString("isLeader");
 		
 		List<People> oldo = peopleR.findByNameAndMobileAndIdcard(name,mobile,idcard);
 		People pel = new People();

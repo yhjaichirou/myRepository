@@ -7,7 +7,7 @@ package com.fgw.project.constant;
  */
 public enum OrgPropertyEnum {
 
-	FGWC(1,"市发改委"),FGW(2,"发改委"),DEPART(3,"政府部门"),QY(4,"企业");
+	FGWC(1,"市发改委"),FGW(2,"各级发改委"),DEPART(3,"政府部门"),QY(4,"企业");
 	
 	private Integer id;
 	private String text;
