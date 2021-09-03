@@ -919,6 +919,21 @@ public class ProjectService {
 		}
 		return RetKit.fail("提交失败，项目不存在！");
 	}
+	
+	public RetKit dispatchProject(Integer projectId) {
+		Optional<Project> pr_ = projectR.findById(projectId);
+		if(pr_.isPresent()) {
+			List<Task> tasks = taskR.findAllByProId(projectId);
+			if(tasks.size()<=0) {
+				return RetKit.fail("该项目未添加任何任务项，无法提交审核！");
+			}
+			Project p = pr_.get();
+			p.setStatus(ProjectStatusEnum.APPROVAL.getId());
+			projectR.save(p);
+			return RetKit.ok("提交审核成功！");
+		}
+		return RetKit.fail("提交失败，项目不存在！");
+	}
 
 	public RetKit deleteProject(Integer projectId) {
 		Optional<Project> pr_ = projectR.findById(projectId);
