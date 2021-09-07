@@ -16,7 +16,7 @@ public class Dispatch implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-	private String proId;
+	private Integer proId;
 	private Date dTime;
 	private Date dStartTime;
 	private Date dEndTime;
@@ -38,11 +38,11 @@ public class Dispatch implements java.io.Serializable {
 	}
 
 	@Column(name = "pro_id")
-	public String getProId() {
+	public Integer getProId() {
 		return proId;
 	}
 
-	public void setProId(String proId) {
+	public void setProId(Integer proId) {
 		this.proId = proId;
 	}
 

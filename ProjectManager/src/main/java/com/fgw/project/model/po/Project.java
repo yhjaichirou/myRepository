@@ -36,6 +36,7 @@ public class Project implements java.io.Serializable {
 	private String investThisyear;//当年预计完成投资
 	private String investCom;//当年已完成投资
 	private String isOpen;//是否开复工
+	private String isDispatch; 
 	private Date thisyearOpentime;//当年预计开复工时间
 	private String lxType;//项目立项类型（审批、核准、备案）
 	private String buildAddress;//建设地点（旗县区）
@@ -907,6 +908,15 @@ public class Project implements java.io.Serializable {
 
 	public void setProManagerMobile2(String proManagerMobile2) {
 		this.proManagerMobile2 = proManagerMobile2;
+	}
+
+	@Column(name = "is_dispatch")
+	public String getIsDispatch() {
+		return isDispatch;
+	}
+
+	public void setIsDispatch(String isDispatch) {
+		this.isDispatch = isDispatch;
 	}
 	
 	

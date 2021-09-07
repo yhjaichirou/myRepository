@@ -162,12 +162,12 @@ public class ProjectController {
 		return proService.authProject(projectId);
 	}
 	
-	@RequestMapping("/dispatchProject/{projectId}")
-	public RetKit dispatchProject(@PathVariable Integer projectId) {
-		if(projectId==null) {
+	@RequestMapping("/dispatchProject")
+	public RetKit dispatchProject(@RequestBody String param) {
+		if(StrKit.isBlank(param)) {
 			return RetKit.fail("参数不正确！");
 		}
-		return proService.dispatchProject(projectId);
+		return proService.dispatchProject(param);
 	}
 	
 	@DeleteMapping("/deleteProject/{projectId}")

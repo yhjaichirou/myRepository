@@ -28,6 +28,7 @@ public class ProjectVo<Industry> {
 	private String investThisyear;//当年预计完成投资
 	private String investCom;//当年已完成投资
 	private String isOpen;//是否开复工
+	private String isDispatch; //是否调度状态
 	private Date thisyearOpentime;//当年预计开复工时间
 	private String lxType;//项目立项类型（审批、核准、备案）
 	private String buildAddress;//建设地点（旗县区）
@@ -825,5 +826,11 @@ public class ProjectVo<Industry> {
 	}
 	public void setProManager2(String proManager2) {
 		this.proManager2 = proManager2;
+	}
+	public String getIsDispatch() {
+		return isDispatch;
+	}
+	public void setIsDispatch(String isDispatch) {
+		this.isDispatch = isDispatch;
 	}
 }

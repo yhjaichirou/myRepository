@@ -38,6 +38,7 @@ import com.fgw.project.constant.TaskPriorityEnum;
 import com.fgw.project.constant.TaskStageEnum;
 import com.fgw.project.constant.TaskStatusEnum;
 import com.fgw.project.model.po.Category;
+import com.fgw.project.model.po.Dispatch;
 import com.fgw.project.model.po.Group;
 import com.fgw.project.model.po.Industry;
 import com.fgw.project.model.po.Invest;
@@ -50,6 +51,7 @@ import com.fgw.project.model.vo.InvestVo;
 import com.fgw.project.model.vo.ProjectVo;
 import com.fgw.project.model.vo.TaskVo;
 import com.fgw.project.repository.ICategoryRepository;
+import com.fgw.project.repository.IDispatchRepository;
 import com.fgw.project.repository.IGroupRepository;
 import com.fgw.project.repository.IIndustryRepository;
 import com.fgw.project.repository.IInvestRepository;
@@ -92,6 +94,8 @@ public class ProjectService {
 	private ITaskRepository taskR;
 	@Autowired
 	private IShbRepository shbR;
+	@Autowired
+	private IDispatchRepository dispatchR;
 	@Autowired
 	private IInvestRepository investR;
 	@Resource
@@ -242,7 +246,7 @@ public class ProjectService {
 				+ " o.name as orgName , ic.category_name as categoryName "
 				+ " FROM project p "
 				+ " LEFT JOIN org o on o.id = p.org_id "
-				+ " LEFT JOIN industry_category ic on ic.id = p.industry_category " + whereSql.toString();
+				+ " LEFT JOIN industry_category ic on ic.id = p.industry_category " + whereSql.toString() + " ORDER BY p.status in (7,8,9,10) DESC , p.org_id="+orgId+" DESC ,  p.start_date DESC ";
 				
 		String countSql = "select count(*) "
 				+ " FROM project p "
@@ -264,7 +268,7 @@ public class ProjectService {
 				pv.setStartDateStr(pv.getStartDate()==null?"":MDateUtil.dateToString(pv.getStartDate(), MDateUtil.formatDate));
 				pv.setStatusStr(ProjectStatusEnum.getByValue(pv.getStatus()).getText());
 				return pv;
-			}).sorted(Comparator.comparing(ProjectVo::getStartDate)).collect(Collectors.toList());
+			}).collect(Collectors.toList());
 			
 			Map<String, Object> result = new HashMap<>();
 			result.put("list", list);
@@ -920,19 +924,48 @@ public class ProjectService {
 		return RetKit.fail("提交失败，项目不存在！");
 	}
 	
-	public RetKit dispatchProject(Integer projectId) {
-		Optional<Project> pr_ = projectR.findById(projectId);
+	@Transactional
+	public RetKit dispatchProject(String param) {
+		JSONObject jb = JSONObject.parseObject(param);
+		Integer proId = jb.getInteger("proId");
+		Integer dOrgId = jb.getInteger("dOrgId");
+		Integer operUserId = jb.getInteger("operUserId");
+		Integer dUserId = jb.getInteger("dUserId");
+		String dContent = jb.getString("dContent");
+		if(StrKit.isBlank(jb.getString("dStartTime"))) {
+			return RetKit.fail("调度开始时间不能为空！");
+		}
+		if(StrKit.isBlank(jb.getString("dEndTime"))) {
+			return RetKit.fail("调度结束时间不能为空！");
+		}
+		Date dStartTime = MDateUtil.stringToDate(jb.getString("dStartTime"), null);
+		Date dEndTime = MDateUtil.stringToDate(jb.getString("dEndTime"), null);
+		
+		Optional<Project> pr_ = projectR.findById(proId);
 		if(pr_.isPresent()) {
-			List<Task> tasks = taskR.findAllByProId(projectId);
-			if(tasks.size()<=0) {
-				return RetKit.fail("该项目未添加任何任务项，无法提交审核！");
-			}
 			Project p = pr_.get();
-			p.setStatus(ProjectStatusEnum.APPROVAL.getId());
+			p.setIsDispatch("是");
+			
+			List<Dispatch> diss = dispatchR.findAllByProIdAndStatus(proId,1);
+			if(diss.size()>0) {
+				return RetKit.fail("该项目已在调度状态，无法继续调度！");
+			}
+			Dispatch dis = new Dispatch();
+			dis.setdContent(dContent);
+			dis.setdEndTime(dEndTime);
+			dis.setdOrgId(dOrgId);
+			dis.setdStartTime(dStartTime);
+			dis.setdTime(new Date());
+			dis.setdUserId(dUserId);
+			dis.setOperUserId(operUserId);
+			dis.setProId(proId);
+			dis.setStatus(1);
+			dispatchR.save(dis);
 			projectR.save(p);
 			return RetKit.ok("提交审核成功！");
+		}else {
+			return RetKit.fail("该项目不存在，请刷新重试！");
 		}
-		return RetKit.fail("提交失败，项目不存在！");
 	}
 
 	public RetKit deleteProject(Integer projectId) {
