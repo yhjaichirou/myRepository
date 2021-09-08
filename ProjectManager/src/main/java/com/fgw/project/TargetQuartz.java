@@ -17,9 +17,9 @@ public class TargetQuartz {
 	private ThreadDoTask dotask;
 
 	/**
-	 * 每天 1点  定期 -过期  检测指标过期  
+	 * 每天 8点  定期 -过期  检测指标过期  
 	 */
-	@Scheduled(cron = "0 0 1 1/1 * ? ")
+	@Scheduled(cron = "0 0 8 1/1 * ? ")
 	public void targetOverdue() {
 		log.info("----检测是否过期----");
 		dotask.targetOverdue();

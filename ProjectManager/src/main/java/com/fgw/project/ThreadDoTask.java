@@ -265,16 +265,33 @@ public class ThreadDoTask {
 			if(now.after(project.getStartDate()) && now.before(project.getCompleteDate())) {//超出 开始时间 小于结束时间
 				project.setStatus(ProjectStatusEnum.RUNGING.getId());
 				proR.save(project);
+//				Config c = comService.getConfig();
+//				if(StrKit.notBlank(c.getMesDefaultPel())) {
+//					List<Integer> defaultPelIds = JSONObject.parseArray(c.getMesDefaultPel(), Integer.class); // id拼接
+//					List<People> pels = peopleR.findAllByIdIn(defaultPelIds);
+//					for (People pel : pels) {
+//						noticePeople+=","+pel.getMobile();
+//						noticePeopleName+=","+pel.getName();
+//					}
+//				}
+//				String pelNames = StrKit.isBlank(noticePeopleName)?"":noticePeopleName.substring(1);
+//				String pelMobiles = StrKit.isBlank(noticePeople)?"":noticePeople.substring(1);
+//				String stip = "项目距离预计完成期限还剩余"+betweenDay+"天，请及时处理！\\r 通知人员：" + pelNames ;
+//				yjservice.addYjRecord( project.getOrgId(), project.getId(), YjTypeEnum.OVERDUE.getId(), YjTypeEnum.TASK.getText() , "《"+project.getName()+"》" + stip + " "+MDateUtil.dateToString(now, null), pelMobiles,pelNames);
 				//通知
 //				comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
 			}else if(now.after(project.getDelayDate()) ) {//超出延期时间
 				project.setStatus(ProjectStatusEnum.OVERDUE.getId());
 				proR.save(project);
+				
+//				yjservice.addYjRecord( project.getOrgId(), project.getId(), YjTypeEnum.OVERDUE.getId(), YjTypeEnum.TASK.getText() , "《"+project.getName()+"》" + stip + " "+MDateUtil.dateToString(now, null), pelMobiles,pelNames);
 				//通知
 //				comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
 			}else if(now.after(project.getCompleteDate()) ) {//超出结束时间
 				project.setStatus(ProjectStatusEnum.OVERDUE.getId());
 				proR.save(project);
+
+//				yjservice.addYjRecord( project.getOrgId(), project.getId(), YjTypeEnum.OVERDUE.getId(), YjTypeEnum.TASK.getText() , "《"+project.getName()+"》" + stip + " "+MDateUtil.dateToString(now, null), pelMobiles,pelNames);
 				//通知
 //				comService.sendNotice(pelMobiles,YjTypeEnum.PROJECT.getText(), stip);
 			}
@@ -320,46 +337,5 @@ public class ThreadDoTask {
 		// 推送 --异步的
 //		apiService.sendOverTimeTask(pels, null, false, pushMsg);
 	}
-
-	/**
-	 * 增加预警 记录
-	 * 
-	 * type: 预警类型 1人员 2 换届  3 组织生活   4矿会人员提醒  5 党组织书记支委缺失预警
-	 * @param title             预警标题
-	 * @param type              1人员 2 换届  3 组织生活   4矿会人员提醒  5 党组织书记支委缺失预警 6 组织生活督导
-	 * @param content           预警内容
-	 * @param noticeDingUserids 通知人员
-	 * @param isCancel          是否取消预警
-	 * @param taskId 			type:3 此字段为任务ID type:6 为活动或会议ID
-	 * @return 返回是否预警
-	 */
-	public boolean addYj(Integer orgId, Integer type, String title, String naContent, String noticeDingUserids,
-			boolean isCancel,Integer yjOfId) {
-		List<Integer> statuss = new ArrayList<>();
-		statuss.add(1);// 预警中的预警
-		statuss.add(0);// 被取消的预警
-		List<Yj> olds = null;// 由此判断是否要新增 预警
-		if (type == 1 || type == 5) {//人员预警，如果存在预警中的 继续增加预警次数，如果曾经预警过，现在又达到预警值，重新增加预警。
-//			olds = yjR.findAllByYjBranchIdAndYjTypeAndYjStatusIn(branchId, type, statuss);
-		}else if(type == 3 || type == 6){ // 任务
-//			olds = yjR.findAllByYjTypeAndYjTaskId(type,taskId);
-		}else {
-//			olds = yjR.findAllByYjBranchIdAndYjTypeAndYjContentAndYjStatusIn(branchId, type, naContent,statuss);
-		}
-
-		if (olds != null && olds.size() > 0) {
-			for (Yj yj : olds) {
-				
-			}
-		} else {
-			Yj yj = new Yj();
-			
-			
-			yjR.save(yj);
-		}
-		return true;
-	}
-
-	
 
 }
