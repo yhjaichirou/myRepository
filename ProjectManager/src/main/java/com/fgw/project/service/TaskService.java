@@ -1,7 +1,6 @@
 package com.fgw.project.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.comparator.Comparators;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fgw.project.constant.ProjectStatusEnum;
@@ -23,22 +21,19 @@ import com.fgw.project.constant.TaskPriorityEnum;
 import com.fgw.project.constant.TaskStageEnum;
 import com.fgw.project.constant.TaskStatusEnum;
 import com.fgw.project.constant.YjTypeEnum;
-import com.fgw.project.model.po.Category;
-import com.fgw.project.model.po.Group;
-import com.fgw.project.model.po.Org;
 import com.fgw.project.model.po.People;
 import com.fgw.project.model.po.Project;
+import com.fgw.project.model.po.RecordDb;
 import com.fgw.project.model.po.Shb;
 import com.fgw.project.model.po.Task;
 import com.fgw.project.model.vo.Annex;
-import com.fgw.project.model.vo.MenuVo;
-import com.fgw.project.model.vo.ProjectVo;
+import com.fgw.project.model.vo.RecordDbVo;
 import com.fgw.project.model.vo.TaskVo;
 import com.fgw.project.repository.ICategoryRepository;
-import com.fgw.project.repository.IGroupRepository;
 import com.fgw.project.repository.IOrgRepository;
 import com.fgw.project.repository.IPeopleRepository;
 import com.fgw.project.repository.IProjectRepository;
+import com.fgw.project.repository.IRecordDbRepository;
 import com.fgw.project.repository.IShbRepository;
 import com.fgw.project.repository.ITaskRepository;
 import com.fgw.project.util.BeanKit;
@@ -64,6 +59,8 @@ public class TaskService {
 	private ICategoryRepository categoryR;
 	@Autowired
 	private IPeopleRepository peopleR;
+	@Autowired
+	private IRecordDbRepository recordDbR;
 	@Autowired
 	private IShbRepository shbR;
 	@Autowired
@@ -653,6 +650,75 @@ public class TaskService {
 			return RetKit.fail("任务不存在！");
 		}
 		
+	}
+	
+	
+	public RetKit getDbList(String param) {
+		JSONObject jb = JSONObject.parseObject(param);
+		Integer id = jb.getInteger("id");
+		Integer dbOrg = jb.getInteger("dbOrg");
+		String search = jb.getString("search");
+		String status = jb.getString("status");
+		Integer pn = jb.getInteger("pn");
+		Integer ps = jb.getInteger("ps");
+		if(pn==null || ps==null) {
+			pn = 1;
+			ps = 20;
+		}
+		List<Map<String,Object>> rds = new ArrayList<>();
+		if(StrKit.notBlank(search)) {
+			if(StrKit.notBlank(status)) {
+				rds = recordDbR.getAllByDbOrgAndStatusAndSearch(dbOrg,status,search);
+			}else {
+				rds = recordDbR.getAllByDbOrgAndSearch(dbOrg,search);
+			}
+		}else {
+			if(StrKit.notBlank(status)) {
+				rds = recordDbR.getAllByDbOrgAndStatus(dbOrg,status);
+			}else {
+				rds = recordDbR.getAllByDbOrg(dbOrg);
+			}
+		}
+		try {
+			List<RecordDbVo> rv = BeanKit.changeToListBean(rds, RecordDbVo.class);
+			Integer total = rv.size();
+			rv = rv.stream().skip((pn-1)).limit((pn-1)*ps).collect(Collectors.toList());
+			
+			rv = rv.stream().map((RecordDbVo rvv)->{
+				String dbOticesPelNames = "";
+				rvv.setDbOticesPelNames(dbOticesPelNames);
+				return rvv;
+			}).collect(Collectors.toList());
+			Map<String, Object> result = new HashMap<>();
+			result.put("list", rv);
+			result.put("count", total.intValue()); // 总条数
+			return RetKit.okData(result);
+		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
+			e.printStackTrace();
+			return RetKit.fail("获取失败！"+e.getMessage());
+		}
+	}
+	public RetKit dealDb(String param) {
+		try {
+			JSONObject jb = JSONObject.parseObject(param);
+			Integer id = jb.getInteger("id");
+//			Integer dealContent = jb.getInteger("dealContent");
+			Optional<RecordDb> rr_ = recordDbR.findById(id);
+			if(!rr_.isPresent()) {
+				return RetKit.fail("该督办不存在！");
+			}
+			RecordDb r = rr_.get();
+			if("已处理".equals(r.getStatus())) {
+				return RetKit.fail("该督办已处理！");
+			}
+//			r.setDbResult();
+			r.setStatus("已处理");
+			recordDbR.save(r);
+			return RetKit.ok("已处理！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return RetKit.fail("处理失败！"+e.getMessage());
+		}
 	}
 
 	
